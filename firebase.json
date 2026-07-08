@@ -1,0 +1,11 @@
+{
+  "auth": {
+    "providers": {
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "Cashix Fun",
+        "supportEmail": "mitheshhb0@gmail.com"
+      }
+    }
+  }
+}
