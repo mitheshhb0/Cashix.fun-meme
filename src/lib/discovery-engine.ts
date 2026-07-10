@@ -22,7 +22,9 @@ export const DISCOVERY_THRESHOLDS = {
   /** Minimum unique buyer wallets (if derivable) */
   MIN_UNIQUE_BUYERS: Number(process.env.DISCOVERY_MIN_BUYERS ?? 300),
   /** Minimum token age in hours */
-  MIN_AGE_HOURS: Number(process.env.DISCOVERY_MIN_AGE_HOURS ?? 24),
+  MIN_AGE_HOURS: Number(process.env.DISCOVERY_MIN_AGE_HOURS ?? 0),
+  /** Maximum token age in hours */
+  MAX_AGE_HOURS: Number(process.env.DISCOVERY_MAX_AGE_HOURS ?? 24),
   /** Maximum single top-holder share (fraction, e.g. 0.25 = 25%) */
   MAX_TOP_HOLDER_SHARE: Number(process.env.DISCOVERY_MAX_TOP_HOLDER ?? 0.25),
   /** Minimum buy/sell ratio (1.0 = neutral) */
@@ -135,6 +137,12 @@ export function filterQualifiedToken(token: DiscoveryCandidate): FilterResult {
   if (token.ageHours < DISCOVERY_THRESHOLDS.MIN_AGE_HOURS) {
     failReasons.push(
       `Token age ${token.ageHours.toFixed(1)}h < ${DISCOVERY_THRESHOLDS.MIN_AGE_HOURS}h minimum`
+    );
+  }
+
+  if (token.ageHours > DISCOVERY_THRESHOLDS.MAX_AGE_HOURS) {
+    failReasons.push(
+      `Token age ${token.ageHours.toFixed(1)}h > ${DISCOVERY_THRESHOLDS.MAX_AGE_HOURS}h maximum`
     );
   }
 
