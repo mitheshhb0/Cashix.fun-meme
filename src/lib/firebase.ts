@@ -35,14 +35,15 @@ import {
   getFirestore, 
   initializeFirestore, 
   persistentLocalCache, 
-  persistentMultipleTabManager 
+  persistentMultipleTabManager,
+  Firestore
 } from "firebase/firestore";
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 
 // Safe Firestore initialization with multi-tab offline persistence
-let db;
+let db: Firestore;
 if (typeof window !== "undefined") {
   const globalWithFirestore = globalThis as typeof globalThis & {
     __firestore_db__?: any;
