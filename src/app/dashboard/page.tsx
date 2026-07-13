@@ -250,53 +250,85 @@ export default function Dashboard() {
     return () => ws.close();
   }, [selectedFeedId, user, loading, activeTab]);
 
-  // SSE Live EventSource Stream Listener
+  // SSE Live EventSource Stream Listener for Market Pulse with Periodic Polling Fallback
   useEffect(() => {
     if (loading || !user || activeTab !== "AISCANNER") return;
 
     setPulseLoading(true);
 
-    const eventSource = new EventSource("/api/market-pulse/stream");
+    let eventSource: EventSource | null = null;
+    let pollInterval: ReturnType<typeof setInterval> | null = null;
 
-    eventSource.onmessage = (event) => {
+    const fetchPulseData = async () => {
       try {
-        const data = JSON.parse(event.data);
+        const res = await fetch("/api/market-pulse", { method: "POST" });
+        const data = await res.json();
         if (data.tokens) setPulseTokens(data.tokens);
         if (data.marketOverview) setMarketOverviewText(data.marketOverview);
-        setPulseLoading(false);
       } catch (err) {
-        console.error("Failed to parse SSE data:", err);
+        console.error("Pulse fallback fetch failed:", err);
+      } finally {
+        setPulseLoading(false);
       }
     };
 
-    eventSource.onerror = (err) => {
-      console.error("SSE connection error, falling back to dynamic fetch:", err);
-      fetch("/api/market-pulse", { method: "POST" })
-        .then(res => res.json())
-        .then(data => {
-          if (data.tokens) setPulseTokens(data.tokens);
-          if (data.marketOverview) setMarketOverviewText(data.marketOverview);
-        })
-        .catch(console.error)
-        .finally(() => setPulseLoading(false));
+    const startPolling = () => {
+      if (pollInterval) return;
+      console.log("Starting Market Pulse polling fallback...");
+      fetchPulseData(); // Initial immediate fetch
+      pollInterval = setInterval(fetchPulseData, 12000); // Fetch every 12 seconds
     };
 
+    if (typeof window !== "undefined" && "EventSource" in window) {
+      try {
+        eventSource = new EventSource("/api/market-pulse/stream");
+
+        eventSource.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.tokens) setPulseTokens(data.tokens);
+            if (data.marketOverview) setMarketOverviewText(data.marketOverview);
+            setPulseLoading(false);
+          } catch (err) {
+            console.error("Failed to parse SSE data:", err);
+          }
+        };
+
+        eventSource.onerror = (err) => {
+          console.warn("SSE connection error, falling back to polling:", err);
+          if (eventSource) {
+            eventSource.close();
+            eventSource = null;
+          }
+          startPolling();
+        };
+      } catch (esErr) {
+        console.warn("Failed to init EventSource, starting polling directly:", esErr);
+        startPolling();
+      }
+    } else {
+      startPolling();
+    }
+
     return () => {
-      eventSource.close();
+      if (eventSource) eventSource.close();
+      if (pollInterval) clearInterval(pollInterval);
     };
   }, [user, loading, activeTab]);
 
-  // AI Discovery Engine — SSE stream listener
+  // AI Discovery Engine — SSE stream listener with Periodic Polling Fallback
   useEffect(() => {
     if (loading || !user || activeTab !== "DEXSCREENER") return;
 
     setDiscoveryLoading(true);
 
-    const es = new EventSource("/api/discovery/stream");
+    let es: EventSource | null = null;
+    let pollInterval: ReturnType<typeof setInterval> | null = null;
 
-    es.onmessage = (event) => {
+    const fetchDiscoveryData = async () => {
       try {
-        const data = JSON.parse(event.data);
+        const res = await fetch("/api/discovery", { method: "POST" });
+        const data = await res.json();
         if (data.tokens) setDiscoveryTokens(data.tokens);
         if (data.totalCandidates !== undefined) {
           setDiscoveryMeta({
@@ -306,30 +338,62 @@ export default function Dashboard() {
             lastUpdated: new Date(data.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
           });
         }
+      } catch (err) {
+        console.error("Discovery fallback fetch failed:", err);
+      } finally {
         setDiscoveryLoading(false);
-      } catch {}
+      }
     };
 
-    es.onerror = () => {
-      // Fallback to HTTP GET
-      fetch("/api/discovery")
-        .then((r) => r.json())
-        .then((data) => {
-          if (data.tokens) setDiscoveryTokens(data.tokens);
-          if (data.totalCandidates !== undefined) {
-            setDiscoveryMeta({
-              totalCandidates: data.totalCandidates,
-              totalQualified: data.totalQualified,
-              totalRejected: data.totalRejected,
-              lastUpdated: new Date(data.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-            });
+    const startPolling = () => {
+      if (pollInterval) return;
+      console.log("Starting Discovery Engine polling fallback...");
+      fetchDiscoveryData(); // Initial immediate fetch
+      pollInterval = setInterval(fetchDiscoveryData, 12000); // Fetch every 12 seconds
+    };
+
+    if (typeof window !== "undefined" && "EventSource" in window) {
+      try {
+        es = new EventSource("/api/discovery/stream");
+
+        es.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.tokens) setDiscoveryTokens(data.tokens);
+            if (data.totalCandidates !== undefined) {
+              setDiscoveryMeta({
+                totalCandidates: data.totalCandidates,
+                totalQualified: data.totalQualified,
+                totalRejected: data.totalRejected,
+                lastUpdated: new Date(data.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+              });
+            }
+            setDiscoveryLoading(false);
+          } catch (err) {
+            console.error("Failed to parse SSE discovery data:", err);
           }
-        })
-        .catch(() => {})
-        .finally(() => setDiscoveryLoading(false));
-    };
+        };
 
-    return () => es.close();
+        es.onerror = (err) => {
+          console.warn("SSE discovery error, falling back to polling:", err);
+          if (es) {
+            es.close();
+            es = null;
+          }
+          startPolling();
+        };
+      } catch (esErr) {
+        console.warn("Failed to init Discovery EventSource, starting polling directly:", esErr);
+        startPolling();
+      }
+    } else {
+      startPolling();
+    }
+
+    return () => {
+      if (es) es.close();
+      if (pollInterval) clearInterval(pollInterval);
+    };
   }, [user, loading, activeTab]);
 
   // Live Activity feed event simulator
