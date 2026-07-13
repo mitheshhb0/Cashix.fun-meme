@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
-import { doc, onSnapshot, collection, orderBy, query, addDoc, setDoc } from "firebase/firestore";
+import { doc, onSnapshot, collection, orderBy, query, addDoc, setDoc, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import AdminTerminal from "@/components/AdminTerminal";
 import { 
@@ -66,6 +66,7 @@ interface ChatMessage {
   time: string;
   isAdmin?: boolean;
   timestamp?: number;
+  createdAt?: any;
 }
 
 interface TokenSignal {
@@ -398,11 +399,17 @@ export default function Dashboard() {
     return () => unsub();
   }, [user, loading]);
 
-  // Synchronize Chat Messages from Firestore in Real-Time
+  // Synchronize Chat Messages from Firestore in Real-Time (last 7 days only)
   useEffect(() => {
     if (loading || !user) return;
 
-    const q = query(collection(db, "chat_messages"), orderBy("timestamp", "asc"));
+    // Filter messages that are from the last 7 days to maintain lightweight memory footprint and respect privacy
+    const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const q = query(
+      collection(db, "chat_messages"),
+      where("timestamp", ">=", sevenDaysAgo),
+      orderBy("timestamp", "asc")
+    );
     const unsub = onSnapshot(
       q,
       (snapshot) => {
@@ -460,7 +467,8 @@ export default function Dashboard() {
           message: randomText,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           isAdmin: true,
-          timestamp: Date.now()
+          timestamp: Date.now(),
+          createdAt: new Date()
         };
 
         try {
@@ -514,7 +522,8 @@ export default function Dashboard() {
       message: `🚨 NEW SIGNAL: [${newSignal.action}] ${newSignal.tokenName} at ${newSignal.entryPrice}. Target: ${newSignal.targetPrice}. CA: ${newSignal.contractAddress}`,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       isAdmin: true,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      createdAt: new Date()
     };
 
     try {
@@ -543,7 +552,8 @@ export default function Dashboard() {
       message: chatContent,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       isAdmin: isAdmin,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      createdAt: new Date()
     };
 
     try {

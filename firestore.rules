@@ -158,10 +158,11 @@ service cloud.firestore {
     match /chat_messages/{documentId} {
       allow read: if isAuthenticated();
       allow create: if isAuthenticated() &&
-        hasRequiredFields(request.resource.data, ['user', 'email', 'message', 'time', 'isAdmin', 'timestamp']) &&
-        hasOnlyAllowedFields(request.resource.data, ['user', 'email', 'message', 'time', 'isAdmin', 'timestamp']) &&
+        hasRequiredFields(request.resource.data, ['user', 'email', 'message', 'time', 'isAdmin', 'timestamp', 'createdAt']) &&
+        hasOnlyAllowedFields(request.resource.data, ['user', 'email', 'message', 'time', 'isAdmin', 'timestamp', 'createdAt']) &&
         request.resource.data.email.lower() == request.auth.token.email.lower() &&
         request.resource.data.message.size() <= 500 && // Protect against huge text DoS attacks
+        request.resource.data.createdAt is timestamp && // Require valid timestamp for TTL policies
         (request.resource.data.isAdmin == false || isAdmin()); // Users cannot fake admin badge
       allow update, delete: if isAdmin();
     }
