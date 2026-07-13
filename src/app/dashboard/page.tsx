@@ -1523,42 +1523,159 @@ export default function Dashboard() {
 
         {/* TAB 3: COMMUNITY (CHAT) */}
         {activeTab === "CHAT" && (
-          <div className="max-w-2xl mx-auto bg-[#0D1117] border border-slate-800 p-4 md:p-6 rounded-xl flex flex-col h-[65vh] md:h-[680px] justify-between relative shadow-md">
-            <div className="flex justify-between items-center border-b border-slate-800 pb-5 mb-5">
-              <h3 className="text-sm font-bold uppercase text-white flex items-center gap-3 tracking-widest"><MessageSquare className="w-4 h-4 text-blue-500" /> COMMUNITY</h3>
-              <span className="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[9px] font-bold uppercase px-3 py-1 rounded-full tracking-widest animate-pulse">SECURE CONNECTION</span>
-            </div>
-            <div className="flex-grow overflow-y-auto space-y-3 max-h-[45vh] md:max-h-[520px] scrollbar-none pr-1 mb-3">
-              {chatMessages.map((msg) => (
-                <div key={msg.id} className="text-xs leading-relaxed text-left border-l-4 border-slate-800 pl-4 bg-slate-900/40 p-4 rounded-r-xl transition-all hover:bg-slate-900">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className={`font-bold uppercase tracking-wider flex items-center gap-1.5 ${msg.isAdmin ? "text-emerald-400" : "text-blue-400"}`}>
-                      {msg.user}
-                      {msg.isAdmin && (
-                        <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-widest leading-none">
-                          Admin
-                        </span>
-                      )}
-                    </span>
-                    <span className="text-slate-500 font-mono text-[9px]">{msg.time}</span>
+          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 h-[70vh] md:h-[680px] text-left">
+            
+            {/* Sidebar Channels - Left Side */}
+            <div className="hidden lg:flex flex-col bg-[#0D1117] border border-slate-800 rounded-xl p-4 justify-between select-none">
+              <div className="space-y-6">
+                <div>
+                  <span className="text-[9px] uppercase tracking-widest text-slate-500 font-bold block mb-3">COMMUNITY CHANNELS</span>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between px-3 py-2 bg-blue-600/10 border border-blue-500/20 text-blue-400 rounded-lg text-xs font-bold uppercase tracking-wider cursor-pointer">
+                      <span className="flex items-center gap-2">
+                        <MessageSquare className="w-3.5 h-3.5 text-blue-500" /> #general-chat
+                      </span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10B981]" />
+                    </div>
+                    <div className="flex items-center justify-between px-3 py-2 text-slate-500 hover:text-slate-350 rounded-lg text-xs font-bold uppercase tracking-wider cursor-not-allowed group">
+                      <span className="flex items-center gap-2">
+                        <TrendingUp className="w-3.5 h-3.5 text-slate-600" /> #alpha-signals
+                      </span>
+                      <Lock className="w-3 h-3 text-slate-600 group-hover:text-slate-400 transition-colors" />
+                    </div>
+                    <div className="flex items-center justify-between px-3 py-2 text-slate-500 hover:text-slate-350 rounded-lg text-xs font-bold uppercase tracking-wider cursor-not-allowed group">
+                      <span className="flex items-center gap-2">
+                        <Shield className="w-3.5 h-3.5 text-slate-600" /> #risk-alerts
+                      </span>
+                      <Lock className="w-3 h-3 text-slate-600 group-hover:text-slate-400 transition-colors" />
+                    </div>
                   </div>
-                  <p className="text-slate-200 font-medium">{msg.message}</p>
                 </div>
-              ))}
-              {/* Scroll anchor */}
-              <div ref={chatBottomRef} />
+
+                <div>
+                  <span className="text-[9px] uppercase tracking-widest text-slate-500 font-bold block mb-3">VERIFIED MODERATORS</span>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="relative">
+                        <div className="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-[10px] font-bold text-emerald-400">AD</div>
+                        <span className="absolute bottom-0 right-0 w-2 h-2 bg-emerald-500 border border-[#0D1117] rounded-full" />
+                      </div>
+                      <div className="text-left min-w-0">
+                        <p className="text-xs font-bold text-white flex items-center gap-1.5 leading-none">
+                          Admin Desk <Shield className="w-3 h-3 text-emerald-400" />
+                        </p>
+                        <span className="text-[8px] text-slate-500 font-mono tracking-widest font-black uppercase block mt-1">Lead Analyst</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2.5">
+                      <div className="relative">
+                        <div className="w-8 h-8 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-[10px] font-bold text-blue-400">WA</div>
+                        <span className="absolute bottom-0 right-0 w-2 h-2 bg-emerald-500 border border-[#0D1117] rounded-full" />
+                      </div>
+                      <div className="text-left min-w-0">
+                        <p className="text-xs font-bold text-white flex items-center gap-1.5 leading-none">
+                          Whale Alerts <Zap className="w-3 h-3 text-blue-400" />
+                        </p>
+                        <span className="text-[8px] text-slate-500 font-mono tracking-widest font-black uppercase block mt-1">Onchain Bot</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-slate-900/40 border border-slate-800/85 rounded-xl p-3 text-left">
+                <span className="text-[9px] uppercase tracking-widest text-slate-500 font-bold block mb-1">YOUR TERMINAL LEVEL</span>
+                <span className="text-[10px] font-black text-blue-400 flex items-center gap-1.5 uppercase tracking-widest">
+                  <Check className="w-3.5 h-3.5 text-emerald-400" /> Professional Active
+                </span>
+              </div>
             </div>
-            <form onSubmit={handleSendChat} className="flex gap-3 shrink-0 pt-4 border-t border-slate-800">
-              <input
-                type="text"
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSendChat(e as any); } }}
-                placeholder="TRANSMIT MESSAGE..."
-                className="bg-slate-900 border border-slate-800 px-4 py-3 rounded-lg text-xs text-white w-full focus:outline-none focus:border-blue-700 placeholder-slate-500 font-medium transition-colors"
-              />
-              <button type="submit" className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase rounded-lg transition-colors shadow-md">SEND</button>
-            </form>
+
+            {/* Middle Section - Chat Window */}
+            <div className="lg:col-span-3 bg-[#0D1117] border border-slate-800 p-4 md:p-6 rounded-xl flex flex-col h-full justify-between relative shadow-lg">
+              
+              {/* Header */}
+              <div className="flex justify-between items-center border-b border-slate-800 pb-4 mb-4">
+                <div className="text-left">
+                  <h3 className="text-sm font-bold uppercase text-white flex items-center gap-2 tracking-widest">
+                    <MessageSquare className="w-4 h-4 text-blue-500" /> #general-chat
+                  </h3>
+                  <p className="text-[10px] text-slate-500 mt-1 font-medium">Terminal holder discussions and narrative validation.</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[8px] font-bold uppercase px-2.5 py-1 rounded-md tracking-wider flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> E2E SECURE
+                  </span>
+                </div>
+              </div>
+
+              {/* Chat Flow */}
+              <div className="flex-grow overflow-y-auto space-y-4 max-h-[42vh] md:max-h-[480px] scrollbar-none pr-1 mb-3">
+                {chatMessages.map((msg) => {
+                  const initial = msg.user ? msg.user[0].toUpperCase() : "A";
+                  const avatarColor = msg.isAdmin 
+                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
+                    : "bg-blue-600/10 border-blue-500/20 text-blue-400";
+                  const userBadge = msg.isAdmin ? "MODERATOR" : "TERMINAL HOLDER";
+                  const userBadgeColor = msg.isAdmin 
+                    ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" 
+                    : "bg-slate-900 border-slate-800 text-slate-500";
+                  
+                  return (
+                    <div key={msg.id} className="group flex items-start gap-3.5 text-xs text-left bg-slate-900/10 hover:bg-slate-900/30 p-2.5 rounded-xl border border-transparent hover:border-slate-800/40 transition-all duration-200">
+                      
+                      {/* Avatar */}
+                      <div className={`w-8.5 h-8.5 rounded-lg flex items-center justify-center font-bold border shrink-0 text-sm ${avatarColor}`}>
+                        {initial}
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-grow min-w-0">
+                        <div className="flex items-baseline justify-between gap-2 mb-1.5">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className={`font-bold uppercase tracking-wide leading-none ${msg.isAdmin ? "text-emerald-400" : "text-white"}`}>
+                              {msg.user}
+                            </span>
+                            <span className={`text-[7.5px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider leading-none border ${userBadgeColor}`}>
+                              {userBadge}
+                            </span>
+                          </div>
+                          <span className="text-[9px] text-slate-600 font-mono tracking-widest uppercase">{msg.time}</span>
+                        </div>
+                        <p className="text-slate-350 leading-relaxed font-normal whitespace-pre-wrap selection:bg-blue-600/20">{msg.message}</p>
+                      </div>
+
+                    </div>
+                  );
+                })}
+                <div ref={chatBottomRef} />
+              </div>
+
+              {/* Form Input */}
+              <form onSubmit={handleSendChat} className="flex gap-3 shrink-0 pt-4 border-t border-slate-800 relative items-center">
+                <div className="relative flex-grow">
+                  <input
+                    type="text"
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSendChat(e as any); } }}
+                    placeholder="Type secured message..."
+                    className="bg-[#060913] border border-slate-800/80 px-4 py-3.5 pr-12 rounded-xl text-xs text-white w-full focus:outline-none focus:border-blue-600 placeholder-slate-600 font-medium transition-colors shadow-inner"
+                  />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2" title="Connection is securely encrypted">
+                    <Lock className="w-3.5 h-3.5 text-slate-700" />
+                  </div>
+                </div>
+                <button 
+                  type="submit" 
+                  className="px-6 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase rounded-xl transition-all shadow-md flex items-center gap-2 hover:scale-[1.02]"
+                >
+                  Transmit <Send className="w-3 h-3" />
+                </button>
+              </form>
+
+            </div>
+
           </div>
         )}
 
