@@ -27,7 +27,7 @@ export default function Stats() {
       features: [
         "Live Market Pulse feeds",
         "Discovery Engine listings",
-        "General Trading Floor view",
+        "General Community view",
         "Standard security scores",
         "24-hour update latency"
       ],
@@ -41,10 +41,10 @@ export default function Stats() {
       features: [
         "Market Intelligence Score index",
         "Live Whale Intelligence tracking",
-        "Alpha Desk trade signals & updates",
+        "Token Center trade signals & updates",
         "Complete contract Risk audits",
         "Real-time websocket events",
-        "Private community floor discuss",
+        "Private community discussion",
         "Priority alert updates"
       ],
       recommended: true,

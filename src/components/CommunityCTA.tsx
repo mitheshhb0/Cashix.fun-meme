@@ -40,7 +40,7 @@ export default function CommunityCTA() {
           </motion.div>
 
           <h2 className="text-3xl md:text-5xl font-black uppercase text-white tracking-tight leading-none">
-            Access the Elite Trading Floor
+            Access the Elite Community
           </h2>
           
           <p className="text-sm md:text-base font-medium text-slate-450 leading-relaxed max-w-2xl">
@@ -68,7 +68,7 @@ export default function CommunityCTA() {
               href={user ? "/dashboard" : "/login"}
               className="w-full sm:w-auto px-8 py-4.5 bg-blue-600 hover:bg-blue-700 text-white font-bold uppercase text-xs rounded-xl transition-all shadow-lg flex items-center justify-center gap-2.5 tracking-wider cursor-pointer"
             >
-              Enter Trading Floor
+              Enter Community
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

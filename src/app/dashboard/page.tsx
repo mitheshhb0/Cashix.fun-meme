@@ -693,7 +693,7 @@ export default function Dashboard() {
                 activeTab === "CHAT" ? "bg-blue-600/10 border border-blue-500/30 text-blue-400" : "border border-transparent text-slate-400 hover:text-white hover:bg-slate-800/40"
               }`}
             >
-              <MessageSquare className="w-4 h-4" /> Trading Floor
+              <MessageSquare className="w-4 h-4" /> Community
             </button>
             <button
               onClick={() => setActiveTab("SIGNALS")}
@@ -701,7 +701,7 @@ export default function Dashboard() {
                 activeTab === "SIGNALS" ? "bg-blue-600/10 border border-blue-500/30 text-blue-400" : "border border-transparent text-slate-400 hover:text-white hover:bg-slate-800/40"
               }`}
             >
-              <TrendingUp className="w-4 h-4" /> Alpha Desk
+              <TrendingUp className="w-4 h-4" /> Token Center
             </button>
             <button
               onClick={() => setActiveTab("SECURITY")}
@@ -1521,11 +1521,11 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* TAB 3: TRADING FLOOR (CHAT) */}
+        {/* TAB 3: COMMUNITY (CHAT) */}
         {activeTab === "CHAT" && (
           <div className="max-w-2xl mx-auto bg-[#0D1117] border border-slate-800 p-4 md:p-6 rounded-xl flex flex-col h-[65vh] md:h-[680px] justify-between relative shadow-md">
             <div className="flex justify-between items-center border-b border-slate-800 pb-5 mb-5">
-              <h3 className="text-sm font-bold uppercase text-white flex items-center gap-3 tracking-widest"><MessageSquare className="w-4 h-4 text-blue-500" /> TRADING FLOOR</h3>
+              <h3 className="text-sm font-bold uppercase text-white flex items-center gap-3 tracking-widest"><MessageSquare className="w-4 h-4 text-blue-500" /> COMMUNITY</h3>
               <span className="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[9px] font-bold uppercase px-3 py-1 rounded-full tracking-widest animate-pulse">SECURE CONNECTION</span>
             </div>
             <div className="flex-grow overflow-y-auto space-y-3 max-h-[45vh] md:max-h-[520px] scrollbar-none pr-1 mb-3">
@@ -1562,7 +1562,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* TAB 4: ALPHA DESK (SIGNALS) */}
+        {/* TAB 4: TOKEN CENTER (SIGNALS) */}
         {activeTab === "SIGNALS" && (
           <div className="max-w-4xl mx-auto space-y-4">
             <div className="bg-[#0D1117] border border-slate-800 p-8 rounded-xl text-left shadow-md relative overflow-hidden">

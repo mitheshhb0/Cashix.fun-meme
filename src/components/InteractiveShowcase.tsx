@@ -28,8 +28,8 @@ export default function InteractiveShowcase() {
     { id: "PULSE", name: "Market Pulse", icon: Zap, desc: "Real-time AI market indices" },
     { id: "DISCOVERY", name: "Discovery Engine", icon: Globe, desc: "Trending token feeds" },
     { id: "WHALES", name: "Whale Intelligence", icon: Users, desc: "Smart money trackers" },
-    { id: "ALPHA", name: "Alpha Desk", icon: TrendingUp, desc: "Verified trading signals" },
-    { id: "FLOOR", name: "Trading Floor", icon: MessageSquare, desc: "Elite private discussions" },
+    { id: "ALPHA", name: "Token Center", icon: TrendingUp, desc: "Verified trading signals" },
+    { id: "FLOOR", name: "Community", icon: MessageSquare, desc: "Elite private discussions" },
     { id: "RISK", name: "Risk Center", icon: Shield, desc: "Automated contract audits" },
   ];
 
@@ -339,7 +339,7 @@ export default function InteractiveShowcase() {
                     className="space-y-4 flex-grow flex flex-col justify-between"
                   >
                     <div className="flex justify-between items-center">
-                      <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">VIP Community Trading Floor</span>
+                      <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">VIP Community</span>
                       <span className="text-[9px] text-emerald-500 font-bold uppercase tracking-wider font-mono">142 traders online</span>
                     </div>
 
@@ -347,7 +347,7 @@ export default function InteractiveShowcase() {
                       {[
                         { user: "whale_watcher", msg: "Locked LP is audited. XRPz looks safe for entry.", time: "12:45 PM" },
                         { user: "sol_maxi", msg: "Where is the contract address? Admin upload please!", time: "12:46 PM" },
-                        { user: "COORDINATOR", msg: "🚨 NEW SIGNAL posted in Alpha Desk for XRPz. Check target ranges.", time: "12:48 PM", isAdmin: true }
+                        { user: "COORDINATOR", msg: "🚨 NEW SIGNAL posted in Token Center for XRPz. Check target ranges.", time: "12:48 PM", isAdmin: true }
                       ].map((chat, idx) => (
                         <div key={idx} className="text-xs leading-normal">
                           <div className="flex justify-between items-center mb-0.5">

@@ -16,7 +16,7 @@ const faqs: FaqItem[] = [
   },
   {
     question: "Why is the trading community private?",
-    answer: "We restrict access to active terminal subscribers to maintain a high signal-to-noise ratio on the Trading Floor. This prevents bot spam, preserves trading alpha for high-conviction opportunities, and ensures that only aligned traders are reviewing active setups.",
+    answer: "We restrict access to active terminal subscribers to maintain a high signal-to-noise ratio in the Community. This prevents bot spam, preserves trading alpha for high-conviction opportunities, and ensures that only aligned traders are reviewing active setups.",
   },
   {
     question: "How often is data updated on the terminal?",
@@ -27,8 +27,8 @@ const faqs: FaqItem[] = [
     answer: "We currently support Solana, Ethereum, and Base networks. Our infrastructure maintains dedicated RPC node links on these chains to trace liquidity pool mutations, token allocations, and smart contract audit logs instantly.",
   },
   {
-    question: "How are signals generated on the Alpha Desk?",
-    answer: "Alpha setups are initialized when the Discovery pipeline identifies candidates that pass all mandatory liquidity, volume, and contract security thresholds. The opportunity is then reviewed on the Trading Floor, and when verified by our coordination team, it is published to the Alpha Desk with precise target, stop loss, and AI reasoning parameters.",
+    question: "How are signals generated in the Token Center?",
+    answer: "Alpha setups are initialized when the Discovery pipeline identifies candidates that pass all mandatory liquidity, volume, and contract security thresholds. The opportunity is then reviewed in the Community, and when verified by our coordination team, it is published to the Token Center with precise target, stop loss, and AI reasoning parameters.",
   },
 ];
 

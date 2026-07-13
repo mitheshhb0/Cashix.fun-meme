@@ -29,14 +29,14 @@ const steps: Step[] = [
   {
     num: "03",
     title: "Community Validation",
-    desc: "Experienced traders, quantitative analysts, and coordinators discuss high-conviction opportunities inside our private trading floor community to filter noise.",
+    desc: "Experienced traders, quantitative analysts, and coordinators discuss high-conviction opportunities inside our private community to filter noise.",
     icon: Users,
     color: "#00C853",
   },
   {
     num: "04",
     title: "Trade With Confidence",
-    desc: "Access transparent buy/sell signals on the Alpha Desk, complete with entrance targets, stop losses, risk parameters, and detailed AI reasoning reports.",
+    desc: "Access transparent buy/sell signals in the Token Center, complete with entrance targets, stop losses, risk parameters, and detailed AI reasoning reports.",
     icon: TrendingUp,
     color: "#EC4899",
   },

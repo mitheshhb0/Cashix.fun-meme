@@ -35,7 +35,7 @@ export default function CommunityPreview() {
         {/* Section Header */}
         <div className="text-center space-y-4">
           <span className="text-xs uppercase tracking-widest text-blue-500 font-bold block">
-            Alpha Desk
+            Token Center
           </span>
           <h2 className="text-3xl md:text-5xl font-black uppercase text-white tracking-tight">
             Professional Trading Signals
