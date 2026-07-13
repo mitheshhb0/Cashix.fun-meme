@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { UserCheck, Key, Shield, Landmark } from "lucide-react";
+import { Compass, Cpu, Users, TrendingUp } from "lucide-react";
 
 interface Step {
   num: string;
@@ -14,66 +14,57 @@ interface Step {
 const steps: Step[] = [
   {
     num: "01",
-    title: "Initialize Web3 Wallet",
-    desc: "Set up a Binance Web3 Wallet, MetaMask, or Trust Wallet, and load it with BNB to cover swap and network fee transactions.",
-    icon: UserCheck,
+    title: "Market Discovery",
+    desc: "Our automated scrapers monitor newly launched profiles, community takeovers, and trending meme coins in real-time across supported chains.",
+    icon: Compass,
     color: "#3B82F6",
   },
   {
     num: "02",
-    title: "Grab Official Contract",
-    desc: "Copy our official verified contract address from our official Telegram pin to avoid fake clone tokens.",
-    icon: Key,
-    color: "#22D3EE",
+    title: "Market Intelligence",
+    desc: "Calculate deterministic Market Intelligence Scores for each candidate using liquidity pool depth, whale transactions, volume profiles, social momentum, and smart contract audits.",
+    icon: Cpu,
+    color: "#00E5FF",
   },
   {
     num: "03",
-    title: "Swap BNB for XRPz",
-    desc: "Use our Quick Ape-in swap panel or swap via PancakeSwap. Set gas slip tolerance to low since there are no token taxes.",
-    icon: Landmark,
-    color: "#22C55E",
+    title: "Community Validation",
+    desc: "Experienced traders, quantitative analysts, and coordinators discuss high-conviction opportunities inside our private trading floor community to filter noise.",
+    icon: Users,
+    color: "#00C853",
   },
   {
     num: "04",
-    title: "HODL & Share Mascots",
-    desc: "Gain entry to our VIP Degen Chat, track live alpha signals, and post memes to win our weekly ₹50,000 prize pool!",
-    icon: Shield,
+    title: "Trade With Confidence",
+    desc: "Access transparent buy/sell signals on the Alpha Desk, complete with entrance targets, stop losses, risk parameters, and detailed AI reasoning reports.",
+    icon: TrendingUp,
     color: "#EC4899",
   },
 ];
 
 export default function HowItWorks() {
   return (
-    <section id="roadmap" className="relative py-24 bg-bg-primary overflow-hidden border-t border-border-custom/50">
+    <section id="workflow" className="relative py-24 bg-[#07090E] overflow-hidden border-t border-slate-800/60">
       {/* Background gradients */}
-      <div className="absolute top-1/2 left-1/4 w-[350px] h-[350px] rounded-full bg-accent-primary/5 blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/4 w-[350px] h-[350px] rounded-full bg-blue-500/5 blur-[100px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="text-center mb-20">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4 uppercase text-[#FFD600] gold-glow-text"
-          >
-            How Cashix.fun Orchestrates
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-text-secondary max-w-lg mx-auto text-sm md:text-base font-light"
-          >
-            Initialize, swap, and scale your degen power in four simple steps, with locked LP guarantees and zero-tax entries.
-          </motion.p>
+        <div className="text-center mb-20 space-y-4">
+          <span className="text-xs uppercase tracking-widest text-blue-500 font-bold block">
+            The Pipeline
+          </span>
+          <h2 className="text-3xl md:text-5xl font-black uppercase text-white tracking-tight">
+            How CASHIX Finds Opportunities
+          </h2>
+          <p className="text-slate-400 max-w-lg mx-auto text-sm md:text-base font-light">
+            From raw blockchain event streams to verified trade setups, our framework isolates alpha from market noise.
+          </p>
         </div>
 
         {/* Timeline body */}
         <div className="relative">
           {/* Central Vertical Line (Desktop) */}
-          <div className="absolute left-[20px] md:left-1/2 top-0 bottom-0 w-0.5 timeline-glow-line -translate-x-1/2 bg-white/10" />
+          <div className="absolute left-[20px] md:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 bg-slate-800/80" />
 
           {/* Steps list */}
           <div className="space-y-16 relative">
@@ -89,7 +80,7 @@ export default function HowItWorks() {
                       initial={{ scale: 0.8, opacity: 0 }}
                       whileInView={{ scale: 1, opacity: 1 }}
                       viewport={{ once: true, margin: "-100px" }}
-                      className="w-10 h-10 rounded-full bg-bg-secondary border-2 flex items-center justify-center shadow-lg"
+                      className="w-10 h-10 rounded-xl bg-slate-900 border flex items-center justify-center shadow-lg"
                       style={{ borderColor: step.color }}
                     >
                       <Icon className="w-4 h-4" style={{ color: step.color }} />
@@ -103,22 +94,22 @@ export default function HowItWorks() {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true, margin: "-100px" }}
                       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                      className="max-w-md p-6 rounded-2xl glass-panel glass-panel-hover text-left relative"
+                      className="max-w-md p-6 rounded-2xl bg-[#0D1117]/60 border border-slate-800 text-left relative"
                     >
                       {/* Step Number Glow */}
                       <span
-                        className="text-4xl font-extrabold font-mono absolute top-4 right-4 opacity-15"
+                        className="text-4xl font-extrabold font-mono absolute top-4 right-4 opacity-5 select-none"
                         style={{ color: step.color }}
                       >
                         {step.num}
                       </span>
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded" style={{ backgroundColor: `${step.color}15`, color: step.color }}>
+                        <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded" style={{ backgroundColor: `${step.color}15`, color: step.color }}>
                           Step {step.num}
                         </span>
                       </div>
-                      <h3 className="text-lg font-bold text-text-primary mb-2">{step.title}</h3>
-                      <p className="text-xs text-text-secondary leading-relaxed font-light">{step.desc}</p>
+                      <h3 className="text-base font-bold text-white mb-2 uppercase tracking-wide">{step.title}</h3>
+                      <p className="text-xs text-slate-400 leading-relaxed font-light">{step.desc}</p>
                     </motion.div>
                   </div>
 

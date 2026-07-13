@@ -1,152 +1,157 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import Link from "next/link";
+import { CheckCircle2, Terminal, HelpCircle } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
 
-interface Allocation {
+interface PricingPlan {
   name: string;
-  percentage: number;
-  color: string;
+  price: string;
+  billing: string;
   desc: string;
+  features: string[];
+  recommended?: boolean;
+  ctaText: string;
 }
 
 export default function Stats() {
-  const allocations: Allocation[] = [
-    { name: "Liquidity Pool", percentage: 50, color: "#00C853", desc: "Deposited into Raydium pool & burned forever." },
-    { name: "Community Rewards", percentage: 30, color: "#00E5FF", desc: "Airdrops, contests, and staking yields." },
-    { name: "Burned Forever", percentage: 15, color: "#FF4D00", desc: "Permanently removed from active circulation." },
-    { name: "Team (Locked)", percentage: 5, color: "#FFD600", desc: "Vested over 12 months for core development." },
+  const { user } = useAuth();
+
+  const plans: PricingPlan[] = [
+    {
+      name: "Starter Feed",
+      price: "$49",
+      billing: "per month",
+      desc: "Access basic market data and community discussions.",
+      features: [
+        "Live Market Pulse feeds",
+        "Discovery Engine listings",
+        "General Trading Floor view",
+        "Standard security scores",
+        "24-hour update latency"
+      ],
+      ctaText: "Begin Starter Run"
+    },
+    {
+      name: "Intelligence Pro",
+      price: "$149",
+      billing: "per month",
+      desc: "Complete access to algorithmic intelligence & signals.",
+      features: [
+        "Market Intelligence Score index",
+        "Live Whale Intelligence tracking",
+        "Alpha Desk trade signals & updates",
+        "Complete contract Risk audits",
+        "Real-time websocket events",
+        "Private community floor discuss",
+        "Priority alert updates"
+      ],
+      recommended: true,
+      ctaText: "Unlock Pro Terminal"
+    },
+    {
+      name: "Institutional VIP",
+      price: "$499",
+      billing: "per month",
+      desc: "For quantitative operations requiring custom integration.",
+      features: [
+        "Everything in Intelligence Pro",
+        "Custom webhook alert notifications",
+        "Direct REST & WebSocket API access",
+        "Dedicated analyst support",
+        "Priority access to whitelist models"
+      ],
+      ctaText: "Deploy VIP System"
+    }
   ];
 
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-
-  // SVG calculations for donut segments
-  const size = 300;
-  const strokeWidth = 32;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-
-  // Calculate cumulative offset angles
-  let accumulatedPercent = 0;
-
   return (
-    <section id="tokenomics" className="glass-card rounded-[2.5rem] p-8 md:p-12 border border-white/5 scroll-mt-24 w-full text-left relative overflow-hidden">
-      {/* Background glow overlay */}
-      <div className="absolute -top-12 -left-12 w-64 h-64 rounded-full bg-[#FFD600]/5 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-12 -right-12 w-64 h-64 rounded-full bg-[#FF4D00]/5 blur-3xl pointer-events-none" />
-
-      <div className="text-center mb-12">
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-black uppercase mb-4 text-[#FFD600] gold-glow-text"
-        >
-          Tokenomics
-        </motion.h2>
-        <motion.p 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-lg sm:text-xl font-bold text-[#8A99AD]"
-        >
-          Fair launch. No VC dumps. Built for the community.
-        </motion.p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        {/* Animated SVG Donut Chart */}
-        <div className="flex justify-center items-center relative min-h-[300px]">
-          <svg width={size} height={size} className="transform -rotate-90">
-            {allocations.map((alloc, idx) => {
-              const strokeDasharray = `${(alloc.percentage / 100) * circumference} ${circumference}`;
-              const strokeDashoffset = -((accumulatedPercent / 100) * circumference);
-              accumulatedPercent += alloc.percentage;
-              const isHovered = activeIndex === idx;
-
-              return (
-                <motion.circle
-                  key={alloc.name}
-                  cx={size / 2}
-                  cy={size / 2}
-                  r={radius}
-                  fill="transparent"
-                  stroke={alloc.color}
-                  strokeWidth={isHovered ? strokeWidth + 6 : strokeWidth}
-                  strokeDasharray={strokeDasharray}
-                  initial={{ strokeDashoffset: circumference }}
-                  whileInView={{ strokeDashoffset }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1.2, ease: "easeOut", delay: 0.1 }}
-                  style={{ transformOrigin: "50% 50%" }}
-                  className="transition-all duration-300 cursor-pointer"
-                  onMouseEnter={() => setActiveIndex(idx)}
-                  onMouseLeave={() => setActiveIndex(null)}
-                />
-              );
-            })}
-          </svg>
-
-          {/* Central text display */}
-          <div className="absolute text-center select-none pointer-events-none">
-            {activeIndex !== null ? (
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="flex flex-col items-center"
-              >
-                <span className="text-4xl font-black" style={{ color: allocations[activeIndex].color }}>
-                  {allocations[activeIndex].percentage}%
-                </span>
-                <span className="text-xs uppercase font-bold text-[#8A99AD] mt-1 max-w-[140px] truncate">
-                  {allocations[activeIndex].name}
-                </span>
-              </motion.div>
-            ) : (
-              <div className="flex flex-col items-center">
-                <span className="text-3xl font-black text-white">1 BILLION</span>
-                <span className="text-[10px] uppercase font-bold tracking-widest text-[#FFD600] mt-1">
-                  Total Supply
-                </span>
-              </div>
-            )}
-          </div>
+    <section id="pricing" className="py-24 bg-[#07090E] border-t border-slate-800/60 scroll-mt-24">
+      <div className="max-w-7xl mx-auto px-6">
+        
+        {/* Section Header */}
+        <div className="text-center mb-16 space-y-4">
+          <span className="text-xs uppercase tracking-widest text-blue-500 font-bold block">
+            Pricing Plans
+          </span>
+          <h2 className="text-3xl md:text-5xl font-black uppercase text-white tracking-tight">
+            Deploy Institutional Intelligence
+          </h2>
+          <p className="text-slate-400 max-w-xl mx-auto text-sm md:text-base font-light">
+            Choose a tier to match your trading complexity. We sell access to high-conviction metrics, deterministic indicators, and data integrations.
+          </p>
         </div>
 
-        {/* Details list */}
-        <div className="space-y-4">
-          {allocations.map((alloc, idx) => {
-            const isHovered = activeIndex === idx;
-            return (
-              <div
-                key={alloc.name}
-                onMouseEnter={() => setActiveIndex(idx)}
-                onMouseLeave={() => setActiveIndex(null)}
-                className={`bg-white/5 border p-4 md:p-6 rounded-2xl flex flex-col justify-between hover:border-[#FFD600]/40 transition-all duration-300 gap-2 cursor-pointer ${
-                  isHovered ? "border-[#FFD600]/40 shadow-[0_0_20px_rgba(255,214,0,0.1)] translate-x-2" : "border-white/5"
-                }`}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-3">
-                    <div 
-                      className="w-3.5 h-3.5 rounded-full shadow-sm shrink-0 animate-pulse" 
-                      style={{ backgroundColor: alloc.color }}
-                    />
-                    <span className="font-black uppercase text-base md:text-xl leading-none text-white">
-                      {alloc.name}
-                    </span>
+        {/* Pricing Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch text-left">
+          {plans.map((plan, idx) => (
+            <motion.div
+              key={plan.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.1, duration: 0.6 }}
+              className={`bg-[#0D1117]/65 border rounded-2xl p-6 md:p-8 flex flex-col justify-between relative shadow-xl hover:bg-[#0D1117] hover:border-slate-700/80 transition-all ${
+                plan.recommended 
+                  ? "border-blue-500/50 shadow-blue-500/5 scale-102 z-10" 
+                  : "border-slate-800/80"
+              }`}
+            >
+              {plan.recommended && (
+                <span className="absolute top-0 right-6 -translate-y-1/2 bg-blue-600 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-md">
+                  Most Popular
+                </span>
+              )}
+
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">
+                    {plan.name}
+                  </h3>
+                  <div className="flex items-baseline gap-1 mt-4">
+                    <span className="text-4xl md:text-5xl font-black text-white">{plan.price}</span>
+                    <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">{plan.billing}</span>
                   </div>
-                  <div className="text-2xl md:text-3xl font-black text-[#FFD600] shrink-0 leading-none">
-                    {alloc.percentage}%
-                  </div>
+                  <p className="text-[11px] text-slate-500 leading-normal mt-2 font-medium">
+                    {plan.desc}
+                  </p>
                 </div>
-                <p className="text-xs text-[#8A99AD] font-semibold ml-6 leading-relaxed">
-                  {alloc.desc}
-                </p>
+
+                {/* Features List */}
+                <div className="border-t border-slate-800/60 pt-6 space-y-3.5">
+                  <span className="text-[9px] text-slate-500 uppercase font-bold tracking-widest block">
+                    INCLUDED FEATURES
+                  </span>
+                  <ul className="space-y-3">
+                    {plan.features.map((feat) => (
+                      <li key={feat} className="flex items-start gap-2.5 text-xs text-slate-300">
+                        <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+                        <span>{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-            );
-          })}
+
+              {/* Action Button */}
+              <div className="pt-8 mt-auto w-full">
+                <Link
+                  href={user ? "/dashboard" : "/login"}
+                  className={`w-full py-3.5 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-md cursor-pointer ${
+                    plan.recommended
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "bg-slate-900 hover:bg-slate-800 text-slate-350 border border-slate-800"
+                  }`}
+                >
+                  <Terminal className="w-4 h-4" />
+                  {plan.ctaText}
+                </Link>
+              </div>
+            </motion.div>
+          ))}
         </div>
+
       </div>
     </section>
   );

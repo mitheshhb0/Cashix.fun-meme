@@ -13,91 +13,55 @@ const Twitter = ({ className }: { className?: string }) => (
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [price, setPrice] = useState(0.00042);
-  const [priceChange, setPriceChange] = useState(0.00);
   const { user, signOut } = useAuth();
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const change = (Math.random() - 0.49) * 0.05;
-      setPriceChange((prev) => Number((prev + change).toFixed(2)));
-      setPrice((prev) => Number((prev * (1 + change / 100)).toFixed(6)));
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <div className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 w-full">
-      <header className="backdrop-blur-xl bg-[#0D1426]/50 border border-white/10 shadow-[0_10px_32px_0_rgba(0,0,0,0.37)] px-6 py-3 md:py-4 rounded-full flex items-center justify-between gap-2 max-w-7xl w-full">
+      <header className="backdrop-blur-xl bg-[#0D1117]/85 border border-slate-800 shadow-[0_10px_32px_rgba(0,0,0,0.6)] px-6 py-3.5 rounded-2xl flex items-center justify-between gap-4 max-w-7xl w-full">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
-          <div className="w-9 h-9 md:w-10 md:h-10 bg-[#FFD600] rounded-full flex items-center justify-center border border-black/10 shadow-[0_0_15px_rgba(255,214,0,0.4)] transition-transform group-hover:scale-105">
-            <span className="text-lg md:text-xl font-black text-black font-mono leading-none">$</span>
+        <Link href="/" className="flex items-center gap-3 shrink-0 group">
+          <div className="w-9 h-9 bg-slate-900 rounded-xl flex items-center justify-center border border-slate-800 transition-transform group-hover:scale-105">
+            <span className="text-lg font-black text-white font-mono leading-none">$</span>
           </div>
-          <h1 className="text-lg sm:text-2xl md:text-3xl font-black tracking-tighter uppercase text-white group-hover:text-[#FFD600] transition-colors leading-none">
-            cashix.fun
-          </h1>
+          <div>
+            <h1 className="text-lg font-black uppercase text-white tracking-tighter leading-none group-hover:text-blue-400 transition-colors">
+              cashix.fun
+            </h1>
+            <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block mt-0.5">Intelligence</span>
+          </div>
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-8 font-black text-xs uppercase tracking-wider">
-          <a href="#chart" className="text-white/70 hover:text-[#FFD600] transition-all hover:scale-105 duration-200">
-            Live Chart
+        <div className="hidden md:flex items-center gap-8 font-bold text-xs uppercase tracking-wider">
+          <a href="#workflow" className="text-slate-400 hover:text-white transition-all duration-200">
+            Workflow
           </a>
-          <a href="#tokenomics" className="text-white/70 hover:text-[#FFD600] transition-all hover:scale-105 duration-200">
-            Tokenomics
+          <a href="#showcase" className="text-slate-400 hover:text-white transition-all duration-200">
+            Showcase
           </a>
-          <a href="#community" className="text-white/70 hover:text-[#FFD600] transition-all hover:scale-105 duration-200">
-            VIP Chat
+          <a href="#comparison" className="text-slate-400 hover:text-white transition-all duration-200">
+            Why CASHIX
           </a>
-          {user && (
-            <Link href="/dashboard" className="text-white/70 hover:text-[#FFD600] transition-all hover:scale-105 duration-200">
-              Dashboard
-            </Link>
-          )}
-          <a 
-            href="http://x.com/XRPz_meme" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="text-white/70 hover:text-[#FFD600] transition-all hover:scale-105 duration-200 flex items-center gap-1.5"
-          >
-            <Twitter className="w-3.5 h-3.5 text-[#1DA1F2] fill-[#1DA1F2] shrink-0" />
-            Twitter
+          <a href="#faq" className="text-slate-400 hover:text-white transition-all duration-200">
+            FAQ
           </a>
         </div>
 
-        {/* Live Price and CTA */}
-        <div className="flex items-center gap-3 md:gap-5 shrink-0">
-          <div className="hidden lg:flex flex-col items-end font-bold leading-none">
-            <span className="text-[9px] uppercase opacity-55 mb-0.5 tracking-wider">Live Price</span>
-            <span className="text-sm text-[#00C853] font-black">
-              ${price.toFixed(6)}{" "}
-              <span className="text-[10px] ml-0.5 font-bold">
-                {priceChange >= 0 ? "▲" : "▼"}{Math.abs(priceChange)}%
-              </span>
-            </span>
-          </div>
-          
-          <Link 
-            href="/how-to-trade" 
-            className="hidden sm:inline-block bg-white/5 border border-white/10 text-white px-5 py-2.5 text-xs rounded-full font-black uppercase hover:bg-white/10 transition-colors whitespace-nowrap tracking-wider cursor-pointer"
-          >
-            Guide
-          </Link>
-
+        {/* CTAs */}
+        <div className="flex items-center gap-3 shrink-0">
           {user ? (
             <div className="flex items-center gap-3">
               <Link
                 href="/dashboard"
-                className="bg-gradient-to-r from-[#FFD600] to-[#FF4D00] text-black px-5 py-2.5 text-xs rounded-full font-black uppercase hover:scale-105 transition-transform hover:shadow-[0_0_20px_rgba(255,214,0,0.4)] tracking-wider flex items-center gap-1.5"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 text-xs rounded-xl font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5 shadow-md"
               >
                 <UserIcon className="w-3.5 h-3.5" />
-                Portal
+                Enter Terminal
               </Link>
               <button
                 onClick={() => signOut()}
-                className="p-2 text-white/60 hover:text-white transition-colors"
-                title="Sign Out"
+                className="p-2 text-slate-400 hover:text-white transition-colors"
+                title="Disconnect"
               >
                 <LogOut className="w-4 h-4" />
               </button>
@@ -105,16 +69,16 @@ export default function Navbar() {
           ) : (
             <Link 
               href="/login" 
-              className="bg-gradient-to-r from-[#FFD600] to-[#FF4D00] text-black px-5 py-2.5 text-xs rounded-full font-black uppercase hover:scale-105 transition-transform hover:shadow-[0_0_20px_rgba(255,214,0,0.4)] whitespace-nowrap tracking-wider cursor-pointer"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 text-xs rounded-xl font-bold uppercase tracking-wider transition-colors shadow-md"
             >
-              Sign In
+              Enter Terminal
             </Link>
           )}
 
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-white hover:text-[#FFD600] transition-colors"
+            className="md:hidden p-2 text-slate-400 hover:text-white transition-colors"
           >
             {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -122,44 +86,35 @@ export default function Navbar() {
 
         {/* Mobile menu dropdown */}
         {isOpen && (
-          <div className="absolute top-[calc(100%+12px)] left-4 right-4 bg-[#0D1426]/95 border border-white/10 backdrop-blur-xl rounded-3xl p-6 flex flex-col gap-4 font-bold md:hidden shadow-2xl animate-float-delayed">
+          <div className="absolute top-[calc(100%+12px)] left-0 right-0 bg-[#0D1117]/95 border border-slate-800 backdrop-blur-xl rounded-2xl p-6 flex flex-col gap-4 font-bold md:hidden shadow-2xl">
             <a 
-              href="#chart" 
+              href="#workflow" 
               onClick={() => setIsOpen(false)}
-              className="text-white hover:text-[#FFD600] uppercase text-base"
+              className="text-slate-300 hover:text-white uppercase text-sm tracking-wider"
             >
-              Live Chart
+              Workflow
             </a>
             <a 
-              href="#tokenomics" 
+              href="#showcase" 
               onClick={() => setIsOpen(false)}
-              className="text-white hover:text-[#FFD600] uppercase text-base"
+              className="text-slate-300 hover:text-white uppercase text-sm tracking-wider"
             >
-              Tokenomics
+              Showcase
             </a>
             <a 
-              href="#community" 
+              href="#comparison" 
               onClick={() => setIsOpen(false)}
-              className="text-white hover:text-[#FFD600] uppercase text-base"
+              className="text-slate-300 hover:text-white uppercase text-sm tracking-wider"
             >
-              VIP Chat
+              Why CASHIX
             </a>
             <a 
-              href="http://x.com/XRPz_meme" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+              href="#faq" 
               onClick={() => setIsOpen(false)}
-              className="text-white hover:text-[#FFD600] flex items-center gap-2 uppercase text-base"
+              className="text-slate-300 hover:text-white uppercase text-sm tracking-wider"
             >
-              <Twitter className="w-5 h-5 text-[#1DA1F2] fill-[#1DA1F2]" />
-              Twitter
+              FAQ
             </a>
-            <div className="flex justify-between items-center pt-4 border-t border-white/10">
-              <span className="text-xs uppercase opacity-60 font-bold">Live Price</span>
-              <span className="text-base text-[#00C853] font-black">
-                ${price.toFixed(6)} {priceChange >= 0 ? "▲" : "▼"}{Math.abs(priceChange)}%
-              </span>
-            </div>
           </div>
         )}
       </header>

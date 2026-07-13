@@ -4,9 +4,13 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { doc, onSnapshot, collection, orderBy, query, addDoc, setDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import AdminTerminal from "@/components/AdminTerminal";
 import { 
   ArrowLeft, 
   Shield, 
+  Terminal, 
   Send, 
   Bell, 
   Copy, 
@@ -61,6 +65,7 @@ interface ChatMessage {
   message: string;
   time: string;
   isAdmin?: boolean;
+  timestamp?: number;
 }
 
 interface TokenSignal {
@@ -74,7 +79,7 @@ interface TokenSignal {
   timestamp: string;
 }
 
-type TabType = "DEXSCREENER" | "AISCANNER" | "CHAT" | "SIGNALS" | "SECURITY";
+type TabType = "DEXSCREENER" | "AISCANNER" | "CHAT" | "SIGNALS" | "SECURITY" | "ADMIN";
 type DrawerTabType = "OVERVIEW" | "PRICE" | "AI_ANALYSIS" | "WHALES" | "SOCIAL" | "KOL" | "HOLDERS" | "LIQUIDITY" | "RISK" | "TIMELINE" | "CHARTS";
 
 const DEX_FEEDS = [
@@ -86,7 +91,7 @@ const DEX_FEEDS = [
 ];
 
 export default function Dashboard() {
-  const { user, loading, signOut } = useAuth();
+  const { user, loading, isApproved, signOut } = useAuth();
   const router = useRouter();
 
   const [activeTab, setActiveTab] = useState<TabType>("AISCANNER");
@@ -96,6 +101,7 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [chainFilter, setChainFilter] = useState("all");
   const wsRef = useRef<WebSocket | null>(null);
+  const chatBottomRef = useRef<HTMLDivElement | null>(null);
 
   // Market Pulse State
   const [pulseTokens, setPulseTokens] = useState<any[]>([]);
@@ -361,9 +367,120 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, [pulseTokens, user, loading]);
 
-  const isAdmin = user?.email === "admin@cashix.fun";
+  const isAdmin =
+    user?.email === "admin@cashix.fun" ||
+    user?.email === "mitheshhb0@gmail.com";
 
-  const handlePostSignal = (e: React.FormEvent) => {
+  // Synchronize Active Signal from Firestore in Real-Time
+  useEffect(() => {
+    if (loading || !user) return;
+    const unsub = onSnapshot(
+      doc(db, "signals", "active"),
+      (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setActiveSignal({
+            tokenName: data.tokenName || "",
+            action: data.action || "BUY",
+            contractAddress: data.contractAddress || "",
+            entryPrice: data.entryPrice || "",
+            targetPrice: data.targetPrice || "",
+            stopLoss: data.stopLoss || "",
+            rationale: data.rationale || "",
+            timestamp: data.timestamp || "Just now",
+          });
+        }
+      },
+      (err) => {
+        console.warn("Firestore signals active subscription error:", err);
+      }
+    );
+    return () => unsub();
+  }, [user, loading]);
+
+  // Synchronize Chat Messages from Firestore in Real-Time
+  useEffect(() => {
+    if (loading || !user) return;
+
+    const q = query(collection(db, "chat_messages"), orderBy("timestamp", "asc"));
+    const unsub = onSnapshot(
+      q,
+      (snapshot) => {
+        const messages: ChatMessage[] = [];
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          messages.push({
+            id: docSnap.id,
+            user: data.user || "Anon",
+            email: data.email || "",
+            message: data.message || "",
+            time: data.time || "",
+            isAdmin: data.isAdmin || false,
+            timestamp: data.timestamp || 0
+          });
+        });
+        setChatMessages(messages);
+      },
+      (err) => {
+        console.warn("Firestore chat messages subscription error (index may need building):", err);
+      }
+    );
+    return () => unsub();
+  }, [user, loading]);
+
+  // Admin Active Simulation Daemon — posts every time a non-admin sends the last message
+  useEffect(() => {
+    if (loading || !user || chatMessages.length === 0) return;
+
+    const positiveAdminMessages = [
+      "CASHIX algorithms are holding up perfectly today. Whale inflows on Solana microcaps are matching our predictive filters beautifully.",
+      "Just finished scanning the new token mints. Risk Center audit flags are clean for our top watchlist assets. Enter within targets!",
+      "Welcome to all the new terminal members! Let's keep the focus on high-conviction calls only. Let's hunt these coins together.",
+      "The Market Pulse index just crossed 90% confidence. Smart money flows are exceptionally strong today.",
+      "Admin desk is fully active. Currently auditing the whale accumulation paths on three microcap candidates.",
+      "CASHIX v4 terminal models have filtered out 44 honeypot rug candidates today already. Safe trading degens!"
+    ];
+
+    const lastMessage = chatMessages[chatMessages.length - 1];
+    const lastMsgIsAdmin =
+      lastMessage.email === "admin@cashix.fun" ||
+      lastMessage.email === "mitheshhb0@gmail.com" ||
+      lastMessage.isAdmin === true;
+
+    if (!lastMsgIsAdmin) {
+      // Random delay 18–35 seconds before admin bot responds
+      const delay = 18000 + Math.random() * 17000;
+
+      const timeoutId = setTimeout(async () => {
+        const randomText = positiveAdminMessages[Math.floor(Math.random() * positiveAdminMessages.length)];
+
+        const botMessage = {
+          user: "Admin Desk",
+          email: "mitheshhb0@gmail.com",
+          message: randomText,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          isAdmin: true,
+          timestamp: Date.now()
+        };
+
+        try {
+          await addDoc(collection(db, "chat_messages"), botMessage);
+        } catch (err) {
+          // Firestore offline — append locally
+          setChatMessages(prev => [...prev, { id: Date.now().toString(), ...botMessage }]);
+        }
+      }, delay);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [chatMessages, user, loading]);
+
+  // Auto-scroll chat to bottom on new messages
+  useEffect(() => {
+    chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages]);
+
+  const handlePostSignal = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!signalToken || !signalAddress || !signalEntry || !signalTarget || !signalStop) return;
 
@@ -378,20 +495,33 @@ export default function Dashboard() {
       timestamp: "Just now"
     };
 
-    localStorage.setItem("cashix_active_signal", JSON.stringify(newSignal));
-    setActiveSignal(newSignal);
+    // Write to Firestore so ALL terminals receive it in real-time
+    try {
+      await setDoc(doc(db, "signals", "active"), newSignal);
+    } catch (err) {
+      console.error("Firestore signal write failed, falling back to localStorage:", err);
+      localStorage.setItem("cashix_active_signal", JSON.stringify(newSignal));
+      setActiveSignal(newSignal);
+    }
+
     setUploaded(true);
     setTimeout(() => setUploaded(false), 2000);
 
     const alertMsg: ChatMessage = {
       id: Date.now().toString(),
       user: "COORDINATOR",
-      email: "admin@cashix.fun",
+      email: "mitheshhb0@gmail.com",
       message: `🚨 NEW SIGNAL: [${newSignal.action}] ${newSignal.tokenName} at ${newSignal.entryPrice}. Target: ${newSignal.targetPrice}. CA: ${newSignal.contractAddress}`,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      isAdmin: true
+      isAdmin: true,
+      timestamp: Date.now()
     };
-    setChatMessages((prev) => [...prev, alertMsg]);
+
+    try {
+      await addDoc(collection(db, "chat_messages"), alertMsg);
+    } catch {
+      setChatMessages((prev) => [...prev, alertMsg]);
+    }
   };
 
   const handleCopyAddress = (addr: string) => {
@@ -400,21 +530,32 @@ export default function Dashboard() {
     setTimeout(() => setCopiedAddress(null), 2000);
   };
 
-  const handleSendChat = (e: React.FormEvent) => {
+  const handleSendChat = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
 
-    const newMsg: ChatMessage = {
-      id: Date.now().toString(),
+    const chatContent = chatInput.trim();
+    setChatInput(""); // Clear field instantly for better UX
+
+    const msgData = {
       user: user?.displayName || user?.email?.split("@")[0] || "Anon Degen",
       email: user?.email || "",
-      message: chatInput.trim(),
+      message: chatContent,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      isAdmin: isAdmin
+      isAdmin: isAdmin,
+      timestamp: Date.now()
     };
 
-    setChatMessages((prev) => [...prev, newMsg]);
-    setChatInput("");
+    try {
+      await addDoc(collection(db, "chat_messages"), msgData);
+    } catch (err) {
+      console.error("Failed to post chat message to Firestore:", err);
+      // Fallback local append on error
+      setChatMessages((prev) => [
+        ...prev,
+        { id: Date.now().toString(), ...msgData }
+      ]);
+    }
   };
 
   const currentTokens = tokensMap[selectedFeedId] || [];
@@ -436,6 +577,60 @@ export default function Dashboard() {
   // Helper variables for Redesign
   const aiTopPick = [...pulseTokens].sort((a, b) => b.score - a.score)[0];
   const watchlistTokens = pulseTokens.filter(t => watchlist.includes(t.address));
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#07090E] flex items-center justify-center text-slate-100 font-sans">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+          <span className="text-xs text-slate-500 font-mono font-bold uppercase tracking-widest">
+            Connecting to Terminal...
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (user && isApproved === false) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#07090E]">
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-45" />
+        <div className="w-full max-w-md p-8 bg-[#0D1117] border border-slate-800 rounded-2xl text-center space-y-6 shadow-2xl relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none opacity-50" />
+          
+          <div className="w-16 h-16 bg-blue-600/10 border border-blue-500/30 rounded-2xl flex items-center justify-center mx-auto text-blue-400">
+            <Shield className="w-8 h-8" />
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="text-xl font-black text-white uppercase tracking-tight">Approval Required</h3>
+            <p className="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto font-medium">
+              Your account (<span className="text-slate-350 font-semibold">{user.email}</span>) is currently pending administrator whitelist approval. 
+              <br /><br />
+              Please contact the administrator on Telegram to request dashboard access.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3 pt-2">
+            <a
+              href="https://t.me/Cashix_Fun"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold uppercase text-xs rounded-xl transition-colors flex items-center justify-center gap-2 shadow-lg"
+            >
+              Contact Admin (@Cashix_Fun)
+            </a>
+            <button
+              onClick={() => signOut()}
+              className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-white font-bold uppercase text-xs rounded-xl transition-colors cursor-pointer"
+            >
+              Disconnect Account
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#07090E] text-slate-100 font-sans flex flex-col md:flex-row relative">
@@ -506,6 +701,16 @@ export default function Dashboard() {
             >
               <Shield className="w-4 h-4" /> Risk Center
             </button>
+            {isAdmin && (
+              <button
+                onClick={() => setActiveTab("ADMIN")}
+                className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                  activeTab === "ADMIN" ? "bg-blue-600/10 border border-blue-500/30 text-blue-400" : "border border-transparent text-slate-400 hover:text-white hover:bg-slate-800/40"
+                }`}
+              >
+                <Terminal className="w-4 h-4" /> Admin Terminal
+              </button>
+            )}
           </nav>
         </div>
         <div className="space-y-4">
@@ -1317,15 +1522,31 @@ export default function Dashboard() {
               {chatMessages.map((msg) => (
                 <div key={msg.id} className="text-xs leading-relaxed text-left border-l-4 border-slate-800 pl-4 bg-slate-900/40 p-4 rounded-r-xl transition-all hover:bg-slate-900">
                   <div className="flex justify-between items-center mb-2">
-                    <span className={`font-bold uppercase tracking-wider ${msg.isAdmin ? "text-emerald-400" : "text-blue-400"}`}>{msg.user}</span>
+                    <span className={`font-bold uppercase tracking-wider flex items-center gap-1.5 ${msg.isAdmin ? "text-emerald-400" : "text-blue-400"}`}>
+                      {msg.user}
+                      {msg.isAdmin && (
+                        <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-widest leading-none">
+                          Admin
+                        </span>
+                      )}
+                    </span>
                     <span className="text-slate-500 font-mono text-[9px]">{msg.time}</span>
                   </div>
                   <p className="text-slate-200 font-medium">{msg.message}</p>
                 </div>
               ))}
+              {/* Scroll anchor */}
+              <div ref={chatBottomRef} />
             </div>
             <form onSubmit={handleSendChat} className="flex gap-3 shrink-0 pt-4 border-t border-slate-800">
-              <input type="text" value={chatInput} onChange={(e) => setChatInput(e.target.value)} placeholder="TRANSMIT MESSAGE..." className="bg-slate-900 border border-slate-800 px-4 py-3 rounded-lg text-xs text-white w-full focus:outline-none focus:border-slate-700 placeholder-slate-500 font-medium transition-colors" />
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSendChat(e as any); } }}
+                placeholder="TRANSMIT MESSAGE..."
+                className="bg-slate-900 border border-slate-800 px-4 py-3 rounded-lg text-xs text-white w-full focus:outline-none focus:border-blue-700 placeholder-slate-500 font-medium transition-colors"
+              />
               <button type="submit" className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase rounded-lg transition-colors shadow-md">SEND</button>
             </form>
           </div>
@@ -1420,6 +1641,11 @@ export default function Dashboard() {
               ))}
             </div>
           </div>
+        )}
+
+        {/* TAB 6: ADMIN TERMINAL (ADMIN) */}
+        {activeTab === "ADMIN" && isAdmin && (
+          <AdminTerminal />
         )}
       </main>
 
@@ -1702,6 +1928,9 @@ export default function Dashboard() {
         <button onClick={() => setActiveTab("CHAT")} className={`flex flex-col items-center gap-1 px-2 py-1 rounded-xl transition-all ${activeTab === "CHAT" ? "text-blue-400 bg-blue-600/10" : "text-slate-500"}`}><MessageSquare className="w-5 h-5" /><span className="text-[8px] uppercase font-bold tracking-wider">Floor</span></button>
         <button onClick={() => setActiveTab("SIGNALS")} className={`flex flex-col items-center gap-1 px-2 py-1 rounded-xl transition-all ${activeTab === "SIGNALS" ? "text-blue-400 bg-blue-600/10" : "text-slate-500"}`}><TrendingUp className="w-5 h-5" /><span className="text-[8px] uppercase font-bold tracking-wider">Alpha</span></button>
         <button onClick={() => setActiveTab("SECURITY")} className={`flex flex-col items-center gap-1 px-2 py-1 rounded-xl transition-all ${activeTab === "SECURITY" ? "text-blue-400 bg-blue-600/10" : "text-slate-500"}`}><Shield className="w-5 h-5" /><span className="text-[8px] uppercase font-bold tracking-wider">Risk</span></button>
+        {isAdmin && (
+          <button onClick={() => setActiveTab("ADMIN")} className={`flex flex-col items-center gap-1 px-2 py-1 rounded-xl transition-all ${activeTab === "ADMIN" ? "text-blue-400 bg-blue-600/10" : "text-slate-500"}`}><Terminal className="w-5 h-5" /><span className="text-[8px] uppercase font-bold tracking-wider">Admin</span></button>
+        )}
       </div>
 
     </div>

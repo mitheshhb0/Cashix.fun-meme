@@ -31,12 +31,43 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:686526131303:web:bccb20e9d1551ef850f8c2",
 };
 
+import { 
+  getFirestore, 
+  initializeFirestore, 
+  persistentLocalCache, 
+  persistentMultipleTabManager 
+} from "firebase/firestore";
+
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
+
+// Safe Firestore initialization with multi-tab offline persistence
+let db;
+if (typeof window !== "undefined") {
+  const globalWithFirestore = globalThis as typeof globalThis & {
+    __firestore_db__?: any;
+  };
+  if (!globalWithFirestore.__firestore_db__) {
+    try {
+      globalWithFirestore.__firestore_db__ = initializeFirestore(app, {
+        localCache: persistentLocalCache({
+          tabManager: persistentMultipleTabManager(),
+        }),
+      });
+    } catch (err) {
+      console.warn("Firestore initialization warning, falling back to getFirestore:", err);
+      globalWithFirestore.__firestore_db__ = getFirestore(app);
+    }
+  }
+  db = globalWithFirestore.__firestore_db__;
+} else {
+  db = getFirestore(app);
+}
+
 const googleProvider = new GoogleAuthProvider();
 
 // Request profile + email scopes explicitly (needed for some OAuth flows)
 googleProvider.addScope("profile");
 googleProvider.addScope("email");
 
-export { app, auth, googleProvider };
+export { app, auth, googleProvider, db };

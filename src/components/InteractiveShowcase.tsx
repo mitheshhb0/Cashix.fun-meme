@@ -1,408 +1,417 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { MessageSquare, Send, Check, Wallet, Coins, TrendingUp } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Zap, 
+  Globe, 
+  Users, 
+  TrendingUp, 
+  MessageSquare, 
+  Shield, 
+  Activity, 
+  CheckCircle2, 
+  AlertTriangle,
+  ArrowRight,
+  Database,
+  Star
+} from "lucide-react";
 
-interface ChatMessage {
-  id: string;
-  user: string;
-  message: string;
-  time: string;
-  isMe?: boolean;
-}
+type ModuleType = "PULSE" | "DISCOVERY" | "WHALES" | "ALPHA" | "FLOOR" | "RISK";
 
 export default function InteractiveShowcase() {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    { id: "m1", user: "DeFi_God", message: "Aping in 2 BNB, this chart is looking parabolic! 🔥", time: "12s ago" },
-    { id: "m2", user: "whale_watcher", message: "Bonding curve is already at 69%, Raydium pool launch soon! 🚀", time: "25s ago" },
-    { id: "m3", user: "sol_maxi", message: "Whales are accumulating, do not miss the launch window guys.", time: "45s ago" },
-  ]);
+  const [activeTab, setActiveTab] = useState<ModuleType>("PULSE");
+  const [isHovered, setIsHovered] = useState(false);
+  const autoCycleRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const [inputMsg, setInputMsg] = useState("");
-  const [isJoined, setIsJoined] = useState(false);
-  const [isJoining, setIsJoining] = useState(false);
+  const tabs = [
+    { id: "PULSE", name: "Market Pulse", icon: Zap, desc: "Real-time AI market indices" },
+    { id: "DISCOVERY", name: "Discovery Engine", icon: Globe, desc: "Trending token feeds" },
+    { id: "WHALES", name: "Whale Intelligence", icon: Users, desc: "Smart money trackers" },
+    { id: "ALPHA", name: "Alpha Desk", icon: TrendingUp, desc: "Verified trading signals" },
+    { id: "FLOOR", name: "Trading Floor", icon: MessageSquare, desc: "Elite private discussions" },
+    { id: "RISK", name: "Risk Center", icon: Shield, desc: "Automated contract audits" },
+  ];
 
-  // Social action states for verification
-  const [followedX, setFollowedX] = useState(false);
-  const [joinedTelegram, setJoinedTelegram] = useState(false);
-
-  // SVG Chart State
-  const [chartData, setChartData] = useState<number[]>([40, 50, 45, 60, 55, 70, 65, 80, 85, 95]);
-  const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; val: number; idx: number } | null>(null);
-
-  // Stats State
-  const [mcap, setMcap] = useState(42069);
-  const [curveProgress, setCurveProgress] = useState(69);
-
-  // Trade inputs
-  const [buyAmount, setBuyAmount] = useState("0.1");
-
-  // Chart coordinates calculation
-  const width = 600;
-  const height = 280;
-  const padding = 30;
-
-  const points = chartData.map((val, idx) => {
-    const x = padding + (idx * (width - padding * 2)) / (chartData.length - 1);
-    const y = height - padding - (val * (height - padding * 2)) / 100;
-    return { x, y, val };
-  });
-
-  // SVG Path generator
-  const getPathD = () => {
-    if (points.length === 0) return "";
-    return points.reduce((acc, p, idx) => {
-      return idx === 0 ? `M ${p.x} ${p.y}` : `${acc} L ${p.x} ${p.y}`;
-    }, "");
-  };
-
-  // SVG Gradient Area Path generator
-  const getAreaD = () => {
-    if (points.length === 0) return "";
-    const path = getPathD();
-    return `${path} L ${points[points.length - 1].x} ${height - padding} L ${points[0].x} ${height - padding} Z`;
-  };
-
-  // Add new points dynamically
+  // Auto cycle tabs unless hovered
   useEffect(() => {
-    const interval = setInterval(() => {
-      setChartData((prev) => {
-        const lastVal = prev[prev.length - 1];
-        const change = (Math.random() - 0.45) * 12; // bias upward
-        const nextVal = Math.min(100, Math.max(10, Number((lastVal + change).toFixed(0))));
-        
-        // Dynamic market cap & progress updates
-        setMcap((prevMcap) => Number((prevMcap * (1 + (change > 0 ? change / 250 : change / 400))).toFixed(0)));
-        setCurveProgress((prevProg) => {
-          if (prevProg >= 99) return 99;
-          const addProgress = change > 0 ? Number((change / 12).toFixed(1)) : 0;
-          return Math.min(99, Number((prevProg + addProgress).toFixed(1)));
-        });
+    if (isHovered) {
+      if (autoCycleRef.current) clearInterval(autoCycleRef.current);
+      return;
+    }
 
-        return [...prev.slice(1), nextVal];
+    autoCycleRef.current = setInterval(() => {
+      setActiveTab((prev) => {
+        const currentIndex = tabs.findIndex((t) => t.id === prev);
+        const nextIndex = (currentIndex + 1) % tabs.length;
+        return tabs[nextIndex].id as ModuleType;
       });
-    }, 2500);
+    }, 8000);
 
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleSend = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputMsg.trim()) return;
-
-    const newMessage: ChatMessage = {
-      id: Date.now().toString(),
-      user: "You (Anon Degen)",
-      message: inputMsg,
-      time: "Just now",
-      isMe: true
+    return () => {
+      if (autoCycleRef.current) clearInterval(autoCycleRef.current);
     };
-
-    setMessages((prev) => [...prev, newMessage]);
-    setInputMsg("");
-
-    // Simulate community response
-    setTimeout(() => {
-      const responses = [
-        "LFG!!! 🚀🚀🚀",
-        "Direct buy button works seamlessly.",
-        "We are sending this to 10M today.",
-        "Aping more BNB right now! 💎"
-      ];
-      const randomResponse = {
-        id: (Date.now() + 1).toString(),
-        user: "dgen_helper",
-        message: responses[Math.floor(Math.random() * responses.length)],
-        time: "Just now"
-      };
-      setMessages((prev) => [...prev, randomResponse]);
-    }, 1500);
-  };
-
-  const handleJoinChat = () => {
-    setIsJoining(true);
-    setTimeout(() => {
-      setIsJoined(true);
-      setIsJoining(false);
-    }, 1200);
-  };
-
-  const handleBuy = (e: React.FormEvent) => {
-    e.preventDefault();
-    const bAmt = Number(buyAmount);
-    if (isNaN(bAmt) || bAmt <= 0) return;
-
-    // Simulate ape-in effect
-    setChartData((prev) => {
-      const updated = [...prev];
-      updated[updated.length - 1] = Math.min(100, updated[updated.length - 1] + 8);
-      return updated;
-    });
-
-    setMcap((prev) => prev + Math.round(bAmt * 2400));
-    setCurveProgress((prev) => Math.min(99, prev + Number((bAmt * 1.5).toFixed(1))));
-
-    alert(`Successfully aped ${bAmt} BNB! Bonding curve progress updated.`);
-  };
+  }, [isHovered]);
 
   return (
-    <section id="chart" className="py-12 px-4 max-w-7xl mx-auto w-full scroll-mt-24">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        
-        {/* Left Column: Live Chart & Progress */}
-        <div className="lg:col-span-8 space-y-8 text-left">
-          <div className="glass-card rounded-[2.5rem] p-6 lg:p-8 flex flex-col gap-6 w-full">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div>
-                <span className="text-[10px] uppercase tracking-widest text-[#8A99AD] font-bold">Market Momentum</span>
-                <h2 className="text-3xl font-black uppercase text-white mt-1">Live Chart Ticker</h2>
-              </div>
-              <div className="bg-[#060913]/60 border border-white/5 rounded-2xl px-5 py-3 flex items-center gap-5">
-                <div>
-                  <span className="text-[9px] uppercase tracking-wider text-[#8A99AD] font-bold block">Market Cap</span>
-                  <span className="text-xl font-black text-[#FFD600] gold-glow-text">${mcap.toLocaleString()}</span>
-                </div>
-                <div className="w-[1px] h-8 bg-white/10" />
-                <div>
-                  <span className="text-[9px] uppercase tracking-wider text-[#8A99AD] font-bold block">Liquidity</span>
-                  <span className="text-xl font-black text-[#00C853]">$28.4K</span>
-                </div>
-              </div>
-            </div>
-
-            {/* SVG Live Chart Canvas */}
-            <div className="relative bg-[#060913]/40 border border-white/5 rounded-2xl p-4 overflow-hidden min-h-[300px]">
-              <svg 
-                viewBox={`0 0 ${width} ${height}`} 
-                className="w-full h-full overflow-visible"
-                onMouseLeave={() => setHoveredPoint(null)}
-              >
-                {/* Defs for glow filter and gradient area fill */}
-                <defs>
-                  <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#FFD600" stopOpacity="0.18" />
-                    <stop offset="100%" stopColor="#FFD600" stopOpacity="0.0" />
-                  </linearGradient>
-                  <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="6" result="blur" />
-                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                  </filter>
-                </defs>
-
-                {/* Grid horizontal lines */}
-                {[0, 25, 50, 75, 100].map((gridVal) => {
-                  const y = height - padding - (gridVal * (height - padding * 2)) / 100;
-                  return (
-                    <line
-                      key={gridVal}
-                      x1={padding}
-                      y1={y}
-                      x2={width - padding}
-                      y2={y}
-                      stroke="rgba(255, 255, 255, 0.03)"
-                      strokeWidth="1.5"
-                    />
-                  );
-                })}
-
-                {/* SVG Area fill under path */}
-                <path d={getAreaD()} fill="url(#chartGradient)" />
-
-                {/* SVG Glowing Line path */}
-                <motion.path
-                  d={getPathD()}
-                  fill="none"
-                  stroke="#FFD600"
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                  filter="url(#glow)"
-                  layout
-                />
-
-                {/* Chart Nodes / Dots */}
-                {points.map((p, idx) => (
-                  <circle
-                    key={idx}
-                    cx={p.x}
-                    cy={p.y}
-                    r={hoveredPoint?.idx === idx ? 8 : 4}
-                    fill={hoveredPoint?.idx === idx ? "#FF4D00" : "#FFD600"}
-                    className="cursor-pointer transition-all duration-200"
-                    onMouseEnter={() => setHoveredPoint({ x: p.x, y: p.y, val: p.val, idx })}
-                  />
-                ))}
-              </svg>
-
-              {/* Tooltip Overlay */}
-              {hoveredPoint && (
-                <div
-                  className="absolute bg-[#0D1426] border border-[#FFD600]/30 shadow-xl rounded-xl p-2.5 text-xs font-black z-30 pointer-events-none"
-                  style={{
-                    left: `${(hoveredPoint.x / width) * 100}%`,
-                    top: `${(hoveredPoint.y / height) * 100 - 15}%`,
-                    transform: "translate(-50%, -100%)",
-                  }}
-                >
-                  <span className="text-[#FFD600]">${(hoveredPoint.val * 420.69).toFixed(2)}</span>
-                </div>
-              )}
-            </div>
-
-            {/* Bonding Curve Tracker */}
-            <div className="space-y-3">
-              <div className="flex justify-between items-center text-sm font-black uppercase text-white tracking-wide">
-                <span className="flex items-center gap-1.5">
-                  <TrendingUp className="w-4 h-4 text-[#00C853]" />
-                  Bonding Curve Progress
-                </span>
-                <span className="text-[#FFD600]">{curveProgress}%</span>
-              </div>
-              <div className="w-full bg-[#060913]/60 rounded-full h-4 border border-white/5 overflow-hidden p-0.5">
-                <motion.div
-                  className="bg-gradient-to-r from-[#FFD600] via-[#00C853] to-[#00E5FF] h-full rounded-full"
-                  initial={{ width: "0%" }}
-                  animate={{ width: `${curveProgress}%` }}
-                  transition={{ duration: 0.6 }}
-                />
-              </div>
-              <p className="text-[10px] text-[#8A99AD] font-bold leading-normal">
-                When the bonding curve reaches 100%, liquidity will be locked and migrated to Raydium.
-              </p>
-            </div>
-          </div>
+    <section id="showcase" className="py-24 bg-[#07090E] border-t border-slate-800/60 scroll-mt-24">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="text-center mb-16 space-y-4">
+          <span className="text-xs uppercase tracking-widest text-blue-500 font-bold block">
+            Inside the Platform
+          </span>
+          <h2 className="text-3xl md:text-5xl font-black uppercase text-white tracking-tight">
+            The Software is the Marketing
+          </h2>
+          <p className="text-slate-400 max-w-2xl mx-auto text-sm md:text-base font-light">
+            Explore the active terminal. See exactly what resources, signals, and insights are unlocked immediately after onboarding.
+          </p>
         </div>
 
-        {/* Right Column: Interactive Ape-in & VIP Chat */}
-        <div className="lg:col-span-4 space-y-8 text-left w-full">
-          
-          {/* Ape-in glass block */}
-          <div className="glass-card rounded-[2.5rem] p-6 flex flex-col gap-5 w-full">
-            <h3 className="text-xl font-black uppercase text-white flex items-center gap-2">
-              <Coins className="w-5 h-5 text-[#FFD600]" />
-              Quick Ape-In
-            </h3>
-            <form onSubmit={handleBuy} className="space-y-4">
-              <div>
-                <label className="text-[10px] uppercase font-bold text-[#8A99AD] tracking-wider block mb-1">
-                  Amount (BNB)
-                </label>
-                <div className="relative flex items-center bg-[#060913]/60 border border-white/10 rounded-2xl px-4 py-3 focus-within:border-[#FFD600] transition-colors">
-                  <input
-                    type="number"
-                    step="0.01"
-                    min="0.01"
-                    value={buyAmount}
-                    onChange={(e) => setBuyAmount(e.target.value)}
-                    className="bg-transparent border-0 text-white font-black text-lg focus:outline-none w-full placeholder:text-neutral-600"
-                    placeholder="0.1"
-                  />
-                  <span className="font-black text-sm text-[#FFD600] shrink-0">BNB</span>
-                </div>
-              </div>
-              <button
-                type="submit"
-                className="w-full py-4 bg-gradient-to-r from-[#FFD600] to-[#FF4D00] text-black font-black uppercase text-sm rounded-full hover:scale-102 transition-transform hover:shadow-[0_0_20px_rgba(255,214,0,0.3)] tracking-wider cursor-pointer text-center"
-              >
-                Ape In Now
-              </button>
-            </form>
-          </div>
-
-          {/* VIP Chat glass block */}
-          <div className="glass-card rounded-[2.5rem] p-6 flex flex-col gap-4 w-full min-h-[340px] relative overflow-hidden">
-            <h3 className="text-xl font-black uppercase text-white flex items-center gap-2 border-b border-white/5 pb-3">
-              <MessageSquare className="w-5 h-5 text-[#00E5FF]" />
-              VIP Degen Chat
-            </h3>
-
-            {!isJoined ? (
-              <div className="absolute inset-0 bg-[#0D1426]/95 backdrop-blur-md z-30 flex flex-col items-center justify-center p-4 text-center">
-                <Wallet className="w-10 h-10 text-[#FFD600] animate-float mb-2" />
-                <h4 className="text-base font-black uppercase text-white mb-1">Verify Social Actions</h4>
-                <p className="text-[10px] text-[#8A99AD] font-bold leading-normal mb-4 max-w-[220px]">
-                  Join our Telegram community and follow our Twitter account to unlock VIP Chat access.
-                </p>
-                
-                <div className="flex flex-col gap-2 w-full max-w-[240px] mb-4">
-                  <button
-                    onClick={() => {
-                      window.open("http://x.com/XRPz_meme", "_blank");
-                      setFollowedX(true);
-                    }}
-                    className={`flex items-center justify-between px-4 py-2.5 rounded-xl border text-xs font-black transition-all cursor-pointer ${
-                      followedX
-                        ? "bg-[#00C853]/10 border-[#00C853]/20 text-[#00C853]"
-                        : "bg-white/5 border-white/10 text-white hover:bg-white/10"
-                    }`}
-                  >
-                    <span>1. Follow Twitter Account</span>
-                    {followedX ? <Check className="w-3.5 h-3.5 text-[#00C853]" /> : <span className="text-[10px] opacity-60">→</span>}
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      window.open("https://t.me/our_telegram", "_blank");
-                      setJoinedTelegram(true);
-                    }}
-                    className={`flex items-center justify-between px-4 py-2.5 rounded-xl border text-xs font-black transition-all cursor-pointer ${
-                      joinedTelegram
-                        ? "bg-[#00C853]/10 border-[#00C853]/20 text-[#00C853]"
-                        : "bg-white/5 border-white/10 text-white hover:bg-white/10"
-                    }`}
-                  >
-                    <span>2. Join Telegram Group</span>
-                    {joinedTelegram ? <Check className="w-3.5 h-3.5 text-[#00C853]" /> : <span className="text-[10px] opacity-60">→</span>}
-                  </button>
-                </div>
-
+        {/* Desktop Interface Layout */}
+        <div 
+          className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {/* Tab selector column */}
+          <div className="lg:col-span-4 flex flex-col justify-center gap-2">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
                 <button
-                  onClick={handleJoinChat}
-                  disabled={isJoining || !followedX || !joinedTelegram}
-                  className="w-full max-w-[240px] py-3 bg-[#00E5FF] disabled:bg-neutral-800 disabled:text-neutral-500 disabled:shadow-none text-black font-black uppercase text-xs rounded-full hover:scale-102 transition-all hover:shadow-[0_0_15px_rgba(0,229,255,0.4)] tracking-wider cursor-pointer"
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as ModuleType)}
+                  className={`w-full text-left px-5 py-4 rounded-xl transition-all flex items-start gap-4 border ${
+                    isActive 
+                      ? "bg-slate-900 border-slate-800 text-white shadow-md shadow-blue-500/5 translate-x-1" 
+                      : "bg-transparent border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/30"
+                  }`}
                 >
-                  {isJoining ? "Verifying..." : "Verify & Unlock Chat"}
-                </button>
-              </div>
-            ) : null}
-
-            {/* Chat Messages Log */}
-            <div className="flex-1 overflow-y-auto space-y-3.5 max-h-[180px] scrollbar-none pr-1">
-              {messages.map((m) => (
-                <div key={m.id} className="text-xs text-left leading-normal font-bold">
-                  <div className="flex justify-between items-center mb-0.5">
-                    <span className={`text-[10px] ${m.isMe ? "text-[#FFD600]" : "text-[#00E5FF]"} font-black`}>
-                      {m.user}
-                    </span>
-                    <span className="text-[9px] text-[#8A99AD] font-medium">{m.time}</span>
+                  <div className={`p-2.5 rounded-lg border ${
+                    isActive ? "bg-blue-600/10 border-blue-500/30 text-blue-400" : "bg-slate-900 border-slate-800 text-slate-500"
+                  }`}>
+                    <Icon className="w-4 h-4" />
                   </div>
-                  <p className="text-white/80 font-medium bg-white/5 border border-white/5 px-3 py-2 rounded-2xl rounded-tl-none">
-                    {m.message}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {/* Chat Send Input */}
-            <form onSubmit={handleSend} className="relative flex items-center bg-[#060913]/60 border border-white/10 rounded-2xl px-4 py-2 mt-auto focus-within:border-[#00E5FF] transition-colors">
-              <input
-                type="text"
-                value={inputMsg}
-                onChange={(e) => setInputMsg(e.target.value)}
-                placeholder="Send a degen shoutout..."
-                className="bg-transparent border-0 text-white font-bold text-xs focus:outline-none w-full placeholder:text-neutral-500"
-              />
-              <button
-                type="submit"
-                className="w-8 h-8 rounded-full bg-[#00E5FF] text-black flex items-center justify-center shrink-0 hover:scale-105 transition-transform cursor-pointer"
-              >
-                <Send className="w-3.5 h-3.5" />
-              </button>
-            </form>
+                  <div>
+                    <h4 className="font-bold text-xs uppercase tracking-wider">{tab.name}</h4>
+                    <p className="text-[10px] text-slate-500 font-medium mt-0.5">{tab.desc}</p>
+                  </div>
+                </button>
+              );
+            })}
           </div>
 
-        </div>
+          {/* Render Active Mockup Canvas */}
+          <div className="lg:col-span-8 bg-[#0D1117] border border-slate-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col min-h-[500px]">
+            {/* Mockup Header Bar */}
+            <div className="bg-slate-900/80 border-b border-slate-800/80 px-6 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-slate-800 border border-slate-700" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-slate-800 border border-slate-700" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-slate-800 border border-slate-700" />
+                </div>
+                <div className="h-4 w-[1px] bg-slate-800 mx-2" />
+                <span className="text-[9px] uppercase tracking-widest text-slate-500 font-bold font-mono">
+                  cashix-terminal-v4.0
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span className="text-[9px] text-emerald-500 font-mono font-bold uppercase tracking-wider">
+                  Live API stream
+                </span>
+              </div>
+            </div>
 
+            {/* Mockup Content Panel */}
+            <div className="p-6 flex-grow flex flex-col justify-between text-left font-sans">
+              <AnimatePresence mode="wait">
+                {activeTab === "PULSE" && (
+                  <motion.div
+                    key="pulse"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-6 flex-grow flex flex-col justify-between"
+                  >
+                    {/* Stats Strip */}
+                    <div className="grid grid-cols-4 gap-3">
+                      {[
+                        { label: "Market", val: "BULLISH", color: "text-emerald-400" },
+                        { label: "Confidence", val: "88%", color: "text-white" },
+                        { label: "Opp Score", val: "92", color: "text-blue-400" },
+                        { label: "Alerts", val: "Active", color: "text-white" }
+                      ].map((s) => (
+                        <div key={s.label} className="bg-slate-900/60 border border-slate-800/80 p-3 rounded-xl">
+                          <span className="text-[9px] text-slate-500 uppercase font-bold tracking-wider block">{s.label}</span>
+                          <span className={`text-xs font-black mt-0.5 block ${s.color}`}>{s.val}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Featured Opp */}
+                    <div className="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl space-y-3 relative overflow-hidden">
+                      <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-md bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-[10px] text-blue-400 font-black">X</div>
+                          <span className="text-xs font-black text-white">XRPz <span className="text-slate-500 text-[10px] font-bold">(Solana)</span></span>
+                        </div>
+                        <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded font-bold uppercase">Intel Score: 95</span>
+                      </div>
+                      <p className="text-[11px] text-slate-400 leading-normal">
+                        Breaking out of 4-day accumulation base with 4.5x average volume multiplier. On-chain audits show locked LP and permanently revoked admin mint rights.
+                      </p>
+                    </div>
+
+                    {/* Table overview mock */}
+                    <div className="space-y-2">
+                      <span className="text-[9px] text-slate-500 uppercase font-bold tracking-wider block">Live Screen Indices</span>
+                      <div className="border border-slate-800/60 rounded-xl overflow-hidden text-[10px]">
+                        <div className="bg-slate-900/40 border-b border-slate-800/60 grid grid-cols-4 px-3 py-2 text-slate-500 font-bold uppercase tracking-wider">
+                          <span>Asset</span>
+                          <span className="text-center">Intel</span>
+                          <span className="text-right">24h Change</span>
+                          <span className="text-right">Liquidity</span>
+                        </div>
+                        <div className="divide-y divide-slate-800/40">
+                          {[
+                            { name: "XRPz", score: 95, change: "+32.4%", liq: "$480K" },
+                            { name: "WARUME", score: 88, change: "+14.8%", liq: "$250K" },
+                            { name: "FON", score: 81, change: "-4.2%", liq: "$1.2M" }
+                          ].map((t) => (
+                            <div key={t.name} className="grid grid-cols-4 px-3 py-2.5 font-semibold text-slate-300">
+                              <span className="font-bold text-white">{t.name}</span>
+                              <span className="text-center text-blue-400">{t.score}</span>
+                              <span className={`text-right ${t.change.startsWith("+") ? "text-emerald-400" : "text-rose-400"}`}>{t.change}</span>
+                              <span className="text-right text-slate-400 font-mono">{t.liq}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {activeTab === "DISCOVERY" && (
+                  <motion.div
+                    key="discovery"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-4 flex-grow flex flex-col justify-between"
+                  >
+                    <div className="flex justify-between items-center bg-slate-900/40 border border-slate-800/60 p-3 rounded-xl">
+                      <div>
+                        <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block">Real-time Profiles</span>
+                        <span className="text-xs font-black text-white mt-0.5 block">Streaming DexScreener launches</span>
+                      </div>
+                      <span className="text-[10px] text-slate-400 font-mono bg-slate-900 border border-slate-800 px-2.5 py-1 rounded">2,842 Candidates / Min</span>
+                    </div>
+
+                    <div className="space-y-2">
+                      {[
+                        { token: "BOSK", chain: "Solana", status: "Newly Launched", time: "12s ago", confidence: "High" },
+                        { token: "CTO_KING", chain: "Solana", status: "Community Takeover", time: "24s ago", confidence: "Medium" },
+                        { token: "PEPE_X", chain: "Base", status: "Boost Count Spike", time: "1m ago", confidence: "High" }
+                      ].map((feed, idx) => (
+                        <div key={idx} className="bg-slate-900/60 border border-slate-800/60 p-3.5 rounded-xl flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center font-mono font-black text-blue-400">
+                              {feed.token[0]}
+                            </div>
+                            <div className="space-y-0.5">
+                              <h5 className="font-bold text-white">{feed.token}</h5>
+                              <p className="text-[9px] text-slate-500 uppercase font-bold tracking-wider">{feed.chain} • {feed.status}</p>
+                            </div>
+                          </div>
+                          <div className="text-right space-y-0.5">
+                            <span className="text-[10px] text-slate-400 font-semibold block">{feed.time}</span>
+                            <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded ${
+                              feed.confidence === "High" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                            }`}>
+                              Confidence: {feed.confidence}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+                {activeTab === "WHALES" && (
+                  <motion.div
+                    key="whales"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-4 flex-grow flex flex-col justify-between"
+                  >
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Live Smart Money Flow</span>
+                      <span className="text-[9px] text-blue-400 font-bold uppercase tracking-wider font-mono">14 smart wallets active</span>
+                    </div>
+
+                    <div className="space-y-3">
+                      {[
+                        { address: "HkgDaQ...mp", action: "BUY", token: "XRPz", size: "$120K", duration: "2m ago" },
+                        { address: "8TmUmB...mp", action: "BUY", token: "WARUME", size: "$45K", duration: "12m ago" },
+                        { address: "FVQm2u...mp", action: "SELL", token: "PEPE", size: "$80K", duration: "18m ago" }
+                      ].map((w, idx) => (
+                        <div key={idx} className="bg-slate-900/60 border border-slate-800 p-3.5 rounded-xl text-xs space-y-2">
+                          <div className="flex justify-between font-bold">
+                            <span className="text-blue-400 font-mono">{w.address}</span>
+                            <span className={w.action === "BUY" ? "text-emerald-400" : "text-rose-500"}>{w.action}</span>
+                          </div>
+                          <div className="flex justify-between text-slate-400 text-[11px]">
+                            <span>Size: <b className="text-white font-mono">{w.size}</b></span>
+                            <span>Asset: <b className="text-white">${w.token}</b></span>
+                            <span className="text-slate-500">{w.duration}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+                {activeTab === "ALPHA" && (
+                  <motion.div
+                    key="alpha"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-4 flex-grow flex flex-col justify-between"
+                  >
+                    <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Terminal Alpha Signal Desk</span>
+
+                    <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl text-xs space-y-4">
+                      <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <div>
+                          <span className="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2.5 py-1 rounded font-bold uppercase tracking-wider">
+                            BUY SIGNAL ACTIVE
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-slate-500 font-medium">Post date: 15m ago</span>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-4">
+                        <div>
+                          <span className="text-[9px] text-slate-500 uppercase font-bold block">Entry Range</span>
+                          <span className="text-sm font-black text-white font-mono block mt-0.5">$0.00042 - 0.00045</span>
+                        </div>
+                        <div>
+                          <span className="text-[9px] text-slate-500 uppercase font-bold block">Target Price</span>
+                          <span className="text-sm font-black text-emerald-400 font-mono block mt-0.5">$0.00150</span>
+                        </div>
+                        <div>
+                          <span className="text-[9px] text-slate-500 uppercase font-bold block">Stop Loss</span>
+                          <span className="text-sm font-black text-rose-500 font-mono block mt-0.5">$0.00028</span>
+                        </div>
+                      </div>
+
+                      <div className="bg-slate-950 p-3 rounded-xl border border-slate-900">
+                        <span className="text-[9px] text-blue-400 font-bold uppercase tracking-widest block mb-1">AI RATIONALE</span>
+                        <p className="text-[11px] text-slate-400 leading-relaxed">
+                          Volume spikes indicate accumulation by smart money. Liquidity is locked, token contracts are verified, and whale buying patterns support target continuation.
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {activeTab === "FLOOR" && (
+                  <motion.div
+                    key="floor"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-4 flex-grow flex flex-col justify-between"
+                  >
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">VIP Community Trading Floor</span>
+                      <span className="text-[9px] text-emerald-500 font-bold uppercase tracking-wider font-mono">142 traders online</span>
+                    </div>
+
+                    <div className="space-y-2.5 flex-grow overflow-hidden max-h-[220px]">
+                      {[
+                        { user: "whale_watcher", msg: "Locked LP is audited. XRPz looks safe for entry.", time: "12:45 PM" },
+                        { user: "sol_maxi", msg: "Where is the contract address? Admin upload please!", time: "12:46 PM" },
+                        { user: "COORDINATOR", msg: "🚨 NEW SIGNAL posted in Alpha Desk for XRPz. Check target ranges.", time: "12:48 PM", isAdmin: true }
+                      ].map((chat, idx) => (
+                        <div key={idx} className="text-xs leading-normal">
+                          <div className="flex justify-between items-center mb-0.5">
+                            <span className={`text-[10px] font-black ${chat.isAdmin ? "text-blue-400" : "text-slate-400"}`}>
+                              {chat.user} {chat.isAdmin && "• ADMIN"}
+                            </span>
+                            <span className="text-[8px] text-slate-600 font-medium">{chat.time}</span>
+                          </div>
+                          <p className={`p-2 rounded-xl border ${
+                            chat.isAdmin 
+                              ? "bg-blue-600/5 border-blue-500/20 text-slate-200" 
+                              : "bg-slate-900/60 border-slate-800/60 text-slate-400"
+                          }`}>
+                            {chat.msg}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+                {activeTab === "RISK" && (
+                  <motion.div
+                    key="risk"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-5 flex-grow flex flex-col justify-between"
+                  >
+                    <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Contract & Security Audit</span>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      {[
+                        { label: "Honeypot Test", val: "SAFE", icon: CheckCircle2, color: "text-emerald-400 bg-emerald-500/5 border-emerald-500/10" },
+                        { label: "Liquidity Pool", val: "100% LOCKED", icon: CheckCircle2, color: "text-emerald-400 bg-emerald-500/5 border-emerald-500/10" },
+                        { label: "Admin Mint Rights", val: "REVOKED", icon: CheckCircle2, color: "text-emerald-400 bg-emerald-500/5 border-emerald-500/10" },
+                        { label: "Top-Wallet Concentration", val: "LOW (12%)", icon: CheckCircle2, color: "text-emerald-400 bg-emerald-500/5 border-emerald-500/10" }
+                      ].map((item, idx) => {
+                        const Icon = item.icon;
+                        return (
+                          <div key={idx} className={`p-4 rounded-xl border flex items-center justify-between ${item.color}`}>
+                            <div className="space-y-0.5">
+                              <span className="text-[9px] text-slate-500 uppercase font-bold tracking-wider block">{item.label}</span>
+                              <span className="text-xs font-black uppercase tracking-tight block">{item.val}</span>
+                            </div>
+                            <Icon className="w-5 h-5" />
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <div className="bg-slate-900/40 border border-slate-800/80 p-3.5 rounded-xl text-[11px] text-slate-400 leading-normal flex items-start gap-2.5">
+                      <AlertTriangle className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                      <span>
+                        Contract methodology is derived deterministically from RPC bytecode traces and real-time holder allocation logs.
+                      </span>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
