@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Shield, Sparkles, Zap, TrendingUp, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Shield, Sparkles, Zap, TrendingUp, AlertTriangle, Lock, Users, ShieldCheck, Brain, ArrowRight } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
 // ─── SVG Google Icon ─────────────────────────────────────────────────────────
@@ -255,159 +255,182 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#07090E] text-slate-100 flex flex-col md:flex-row relative overflow-hidden font-sans">
-      
-      {/* Immersive Left Side Visual Panel - Custom Gradient for Contrast */}
-      <div className="md:w-[60%] relative flex flex-col justify-between p-8 md:p-12 border-b md:border-b-0 md:border-r border-slate-800/80 bg-gradient-to-br from-[#0F1422] via-[#0A0E18] to-[#07090E] overflow-hidden min-h-[45vh] md:min-h-screen">
-        <NetworkBackground />
-        
-        {/* Brand Tag */}
-        <Link href="/" className="flex items-center gap-2.5 hover:text-white transition-colors w-fit relative z-10">
-          <div className="w-9 h-9 bg-slate-950 rounded-xl flex items-center justify-center border border-slate-800 shadow-md">
-            <span className="text-sm font-black text-white font-mono leading-none">$</span>
-          </div>
-          <div>
-            <h2 className="text-sm font-black uppercase text-white tracking-tighter leading-none">
-              CASHIX
-            </h2>
-            <span className="text-[7px] uppercase tracking-widest text-slate-500 font-bold block mt-0.5">Terminal v4</span>
-          </div>
-        </Link>
+    <div className="min-h-screen bg-[#07090E] text-slate-100 flex flex-col justify-start relative overflow-x-hidden font-sans max-w-[480px] mx-auto border-x border-[#2B3139] shadow-2xl pb-6">
+      <NetworkBackground />
 
-        {/* Mid section: Floating mock data cards with high glassmorphism */}
-        <div className="hidden sm:flex flex-col gap-4 max-w-sm my-auto pl-2 relative z-10 select-none">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            className="bg-[#0D1426]/55 border border-white/10 p-4 rounded-xl flex items-center justify-between shadow-2xl backdrop-blur-md"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-7 h-7 rounded-lg bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-[10px] text-blue-400 font-bold font-mono">X</div>
-              <div>
-                <h4 className="text-xs font-black text-white uppercase tracking-wider">XRPz</h4>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-                  </span>
-                  <p className="text-[8px] text-slate-400 uppercase font-bold tracking-wider">Active Stream</p>
-                </div>
-              </div>
-            </div>
-            <div className="text-right">
-              <span className="text-xs font-mono font-black text-emerald-400 block">+32.4%</span>
-              <span className="text-[8px] text-slate-500 uppercase font-bold tracking-wider block mt-0.5">Score: 95</span>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="bg-[#0D1426]/55 border border-white/10 p-4 rounded-xl flex items-center justify-between shadow-2xl backdrop-blur-md ml-8"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-[10px] text-emerald-400 font-bold">🐋</div>
-              <div>
-                <h4 className="text-xs font-black text-white uppercase tracking-wider">Whale Trace</h4>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-                  </span>
-                  <p className="text-[8px] text-slate-400 uppercase font-bold tracking-wider">Smart Inflows</p>
-                </div>
-              </div>
-            </div>
-            <div className="text-right">
-              <span className="text-xs font-mono font-black text-blue-400 block">$120,000</span>
-              <span className="text-[8px] text-slate-500 uppercase font-bold tracking-wider block mt-0.5">Asset: PEPE</span>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Footer info tag */}
-        <div className="relative z-10">
-          <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold">
-            AI Meme Coin Intelligence Platform
-          </span>
-        </div>
+      {/* Floating Coin icons */}
+      <div className="absolute top-16 right-10 w-8 h-8 rounded-full bg-[#12161A] border border-[#2B3139]/80 flex items-center justify-center text-[10px] shadow-[0_0_15px_rgba(56,189,248,0.2)] text-[#38BDF8] select-none font-bold animate-bounce">
+        Ξ
+      </div>
+      <div className="absolute top-28 left-6 w-7 h-7 rounded-full bg-[#12161A] border border-[#2B3139]/80 flex items-center justify-center text-[8px] shadow-[0_0_12px_rgba(168,85,247,0.2)] text-[#A855F7] select-none font-bold animate-pulse">
+        S
+      </div>
+      <div className="absolute top-48 right-6 w-8 h-8 rounded-full bg-[#12161A] border border-[#2B3139]/80 flex items-center justify-center text-[10px] shadow-[0_0_15px_rgba(240,185,11,0.2)] text-[#F0B90B] select-none font-bold animate-bounce">
+        ฿
       </div>
 
-      {/* Sleek Right Side Authentication Panel - Matte Dark Background */}
-      <div className="md:w-[40%] flex flex-col justify-center p-8 md:p-12 bg-[#07090E] relative min-h-[55vh] md:min-h-screen">
-        <div className="max-w-sm w-full mx-auto space-y-8 text-left">
+      <div className="w-full flex-grow flex flex-col justify-between p-5 relative z-10 space-y-6">
+        
+        {/* Header Logo */}
+        <div className="flex items-center gap-2 px-1 select-none text-left shrink-0">
+          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+            <span className="text-base font-black text-white font-sans leading-none">C</span>
+          </div>
+          <div>
+            <h2 className="text-xs font-black uppercase text-white tracking-widest leading-none">
+              CASHIX
+            </h2>
+            <span className="text-[7.5px] uppercase tracking-widest text-slate-500 font-bold block mt-0.5">Terminal v4</span>
+          </div>
+        </div>
+
+        {/* Hero Block */}
+        <div className="text-center space-y-3.5 select-none pt-4 shrink-0">
+          <span className="text-[9.5px] font-black uppercase tracking-widest text-blue-500 block">
+            AI Powered
+          </span>
+          <h1 className="text-3xl font-black uppercase tracking-tight text-white leading-none">
+            Meme Coin <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-400">Intelligence</span>
+          </h1>
+          <p className="text-[#8A99AD] text-[10.5px] leading-relaxed max-w-xs mx-auto font-semibold">
+            Real-time market scanning, AI scoring, smart money tracking & on-chain intelligence — all in one terminal.
+          </p>
+        </div>
+
+        {/* 3 highlights row */}
+        <div className="grid grid-cols-3 gap-2 text-center select-none shrink-0">
+          {[
+            { title: "LIVE", desc: "Market Scanning", val: "24/7 Real-time", icon: Zap, color: "text-[#0ECB81] bg-[#0ECB81]/5 border-[#0ECB81]/15" },
+            { title: "AI SCORE", desc: "Advanced Algorithm", val: "40+ Factors", icon: Brain, color: "text-[#A855F7] bg-[#A855F7]/5 border-[#A855F7]/15" },
+            { title: "SMART", desc: "Risk Protection", val: "Stay Ahead", icon: Shield, color: "text-[#38BDF8] bg-[#38BDF8]/5 border-[#38BDF8]/15" }
+          ].map((h, i) => {
+            const Icon = h.icon;
+            return (
+              <div key={i} className="bg-[#12161A] border border-[#2B3139] rounded-xl p-3.5 flex flex-col items-center justify-center space-y-1">
+                <Icon className={`w-4 h-4 ${i === 0 ? "text-[#0ECB81]" : i === 1 ? "text-[#A855F7]" : "text-[#38BDF8]"}`} />
+                <span className="text-[9px] font-black uppercase tracking-wide text-white block pt-1 leading-none">{h.title}</span>
+                <span className="text-[7.5px] text-slate-500 font-bold block leading-tight mt-0.5">{h.desc}</span>
+                <span className={`text-[7.5px] font-bold block mt-1 leading-none ${i === 0 ? "text-[#0ECB81]" : i === 1 ? "text-[#A855F7]" : "text-[#38BDF8]"}`}>
+                  {h.val}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Auth form card */}
+        <div className="bg-[#12161A] border border-[#2B3139] rounded-2xl p-5.5 space-y-5 shadow-2xl relative text-center">
           
-          {/* Header */}
-          <div className="space-y-3">
-            <h3 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-450 uppercase tracking-tight">
+          <div className="space-y-1.5">
+            <span className="text-[8px] font-black uppercase tracking-widest text-blue-500 block">
+              Welcome Back
+            </span>
+            <h3 className="text-xl font-black uppercase text-white tracking-wide">
               Enter Terminal
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              Access the private, members-only intelligence platform for meme coin traders. No complex forms. One-click entry.
+            <p className="text-[10px] text-[#8A99AD] leading-relaxed max-w-xs mx-auto font-medium">
+              Access the private, members-only intelligence platform for serious meme coin traders.
             </p>
           </div>
 
           {/* Feedback error messages */}
           {errorMsg && (
-            <motion.div
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-[11px] bg-rose-500/10 border border-rose-500/20 text-rose-450 font-semibold p-4 rounded-xl flex items-start gap-2.5 shadow-md"
-            >
-              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
+            <div className="text-[9.5px] bg-rose-500/10 border border-rose-500/20 text-rose-450 font-semibold p-3.5 rounded-xl flex items-start gap-2 text-left shadow-md">
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-rose-450" />
               <span>{errorMsg}</span>
-            </motion.div>
+            </div>
           )}
 
-          {/* Google Button Action - Premium Custom Styles */}
-          <div className="space-y-4 pt-2">
+          {/* Google login Button */}
+          <div className="pt-1">
             <button
               onClick={handleGoogleLogin}
               disabled={status === "authenticating" || status === "success"}
-              className={`w-full py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center cursor-pointer border select-none ${
+              className={`w-full py-4.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all duration-200 flex items-center justify-center cursor-pointer border select-none ${
                 status === "success"
                   ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-lg"
                   : status === "authenticating"
                   ? "bg-slate-900 border-slate-800 text-slate-500 cursor-not-allowed"
-                  : "bg-[#0E1320] border-slate-800 text-slate-200 hover:text-white hover:border-slate-700 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)] hover:scale-[1.01]"
+                  : "bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-855 border-blue-500/30 text-white hover:shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:scale-[1.01]"
               }`}
             >
               {status === "idle" && (
                 <>
-                  <GoogleIcon />
+                  <div className="w-5 h-5 mr-2.5 rounded-full bg-white flex items-center justify-center shrink-0">
+                    <span className="text-[10px] text-blue-600 font-sans font-black">G</span>
+                  </div>
                   Continue with Google
                 </>
               )}
               {status === "authenticating" && (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-slate-600 border-t-slate-350 rounded-full animate-spin" />
+                <div className="flex items-center gap-2 font-black">
+                  <div className="w-4 h-4 border-2 border-slate-650 border-t-slate-350 rounded-full animate-spin" />
                   <span>Authenticating...</span>
                 </div>
               )}
               {status === "success" && (
-                <span>Entering Terminal...</span>
+                <span className="font-black">Entering Terminal...</span>
               )}
               {status === "error" && (
                 <>
-                  <GoogleIcon />
+                  <div className="w-5 h-5 mr-2.5 rounded-full bg-white flex items-center justify-center shrink-0">
+                    <span className="text-[10px] text-blue-600 font-sans font-black">G</span>
+                  </div>
                   Continue with Google
                 </>
               )}
             </button>
           </div>
 
-          {/* Legal / Policy Note */}
-          <p className="text-[10px] text-slate-500 leading-relaxed font-medium">
-            By continuing, you agree to our platform{" "}
-            <a href="#" className="underline text-slate-455 hover:text-white">Terms of Service</a> and{" "}
-            <a href="#" className="underline text-slate-455 hover:text-white">Privacy Policy</a>.
-          </p>
+          {/* Separator line */}
+          <div className="relative flex py-1 items-center justify-center text-[8.5px] font-black uppercase text-slate-500">
+            <div className="flex-grow border-t border-[#2B3139]/60"></div>
+            <span className="flex-shrink mx-3">OR</span>
+            <div className="flex-grow border-t border-[#2B3139]/60"></div>
+          </div>
+
+          {/* Value props 4 columns list */}
+          <div className="grid grid-cols-4 gap-1.5 text-center select-none pt-1">
+            {[
+              { label: "Secure", sub: "Bank-level encryption", icon: Lock, color: "text-[#0ECB81]" },
+              { label: "Fast Access", sub: "One-click login", icon: Zap, color: "text-[#A855F7]" },
+              { label: "Members Only", sub: "Exclusive intelligence", icon: Users, color: "text-[#38BDF8]" },
+              { label: "Privacy First", sub: "Your data is protected", icon: ShieldCheck, color: "text-[#0ECB81]" }
+            ].map((prop, idx) => {
+              const PropIcon = prop.icon;
+              return (
+                <div key={idx} className="flex flex-col items-center">
+                  <div className={`p-1.5 rounded bg-slate-900 border border-[#2B3139] ${prop.color} shrink-0`}>
+                    <PropIcon className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="text-[8px] font-black text-slate-200 uppercase mt-1 leading-none">{prop.label}</span>
+                  <span className="text-[6.5px] text-slate-500 font-bold leading-tight block mt-0.5">{prop.sub}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Footer details link */}
+          <div className="pt-2 text-center text-[9.5px] font-bold text-slate-500">
+            New to Cashix?{" "}
+            <a href="https://t.me/cashix_bot" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline font-black inline-flex items-center gap-0.5">
+              Request Access <ArrowRight className="w-3 h-3" />
+            </a>
+          </div>
 
         </div>
+
+        {/* Legal / Policy Note */}
+        <div className="text-center text-[8.5px] text-slate-500 leading-relaxed font-semibold shrink-0 select-none pb-2 flex items-center justify-center gap-1">
+          <span>🔒 By continuing, you agree to our</span>
+          <a href="#" className="underline hover:text-white">Terms of Service</a>
+          <span>and</span>
+          <a href="#" className="underline hover:text-white">Privacy Policy</a>
+          <span>.</span>
+        </div>
+
       </div>
-      
     </div>
   );
 }
