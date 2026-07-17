@@ -29,6 +29,27 @@ const GoogleIcon = () => (
   </svg>
 );
 
+const EthereumIcon = () => (
+  <svg className="w-4 h-4 text-sky-400" viewBox="0 0 784 1277" fill="currentColor">
+    <path d="M392 0L383.5 29V868.5L392 877L784 645L392 0Z" fillOpacity="0.7" />
+    <path d="M392 0L0 645L392 877V469.5V0Z" fillOpacity="0.9" />
+    <path d="M392 956L387 962V1271.5L392 1277L784 734L392 956Z" fillOpacity="0.7" />
+    <path d="M392 1277V956L0 734L392 1277Z" fillOpacity="0.9" />
+  </svg>
+);
+
+const SolanaIcon = () => (
+  <svg className="w-3.5 h-3.5 text-teal-400" viewBox="0 0 512 512" fill="currentColor">
+    <path d="M439 122c-7-7-16-11-26-11H73c-15 0-26 15-21 29l29 90c7 7 16 11 26 11h340c15 0 26-15 21-29l-29-90zm-54 116c-7-7-16-11-26-11H19c-15 0-26 15-21 29l29 90c7 7 16 11 26 11h340c15 0 26-15 21-29l-29-90zm54 116c-7-7-16-11-26-11H73c-15 0-26 15-21 29l29 90c7 7 16 11 26 11h340c15 0 26-15 21-29l-29-90z" />
+  </svg>
+);
+
+const BitcoinIcon = () => (
+  <svg className="w-4 h-4 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M23.6 12.6c-.3-2.1-1.4-3.8-3.1-4.8c-.8-.5-1.7-.8-2.6-.9c.4-.6.7-1.3.7-2.1c0-2-1.6-3.6-3.6-3.6c-.7 0-1.3.2-1.9.5V.5c0-.3-.2-.5-.5-.5h-2c-.3 0-.5.2-.5.5v1.3H8.3V.5C8.3.2 8.1 0 7.8 0H5.7c-.3 0-.5.2-.5.5v1.3H4c-.3 0-.5.2-.5.5v1.7c0 .3.2.5.5.5h1.2v14.4H4c-.3 0-.5.2-.5.5v1.7c0 .3.2.5.5.5h1.2v1.3c0 .3.2.5.5.5h2.1c.3 0 .5-.2.5-.5v-1.3h1.8v1.3c0 .3.2.5.5.5h2c.3 0 .5-.2.5-.5v-1.3c3.4 0 6.1-2.7 6.1-6.1c0-1.8-1-3.4-2.5-4.3c1.3-.7 2.1-2.1 2.1-3.6c0-.5-.1-1-.3-1.4zm-11.4-5h3.4c.9 0 1.6.7 1.6 1.6c0 .9-.7 1.6-1.6 1.6h-3.4V7.6zm4.4 8.7h-4.4v-3.7h4.4c1 0 1.9.8 1.9 1.9c0 1-.8 1.8-1.9 1.8z" />
+  </svg>
+);
+
 // ─── GPU-Accelerated Canvas Background with Flowing Packets ────────────────
 function NetworkBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -255,51 +276,55 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#07090E] text-slate-100 flex flex-col justify-start relative overflow-x-hidden font-sans max-w-[480px] mx-auto border-x border-[#2B3139] shadow-2xl pb-6">
+    <div className="min-h-screen bg-[#07090E] text-slate-100 flex flex-col justify-between relative overflow-x-hidden font-sans max-w-[480px] mx-auto border-x border-[#2B3139] shadow-2xl pb-8 select-none">
+      
+      {/* Background Mesh/Stars Grid Canvas */}
       <NetworkBackground />
 
-      {/* Floating Coin icons */}
-      <div className="absolute top-16 right-10 w-8 h-8 rounded-full bg-[#12161A] border border-[#2B3139]/80 flex items-center justify-center text-[10px] shadow-[0_0_15px_rgba(56,189,248,0.2)] text-[#38BDF8] select-none font-bold animate-bounce">
-        Ξ
+      {/* Floating High-Fidelity Coin SVGs with Glowing borders */}
+      <div className="absolute top-16 right-10 w-9 h-9 rounded-full bg-[#12161A] border border-[#2B3139]/80 flex items-center justify-center shadow-[0_0_15px_rgba(56,189,248,0.25)] text-[#38BDF8] select-none font-bold animate-bounce z-10">
+        <EthereumIcon />
       </div>
-      <div className="absolute top-28 left-6 w-7 h-7 rounded-full bg-[#12161A] border border-[#2B3139]/80 flex items-center justify-center text-[8px] shadow-[0_0_12px_rgba(168,85,247,0.2)] text-[#A855F7] select-none font-bold animate-pulse">
-        S
+      <div className="absolute top-32 left-6 w-9 h-9 rounded-full bg-[#12161A] border border-[#2B3139]/80 flex items-center justify-center shadow-[0_0_12px_rgba(20,241,149,0.25)] text-[#20F195] select-none font-bold animate-pulse z-10">
+        <SolanaIcon />
       </div>
-      <div className="absolute top-48 right-6 w-8 h-8 rounded-full bg-[#12161A] border border-[#2B3139]/80 flex items-center justify-center text-[10px] shadow-[0_0_15px_rgba(240,185,11,0.2)] text-[#F0B90B] select-none font-bold animate-bounce">
-        ฿
+      <div className="absolute top-48 right-6 w-9 h-9 rounded-full bg-[#12161A] border border-[#2B3139]/80 flex items-center justify-center shadow-[0_0_15px_rgba(240,185,11,0.25)] text-[#F0B90B] select-none font-bold animate-bounce z-10">
+        <BitcoinIcon />
       </div>
 
-      <div className="w-full flex-grow flex flex-col justify-between p-5 relative z-10 space-y-6">
+      <div className="w-full flex-grow flex flex-col justify-between p-6 relative z-10 space-y-7">
         
         {/* Header Logo */}
-        <div className="flex items-center gap-2 px-1 select-none text-left shrink-0">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <span className="text-base font-black text-white font-sans leading-none">C</span>
+        <div className="flex items-center gap-2.5 px-1 select-none text-left shrink-0">
+          <div className="w-9 h-9 rounded-xl border border-blue-500/30 bg-blue-500/10 flex items-center justify-center shadow-[0_0_12px_rgba(59,130,246,0.2)]">
+            <svg className="w-4.5 h-4.5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+              <path d="M18 8C17 5 14.5 4 12 4C7.5 4 4 7.5 4 12C4 16.5 7.5 20 12 20C14.5 20 17 19 18 16" strokeLinecap="round" />
+            </svg>
           </div>
           <div>
-            <h2 className="text-xs font-black uppercase text-white tracking-widest leading-none">
+            <h2 className="text-[12px] font-black uppercase text-white tracking-widest leading-none">
               CASHIX
             </h2>
-            <span className="text-[7.5px] uppercase tracking-widest text-slate-500 font-bold block mt-0.5">Terminal v4</span>
+            <span className="text-[7.5px] uppercase tracking-widest text-[#8A99AD] font-extrabold block mt-1">Terminal V4</span>
           </div>
         </div>
 
-        {/* Hero Block */}
-        <div className="text-center space-y-3.5 select-none pt-4 shrink-0">
-          <span className="text-[9.5px] font-black uppercase tracking-widest text-blue-500 block">
-            AI Powered
+        {/* Hero Title Block */}
+        <div className="text-center space-y-3 select-none pt-2 shrink-0">
+          <span className="text-[9.5px] font-extrabold uppercase tracking-widest text-blue-500 block leading-none">
+            AI POWERED
           </span>
-          <h1 className="text-3xl font-black uppercase tracking-tight text-white leading-none">
-            Meme Coin <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-400">Intelligence</span>
+          <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-white leading-none">
+            MEME COIN <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-indigo-400 to-purple-500">INTELLIGENCE</span>
           </h1>
           <p className="text-[#8A99AD] text-[10.5px] leading-relaxed max-w-xs mx-auto font-semibold">
             Real-time market scanning, AI scoring, smart money tracking & on-chain intelligence — all in one terminal.
           </p>
         </div>
 
-        {/* 3 highlights row */}
-        <div className="grid grid-cols-3 gap-2 text-center select-none shrink-0">
+        {/* 3 Columns Highlights Grid */}
+        <div className="grid grid-cols-3 gap-2.5 text-center select-none shrink-0">
           {[
             { title: "LIVE", desc: "Market Scanning", val: "24/7 Real-time", icon: Zap, color: "text-[#0ECB81] bg-[#0ECB81]/5 border-[#0ECB81]/15" },
             { title: "AI SCORE", desc: "Advanced Algorithm", val: "40+ Factors", icon: Brain, color: "text-[#A855F7] bg-[#A855F7]/5 border-[#A855F7]/15" },
@@ -308,10 +333,10 @@ export default function Login() {
             const Icon = h.icon;
             return (
               <div key={i} className="bg-[#12161A] border border-[#2B3139] rounded-xl p-3.5 flex flex-col items-center justify-center space-y-1">
-                <Icon className={`w-4 h-4 ${i === 0 ? "text-[#0ECB81]" : i === 1 ? "text-[#A855F7]" : "text-[#38BDF8]"}`} />
+                <Icon className={`w-4.5 h-4.5 ${i === 0 ? "text-[#0ECB81]" : i === 1 ? "text-[#A855F7]" : "text-[#38BDF8]"}`} />
                 <span className="text-[9px] font-black uppercase tracking-wide text-white block pt-1 leading-none">{h.title}</span>
-                <span className="text-[7.5px] text-slate-500 font-bold block leading-tight mt-0.5">{h.desc}</span>
-                <span className={`text-[7.5px] font-bold block mt-1 leading-none ${i === 0 ? "text-[#0ECB81]" : i === 1 ? "text-[#A855F7]" : "text-[#38BDF8]"}`}>
+                <span className="text-[7.5px] text-slate-500 font-extrabold block leading-tight mt-0.5">{h.desc}</span>
+                <span className={`text-[7.5px] font-extrabold block mt-1.5 leading-none ${i === 0 ? "text-[#0ECB81]" : i === 1 ? "text-[#A855F7]" : "text-[#38BDF8]"}`}>
                   {h.val}
                 </span>
               </div>
@@ -319,65 +344,99 @@ export default function Login() {
           })}
         </div>
 
-        {/* Auth form card */}
-        <div className="bg-[#12161A] border border-[#2B3139] rounded-2xl p-5.5 space-y-5 shadow-2xl relative text-center">
+        {/* Central Sign-In Container */}
+        <div className="bg-[#12161A] border border-[#2B3139] rounded-[24px] p-6 space-y-6 shadow-2xl relative text-center">
           
           <div className="space-y-1.5">
-            <span className="text-[8px] font-black uppercase tracking-widest text-blue-500 block">
-              Welcome Back
+            <span className="text-[8.5px] font-black uppercase tracking-widest text-blue-500 block leading-none">
+              WELCOME BACK
             </span>
-            <h3 className="text-xl font-black uppercase text-white tracking-wide">
+            <h3 className="text-xl font-black uppercase text-white tracking-wide leading-none pt-1">
               Enter Terminal
             </h3>
-            <p className="text-[10px] text-[#8A99AD] leading-relaxed max-w-xs mx-auto font-medium">
+            <p className="text-[10px] text-[#8A99AD] leading-relaxed max-w-xs mx-auto font-semibold">
               Access the private, members-only intelligence platform for serious meme coin traders.
             </p>
           </div>
 
           {/* Feedback error messages */}
           {errorMsg && (
-            <div className="text-[9.5px] bg-rose-500/10 border border-rose-500/20 text-rose-450 font-semibold p-3.5 rounded-xl flex items-start gap-2 text-left shadow-md">
-              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-rose-450" />
+            <div className="text-[9.5px] bg-rose-500/10 border border-rose-500/20 text-rose-400 font-semibold p-3.5 rounded-xl flex items-start gap-2.5 text-left shadow-md">
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{errorMsg}</span>
             </div>
           )}
 
-          {/* Google login Button */}
+          {/* Google Button Action - Premium custom gradient */}
           <div className="pt-1">
             <button
               onClick={handleGoogleLogin}
               disabled={status === "authenticating" || status === "success"}
-              className={`w-full py-4.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all duration-200 flex items-center justify-center cursor-pointer border select-none ${
+              className={`w-full py-4.5 rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all duration-200 flex items-center justify-center cursor-pointer border select-none ${
                 status === "success"
                   ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-lg"
                   : status === "authenticating"
                   ? "bg-slate-900 border-slate-800 text-slate-500 cursor-not-allowed"
-                  : "bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-855 border-blue-500/30 text-white hover:shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:scale-[1.01]"
+                  : "bg-gradient-to-r from-blue-600 via-blue-700 to-purple-600 border-blue-500/30 text-white hover:shadow-[0_0_20px_rgba(59,130,246,0.35)] hover:scale-[1.01]"
               }`}
             >
               {status === "idle" && (
                 <>
-                  <div className="w-5 h-5 mr-2.5 rounded-full bg-white flex items-center justify-center shrink-0">
-                    <span className="text-[10px] text-blue-600 font-sans font-black">G</span>
+                  <div className="w-5.5 h-5.5 mr-3 rounded-full bg-white flex items-center justify-center shrink-0 shadow-md">
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
+                      <path
+                        fill="#4285F4"
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                      />
+                      <path
+                        fill="#34A853"
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                      />
+                      <path
+                        fill="#FBBC05"
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.85z"
+                      />
+                      <path
+                        fill="#EA4335"
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.85c.87-2.6 3.3-4.53 6.16-4.53z"
+                      />
+                    </svg>
                   </div>
-                  Continue with Google
+                  CONTINUE WITH GOOGLE
                 </>
               )}
               {status === "authenticating" && (
-                <div className="flex items-center gap-2 font-black">
+                <div className="flex items-center gap-2">
                   <div className="w-4 h-4 border-2 border-slate-650 border-t-slate-350 rounded-full animate-spin" />
-                  <span>Authenticating...</span>
+                  <span>AUTHENTICATING...</span>
                 </div>
               )}
               {status === "success" && (
-                <span className="font-black">Entering Terminal...</span>
+                <span>ENTERING TERMINAL...</span>
               )}
               {status === "error" && (
                 <>
-                  <div className="w-5 h-5 mr-2.5 rounded-full bg-white flex items-center justify-center shrink-0">
-                    <span className="text-[10px] text-blue-600 font-sans font-black">G</span>
+                  <div className="w-5.5 h-5.5 mr-3 rounded-full bg-white flex items-center justify-center shrink-0 shadow-md">
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
+                      <path
+                        fill="#4285F4"
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                      />
+                      <path
+                        fill="#34A853"
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                      />
+                      <path
+                        fill="#FBBC05"
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.85z"
+                      />
+                      <path
+                        fill="#EA4335"
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.85c.87-2.6 3.3-4.53 6.16-4.53z"
+                      />
+                    </svg>
                   </div>
-                  Continue with Google
+                  CONTINUE WITH GOOGLE
                 </>
               )}
             </button>
@@ -390,39 +449,41 @@ export default function Login() {
             <div className="flex-grow border-t border-[#2B3139]/60"></div>
           </div>
 
-          {/* Value props 4 columns list */}
-          <div className="grid grid-cols-4 gap-1.5 text-center select-none pt-1">
+          {/* Value Props 4 Columns list */}
+          <div className="grid grid-cols-4 gap-2 text-center select-none pt-1">
             {[
-              { label: "Secure", sub: "Bank-level encryption", icon: Lock, color: "text-[#0ECB81]" },
-              { label: "Fast Access", sub: "One-click login", icon: Zap, color: "text-[#A855F7]" },
-              { label: "Members Only", sub: "Exclusive intelligence", icon: Users, color: "text-[#38BDF8]" },
-              { label: "Privacy First", sub: "Your data is protected", icon: ShieldCheck, color: "text-[#0ECB81]" }
+              { label: "Secure", sub: "Bank-level encryption", icon: Lock, color: "text-[#0ECB81] bg-[#0ECB81]/5 border-[#0ECB81]/15" },
+              { label: "Fast Access", sub: "One-click login", icon: Zap, color: "text-[#A855F7] bg-[#A855F7]/5 border-[#A855F7]/15" },
+              { label: "Members Only", sub: "Exclusive intelligence", icon: Users, color: "text-[#38BDF8] bg-[#38BDF8]/5 border-[#38BDF8]/15" },
+              { label: "Privacy First", sub: "Your data is protected", icon: ShieldCheck, color: "text-[#0ECB81] bg-[#0ECB81]/5 border-[#0ECB81]/15" }
             ].map((prop, idx) => {
               const PropIcon = prop.icon;
               return (
-                <div key={idx} className="flex flex-col items-center">
-                  <div className={`p-1.5 rounded bg-slate-900 border border-[#2B3139] ${prop.color} shrink-0`}>
+                <div key={idx} className="flex flex-col items-center space-y-1.5">
+                  <div className={`w-8 h-8 rounded-full border flex items-center justify-center shrink-0 ${prop.color}`}>
                     <PropIcon className="w-3.5 h-3.5" />
                   </div>
-                  <span className="text-[8px] font-black text-slate-200 uppercase mt-1 leading-none">{prop.label}</span>
-                  <span className="text-[6.5px] text-slate-500 font-bold leading-tight block mt-0.5">{prop.sub}</span>
+                  <div className="space-y-0.5">
+                    <span className="text-[8px] font-black text-slate-200 uppercase leading-none block">{prop.label}</span>
+                    <span className="text-[6.5px] text-slate-500 font-extrabold leading-tight block">{prop.sub}</span>
+                  </div>
                 </div>
               );
             })}
           </div>
 
-          {/* Footer details link */}
-          <div className="pt-2 text-center text-[9.5px] font-bold text-slate-500">
+          {/* Footer Telegram Request Access link */}
+          <div className="pt-2 text-center text-[10px] font-extrabold text-slate-400">
             New to Cashix?{" "}
-            <a href="https://t.me/cashix_bot" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline font-black inline-flex items-center gap-0.5">
-              Request Access <ArrowRight className="w-3 h-3" />
+            <a href="https://t.me/cashix_bot" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-400 font-black inline-flex items-center gap-1 cursor-pointer">
+              Request Access <ArrowRight className="w-3.5 h-3.5" />
             </a>
           </div>
 
         </div>
 
         {/* Legal / Policy Note */}
-        <div className="text-center text-[8.5px] text-slate-500 leading-relaxed font-semibold shrink-0 select-none pb-2 flex items-center justify-center gap-1">
+        <div className="text-center text-[8.5px] text-slate-500 leading-relaxed font-semibold shrink-0 select-none pb-2 flex items-center justify-center gap-1 z-10">
           <span>🔒 By continuing, you agree to our</span>
           <a href="#" className="underline hover:text-white">Terms of Service</a>
           <span>and</span>
@@ -430,6 +491,29 @@ export default function Login() {
           <span>.</span>
         </div>
 
+      </div>
+
+      {/* Bottom Purple Wave Glow */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 overflow-hidden pointer-events-none z-0">
+        <svg className="w-full h-full" viewBox="0 0 480 100" preserveAspectRatio="none" fill="none">
+          <path
+            d="M0 80 C 120 40, 240 100, 360 50 C 420 25, 450 60, 480 80 L 480 100 L 0 100 Z"
+            fill="url(#purpleGlow)"
+            className="opacity-40"
+          />
+          <path
+            d="M0 60 C 100 80, 200 30, 300 70 C 380 90, 430 40, 480 60 L 480 100 L 0 100 Z"
+            fill="url(#purpleGlow)"
+            className="opacity-20"
+          />
+          <defs>
+            <linearGradient id="purpleGlow" x1="240" y1="20" x2="240" y2="100" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#7C3AED" stopOpacity="0.4" />
+              <stop offset="50%" stopColor="#4F46E5" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="#07090E" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+        </svg>
       </div>
     </div>
   );
