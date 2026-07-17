@@ -19,9 +19,9 @@ export default function Home() {
       <main className="flex-grow flex flex-col gap-6 lg:gap-12 max-w-7xl mx-auto w-full p-4 md:p-6 lg:p-8 pt-24 md:pt-32">
         <Hero />
         <TrustStrip />
-        <InteractiveShowcase />
         <HowItWorks />
         <Benefits />
+        <InteractiveShowcase />
         <CommunityPreview />
         <CommunityCTA />
         <Faq />
