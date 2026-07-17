@@ -116,6 +116,7 @@ export default function Dashboard() {
     { symbol: "PEPE", size: "250,000,000", value: "$3,000.00", entry: "$0.000012", pnl: "-2.1%", isGreen: false },
   ]);
   const [bottomActiveTab, setBottomActiveTab] = useState<"POSITIONS" | "WATCHLIST" | "AI_REPORT" | "SECURITY" | "ADMIN">("POSITIONS");
+  const [spotSubTab, setSpotSubTab] = useState<"CHART" | "TRADE" | "PAIRS" | "CHAT">("CHART");
 
   // Market Pulse State
   const [pulseTokens, setPulseTokens] = useState<any[]>([]);
@@ -808,7 +809,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0B0E11] text-slate-100 font-sans flex flex-col relative select-none">
+    <div className="min-h-screen bg-[#0B0E11] text-slate-100 font-sans flex flex-col relative select-none max-w-[480px] mx-auto border-x border-[#2B3139] shadow-2xl">
       {/* Toast Notification */}
       {orderToast && (
         <div className="fixed top-20 right-6 z-50 bg-[#181A20] border-l-4 border-[#0ECB81] text-slate-200 border border-slate-800 px-5 py-3 rounded-lg shadow-[0_0_20px_rgba(14,203,129,0.2)] font-mono text-xs flex items-center gap-2.5 animate-bounce">
@@ -977,587 +978,617 @@ export default function Dashboard() {
           )}
         </div>
       )}
-
       {/* Main Content Area */}
       <main className="flex-grow flex flex-col overflow-y-auto xl:overflow-hidden pb-24 xl:pb-0">
         
         {/* VIEW 1: SPOT TRADING UNIFIED GRID */}
         {activeTab === "AISCANNER" && (
-          <div className="flex-grow flex flex-col xl:flex-row xl:overflow-hidden relative select-none">
+          <div className="flex-grow flex flex-col relative select-none">
             
-            {/* LEFT PANEL: Pairs & Token Feeds (Binance Pairs selector) */}
-            <aside className="w-full xl:w-72 bg-[#181A20] border-b xl:border-b-0 xl:border-r border-[#2B3139] flex flex-col shrink-0 overflow-y-auto z-20">
-              {/* Feed select tabs */}
-              <div className="p-2 border-b border-[#2B3139] bg-[#181A20] flex items-center justify-between">
-                <span className="text-[10px] text-[#8A99AD] font-bold uppercase tracking-wider">Token Feeds</span>
-                <select
-                  value={selectedFeedId}
-                  onChange={(e) => setSelectedFeedId(e.target.value)}
-                  className="bg-[#0B0E11] border border-[#2B3139] text-[10px] font-bold text-white px-2 py-1 rounded cursor-pointer focus:outline-none"
+            {/* Spot Trading Sub-navigation */}
+            <div className="flex bg-[#181A20] border-b border-[#2B3139] p-1 text-[10px] font-bold text-[#8A99AD] uppercase justify-between select-none shrink-0 z-30">
+              {[
+                { id: "CHART", label: "Chart" },
+                { id: "TRADE", label: "Trade Desk" },
+                { id: "PAIRS", label: "Pairs Feed" },
+                { id: "CHAT", label: "Trollbox" },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setSpotSubTab(tab.id as any)}
+                  className={`flex-grow py-2 text-center cursor-pointer transition-all border-b-2 ${
+                    spotSubTab === tab.id ? "text-white border-[#F0B90B] font-black bg-[#2B3139]/20" : "border-transparent text-slate-400 hover:text-white"
+                  }`}
                 >
-                  {DEX_FEEDS.map(f => (
-                    <option key={f.id} value={f.id}>{f.name}</option>
-                  ))}
-                </select>
-              </div>
+                  {tab.label}
+                </button>
+              ))}
+            </div>
 
-              {/* Sub-search */}
-              <div className="p-2 border-b border-[#2B3139] bg-[#0B0E11]">
-                <div className="relative">
-                  <Search className="w-3 h-3 absolute left-2 top-1/2 -translate-y-1/2 text-slate-500" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search assets..."
-                    className="w-full bg-[#181A20] border border-[#2B3139] rounded pl-7 pr-2 py-1 text-base xl:text-[10px] text-white focus:outline-none placeholder-slate-600 font-sans"
-                  />
+            {/* CHART VIEW */}
+            {spotSubTab === "CHART" && (
+              <section className="flex-grow flex flex-col bg-[#181A20] overflow-y-auto z-10 pb-16">
+                {/* Top Part: Chart Panel */}
+                <div className="h-[360px] bg-[#181A20] border-b border-[#2B3139] relative flex flex-col shrink-0">
+                  <div className="p-2.5 bg-[#181A20] border-b border-[#2B3139]/80 flex items-center justify-between text-xs select-none">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5 font-sans">
+                      <span className="w-2 h-2 rounded-full bg-[#0ECB81] animate-pulse" /> Live Price Chart ({activeToken.symbol}/SOL)
+                    </span>
+                  </div>
+                  {/* Embedding DexScreener Chart IFrame */}
+                  <div className="flex-grow w-full bg-[#0B0E11]">
+                    {activeToken.address ? (
+                      <iframe
+                        src={`https://dexscreener.com/${activeToken.chain || 'solana'}/${activeToken.address}?embed=1&theme=dark&trades=0&info=0`}
+                        className="w-full h-full border-0 select-none pointer-events-auto"
+                        title={`Live Chart for ${activeToken.symbol}`}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 text-xs font-mono font-bold uppercase tracking-widest gap-2">
+                        <div className="w-6 h-6 border-2 border-[#F0B90B] border-t-transparent rounded-full animate-spin" />
+                        Connecting live feeds...
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+                {/* Active Token AI Summary Narrative card */}
+                <div className="p-4 bg-[#181A20] text-left border-t border-[#2B3139] space-y-2">
+                  <span className="text-[#F0B90B] font-bold text-[10px] uppercase tracking-wider block">★ Intelligence Verdict ({activeToken.symbol})</span>
+                  <p className="text-slate-300 text-xs leading-relaxed font-sans select-text">{activeToken.aiSummary || activeToken.explanation}</p>
+                </div>
+              </section>
+            )}
 
-              {/* List of Token Pairs */}
-              <div className="flex-grow overflow-y-auto divide-y divide-[#2B3139]/40 max-h-[300px] xl:max-h-[500px]">
-                {filteredTokens.length === 0 ? (
-                  <div className="text-center py-6 text-[10px] text-slate-500 font-bold uppercase">No pairs found</div>
-                ) : (
-                  filteredTokens.map((token: any) => {
-                    const shortSymbol = token.header ? token.header.split(" ")[0].slice(0, 8) : "UNKNWN";
-                    const changeVal = (Math.random() * 20 - 8);
-                    const tokenChange = token.priceChange || changeVal;
-                    const tokenPrice = token.amount || (Math.random() * 0.05 + 0.001);
-                    const isTokenGreen = tokenChange >= 0;
-
-                    return (
-                      <div
-                        key={token.tokenAddress}
-                        onClick={() => {
-                          setSelectedTokenDetails(token);
-                          setBottomActiveTab("AI_REPORT");
-                        }}
-                        className={`px-3 py-2 flex items-center justify-between text-left cursor-pointer transition-colors ${
-                          activeToken.address === token.tokenAddress ? "bg-[#2B3139]/60" : "hover:bg-[#2B3139]/20"
+            {/* TRADE VIEW */}
+            {spotSubTab === "TRADE" && (
+              <section className="flex-grow flex flex-col bg-[#181A20] overflow-y-auto z-10 pb-20">
+                {/* Binance Spot Trade Order Placement Form */}
+                <div className="p-4 bg-[#181A20] grid grid-cols-1 gap-4 text-left border-b border-[#2B3139] shrink-0">
+                  <div>
+                    {/* BUY/SELL Toggle Header */}
+                    <div className="flex bg-[#0B0E11] rounded p-0.5 border border-[#2B3139] mb-3">
+                      <button
+                        onClick={() => setTradeTab("BUY")}
+                        className={`flex-1 py-1.5 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
+                          tradeTab === "BUY" ? "bg-[#0ECB81] text-[#0B0E11]" : "text-slate-400 hover:text-white"
                         }`}
                       >
-                        <div className="flex items-center gap-2 min-w-0">
-                          <div className="w-5 h-5 bg-[#0B0E11] rounded flex items-center justify-center text-[10px] text-white border border-[#2B3139]">
-                            {shortSymbol[0]}
-                          </div>
-                          <div className="min-w-0">
-                            <span className="text-xs font-bold text-white block truncate leading-none font-sans">{shortSymbol}</span>
-                            <span className="text-[8px] text-slate-500 font-mono tracking-wider">SOL</span>
+                        Buy
+                      </button>
+                      <button
+                        onClick={() => setTradeTab("SELL")}
+                        className={`flex-1 py-1.5 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
+                          tradeTab === "SELL" ? "bg-[#F6465D] text-white" : "text-slate-400 hover:text-white"
+                        }`}
+                      >
+                        Sell
+                      </button>
+                    </div>
+
+                    {/* LIMIT/MARKET/SCAN Toggles */}
+                    <div className="flex items-center gap-3 text-[10px] font-bold text-[#8A99AD] uppercase mb-3 px-1">
+                      <button type="button" onClick={() => setTradeType("LIMIT")} className={`pb-1 border-b-2 cursor-pointer ${tradeType === "LIMIT" ? "text-white border-[#F0B90B]" : "border-transparent hover:text-white"}`}>Limit</button>
+                      <button type="button" onClick={() => setTradeType("MARKET")} className={`pb-1 border-b-2 cursor-pointer ${tradeType === "MARKET" ? "text-white border-[#F0B90B]" : "border-transparent hover:text-white"}`}>Market</button>
+                      <button type="button" onClick={() => setTradeType("SCAN")} className={`pb-1 border-b-2 cursor-pointer ${tradeType === "SCAN" ? "text-white border-[#F0B90B]" : "border-transparent hover:text-white"}`}>Scan CA</button>
+                    </div>
+
+                    {/* Form inputs */}
+                    <form onSubmit={(e) => handlePlaceSimulatedOrder(e, activeToken)} className="space-y-3">
+                      {tradeType === "SCAN" ? (
+                        <div>
+                          <label className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block mb-1">Contract Address</label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              value={tradePrice}
+                              onChange={(e) => setTradePrice(e.target.value)}
+                              placeholder="Paste Token Contract Address..."
+                              className="w-full bg-[#0B0E11] border border-[#2B3139] px-3 py-2 rounded text-base xl:text-xs text-white focus:outline-none focus:border-[#F0B90B] font-mono placeholder-slate-650"
+                            />
                           </div>
                         </div>
-                        <div className="text-right">
-                          <span className="text-xs font-bold text-white block font-mono">${tokenPrice.toFixed(6)}</span>
-                          <span className={`text-[9px] font-bold font-mono leading-none ${isTokenGreen ? "text-[#0ECB81]" : "text-[#F6465D]"}`}>
-                            {isTokenGreen ? "+" : ""}{tokenChange.toFixed(2)}%
-                          </span>
+                      ) : (
+                        <>
+                          <div>
+                            <div className="flex justify-between text-[10px] font-semibold text-slate-500 mb-1">
+                              <span>Price</span>
+                              <span>USDT</span>
+                            </div>
+                            <input
+                              type="text"
+                              value={tradePrice}
+                              onChange={(e) => setTradePrice(e.target.value)}
+                              disabled={tradeType === "MARKET"}
+                              className="w-full bg-[#0B0E11] border border-[#2B3139] px-3 py-2 rounded text-base xl:text-xs text-white focus:outline-none focus:border-[#F0B90B] font-mono disabled:opacity-50"
+                            />
+                          </div>
+                          <div>
+                            <div className="flex justify-between text-[10px] font-semibold text-slate-500 mb-1">
+                              <span>Amount</span>
+                              <span>{activeToken.symbol}</span>
+                            </div>
+                            <input
+                              type="text"
+                              value={tradeAmount}
+                              onChange={(e) => setTradeAmount(e.target.value)}
+                              placeholder="0.00"
+                              className="w-full bg-[#0B0E11] border border-[#2B3139] px-3 py-2 rounded text-base xl:text-xs text-white focus:outline-none focus:border-[#F0B90B] font-mono placeholder-slate-655"
+                            />
+                          </div>
+                        </>
+                      )}
+
+                      {/* Percentage Slider Dots */}
+                      {tradeType !== "SCAN" && (
+                        <div className="flex justify-between items-center px-1 py-1">
+                          {[0, 25, 50, 75, 100].map(pct => (
+                            <button
+                              key={pct}
+                              type="button"
+                              onClick={() => {
+                                setTradeSlider(pct);
+                                const mockMax = tradeTab === "BUY" ? 10000 : 500000;
+                                setTradeAmount(((mockMax * pct) / 100).toString());
+                              }}
+                              className={`text-[9px] font-bold px-1.5 py-0.5 rounded border transition-all cursor-pointer ${
+                                tradeSlider === pct ? "bg-[#F0B90B] border-[#F0B90B] text-[#0B0E11]" : "bg-[#0B0E11] border-[#2B3139] text-slate-400 hover:text-white"
+                              }`}
+                            >
+                              {pct}%
+                            </button>
+                          ))}
                         </div>
+                      )}
+
+                      <button
+                        type="submit"
+                        className={`w-full py-2.5 text-xs font-black uppercase tracking-widest rounded transition-all cursor-pointer ${
+                          tradeType === "SCAN"
+                            ? "bg-[#F0B90B] hover:bg-[#FCD535] text-[#0B0E11]"
+                            : tradeTab === "BUY"
+                            ? "bg-[#0ECB81] hover:bg-[#2EBD85] text-white"
+                            : "bg-[#F6465D] hover:bg-[#DF294A] text-white"
+                        }`}
+                      >
+                        {tradeType === "SCAN" ? "Perform Smart Audit Scan" : `${tradeTab} ${activeToken.symbol}`}
+                      </button>
+                    </form>
+                  </div>
+
+                  {/* Order Info & Mini Statistics Side of the Form */}
+                  <div className="bg-[#0B0E11] border border-[#2B3139] rounded-xl p-3.5 flex flex-col justify-between text-xs space-y-3 font-mono">
+                    <div className="border-b border-[#2B3139] pb-2">
+                      <h4 className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block mb-1">Simulated Balance Desk</h4>
+                      <p className="text-white text-xs font-bold flex justify-between">
+                        <span>Available Cash:</span>
+                        <span className="text-[#0ECB81]">$12,450.80 SOL</span>
+                      </p>
+                    </div>
+
+                    <div className="space-y-1.5 text-[10px]">
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Max Opportunity Score:</span>
+                        <span className="text-white font-bold">{activeToken.score}/100</span>
                       </div>
-                    );
-                  })
-                )}
-              </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Confidence Inflow:</span>
+                        <span className="text-[#0ECB81] font-bold">{activeToken.confidence || 92}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Contract Slippage:</span>
+                        <span className="text-white font-bold">1.0% Auto</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Honeypot Exposure:</span>
+                        <span className="text-[#0ECB81] font-bold">CLEAN</span>
+                      </div>
+                    </div>
 
-              {/* Left Column Bottom Metrics */}
-              <div className="p-3 bg-[#0B0E11] border-t border-[#2B3139] text-left text-[10px] space-y-2 mt-auto">
-                <div className="flex justify-between items-center text-slate-500">
-                  <span>Feed Status:</span>
-                  <span className="text-[#0ECB81] font-bold uppercase">{wsStatus}</span>
-                </div>
-                <p className="text-[8.5px] text-slate-500 leading-tight">Click on any asset to load its live chart and run automated AI audits.</p>
-              </div>
-            </aside>
-
-            {/* CENTER PANEL: Chart + Trade Box */}
-            <section className="flex-grow flex flex-col border-b xl:border-b-0 xl:border-r border-[#2B3139] overflow-hidden z-10">
-              {/* Top Part: Chart Panel */}
-              <div className="h-[360px] md:h-[400px] bg-[#181A20] border-b border-[#2B3139] relative flex flex-col shrink-0">
-                <div className="p-2.5 bg-[#181A20] border-b border-[#2B3139]/80 flex items-center justify-between text-xs select-none">
-                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5 font-sans">
-                    <span className="w-2 h-2 rounded-full bg-[#0ECB81] animate-pulse" /> Live Price Chart ({activeToken.symbol}/SOL)
-                  </span>
-                  <div className="flex items-center gap-1 text-[9px] text-[#8A99AD] font-bold">
-                    <span className="bg-[#2B3139] px-2 py-0.5 rounded text-white cursor-pointer">Live</span>
-                    <a
-                      href={`https://dexscreener.com/${activeToken.chain || 'solana'}/${activeToken.address}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-white px-2 py-0.5 rounded cursor-pointer"
-                    >
-                      DexScreener Link ↗
-                    </a>
+                    <div className="bg-[#181A20] p-2.5 rounded border border-[#2B3139] text-[9.5px] leading-relaxed text-slate-400">
+                      <span className="text-[#F0B90B] font-bold block mb-0.5">★ Intelligence Verdict:</span>
+                      "{activeToken.explanation || 'No report generated yet. Paste CA and run scanner or select an index.'}"
+                    </div>
                   </div>
                 </div>
 
-                {/* Embedding DexScreener Chart IFrame */}
-                <div className="flex-grow w-full bg-[#0B0E11]">
-                  {activeToken.address ? (
-                    <iframe
-                      src={`https://dexscreener.com/${activeToken.chain || 'solana'}/${activeToken.address}?embed=1&theme=dark&trades=0&info=0`}
-                      className="w-full h-full border-0 select-none pointer-events-auto"
-                      title={`Live Chart for ${activeToken.symbol}`}
+                {/* Simulated positions tabs and details */}
+                <div className="w-full bg-[#181A20] select-none text-left shrink-0 p-3">
+                  <div className="flex bg-[#0B0E11] border-b border-[#2B3139] p-1 text-[10px] font-bold text-[#8A99AD] uppercase flex-wrap">
+                    <button
+                      onClick={() => setBottomActiveTab("POSITIONS")}
+                      className={`px-4 py-2 cursor-pointer transition-all border-b-2 ${
+                        bottomActiveTab === "POSITIONS" ? "text-white border-[#F0B90B]" : "border-transparent hover:text-white"
+                      }`}
+                    >
+                      Positions ({simulatedPositions.length})
+                    </button>
+                    <button
+                      onClick={() => setBottomActiveTab("WATCHLIST")}
+                      className={`px-4 py-2 cursor-pointer transition-all border-b-2 ${
+                        bottomActiveTab === "WATCHLIST" ? "text-white border-[#F0B90B]" : "border-transparent hover:text-white"
+                      }`}
+                    >
+                      Watchlist ({watchlist.length})
+                    </button>
+                    <button
+                      onClick={() => setBottomActiveTab("AI_REPORT")}
+                      className={`px-4 py-2 cursor-pointer transition-all border-b-2 ${
+                        bottomActiveTab === "AI_REPORT" ? "text-white border-[#F0B90B]" : "border-transparent hover:text-white"
+                      }`}
+                    >
+                      AI Audits
+                    </button>
+                    <button
+                      onClick={() => setBottomActiveTab("SECURITY")}
+                      className={`px-4 py-2 cursor-pointer transition-all border-b-2 ${
+                        bottomActiveTab === "SECURITY" ? "text-white border-[#F0B90B]" : "border-transparent hover:text-white"
+                      }`}
+                    >
+                      Safety
+                    </button>
+                    {isAdmin && (
+                      <button
+                        onClick={() => setBottomActiveTab("ADMIN")}
+                        className={`px-4 py-2 cursor-pointer transition-all border-b-2 ${
+                          bottomActiveTab === "ADMIN" ? "text-white border-[#F0B90B]" : "border-transparent hover:text-white"
+                        }`}
+                      >
+                        Admin
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="p-2 bg-[#181A20] min-h-[150px]">
+                    {bottomActiveTab === "POSITIONS" && (
+                      <div className="overflow-x-auto text-[10px] font-sans">
+                        <table className="w-full text-left border-collapse">
+                          <thead>
+                            <tr className="border-b border-[#2B3139] text-slate-500 uppercase tracking-wider text-[8.5px]">
+                              <th className="py-2">Token</th>
+                              <th className="py-2 text-right">Size</th>
+                              <th className="py-2 text-right">Entry</th>
+                              <th className="py-2 text-right">Value</th>
+                              <th className="py-2 text-right">PnL</th>
+                              <th className="py-2 text-right">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[#2B3139]/40 text-slate-350">
+                            {simulatedPositions.map((pos) => (
+                              <tr key={pos.symbol} className="hover:bg-[#2B3139]/10">
+                                <td className="py-3 font-bold text-white flex items-center gap-1.5">
+                                  <span className="text-[10px] font-sans font-bold bg-[#2B3139] text-[#F0B90B] px-1 py-0.2 rounded">SOL</span>
+                                  {pos.symbol}
+                                </td>
+                                <td className="py-3 text-right">{pos.size}</td>
+                                <td className="py-3 text-right">{pos.entry}</td>
+                                <td className="py-3 text-right text-slate-300">{pos.value}</td>
+                                <td className={`py-3 text-right font-bold ${pos.isGreen ? "text-[#0ECB81]" : "text-[#F6465D]"}`}>{pos.pnl}</td>
+                                <td className="py-3 text-right">
+                                  <button
+                                    onClick={() => {
+                                      setTradeTab("SELL");
+                                      const mockSize = parseFloat(pos.size.replace(/,/g, ''));
+                                      setTradeAmount((mockSize * 0.5).toString());
+                                      setSelectedTokenDetails(pulseTokens.find(t => t.symbol === pos.symbol) || activeToken);
+                                      triggerOrderToast(`Ready to sell 50% of ${pos.symbol}`);
+                                    }}
+                                    className="px-2 py-1 bg-[#2B3139]/40 hover:bg-[#F6465D] border border-[#2B3139] hover:border-transparent text-slate-400 hover:text-white rounded text-[10px] uppercase font-bold transition-all cursor-pointer mr-1"
+                                  >
+                                    Sell 50%
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      setTradeTab("SELL");
+                                      setTradeAmount(pos.size.replace(/,/g, ''));
+                                      setSelectedTokenDetails(pulseTokens.find(t => t.symbol === pos.symbol) || activeToken);
+                                      triggerOrderToast(`Ready to close position on ${pos.symbol}`);
+                                    }}
+                                    className="px-2 py-1 bg-[#F6465D]/10 hover:bg-[#F6465D] border border-[#F6465D]/20 hover:border-transparent text-[#F6465D] hover:text-white rounded text-[10px] uppercase font-bold transition-all cursor-pointer"
+                                  >
+                                    Close
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+
+                    {bottomActiveTab === "WATCHLIST" && (
+                      <div className="grid grid-cols-1 gap-3 text-xs font-sans">
+                        {watchlistTokens.length > 0 ? (
+                          watchlistTokens.map((t) => (
+                            <div
+                              key={t.address}
+                              onClick={() => setSelectedTokenDetails(t)}
+                              className="bg-[#0B0E11] hover:bg-[#2B3139]/30 border border-[#2B3139] rounded-lg p-3 cursor-pointer flex justify-between items-center transition-all hover:scale-[1.01]"
+                            >
+                              <div className="min-w-0 text-left">
+                                <span className="font-bold text-white block text-sm">{t.symbol}</span>
+                                <span className="text-[9px] text-[#8A99AD] font-bold uppercase block mt-0.5">Intel: {t.score}/100</span>
+                              </div>
+                              <div className="text-right font-mono">
+                                <span className="font-bold text-white block">${parseFloat(t.priceUsd).toLocaleString(undefined, {minimumFractionDigits: 6})}</span>
+                                <span className={`text-[10px] font-bold ${t.priceChange >= 0 ? "text-[#0ECB81]" : "text-[#F6465D]"}`}>
+                                  {t.priceChange >= 0 ? "+" : ""}{t.priceChange.toFixed(2)}%
+                                </span>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="col-span-full py-8 text-center text-slate-500 font-bold uppercase text-[10px] tracking-wider">No assets added to Watchlist</div>
+                        )}
+                      </div>
+                    )}
+
+                    {bottomActiveTab === "AI_REPORT" && (
+                      <div className="grid grid-cols-1 gap-6 text-xs text-left">
+                        {/* Score and stats */}
+                        <div className="bg-[#0B0E11] border border-[#2B3139] rounded-lg p-4 space-y-3 font-mono">
+                          <div className="flex justify-between pb-2 border-b border-[#2B3139]/80">
+                            <span className="text-[#8A99AD] uppercase font-bold text-[9px]">Master AI Score</span>
+                            <span className="text-[#F0B90B] font-black text-sm">{activeToken.score}/100</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-slate-400">Total Supply:</span>
+                            <span className="text-white font-bold">{activeToken.supply ? parseFloat(activeToken.supply).toLocaleString() : "1,000,000,000"}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-slate-400">Decimals:</span>
+                            <span className="text-white font-bold">{activeToken.decimals || 9}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-slate-400">Holders Tracked:</span>
+                            <span className="text-[#0ECB81] font-bold">{activeToken.holderCount ? activeToken.holderCount.toLocaleString() : "2,420"}</span>
+                          </div>
+                        </div>
+
+                        {/* Explanation narratives */}
+                        <div className="bg-[#0B0E11] border border-[#2B3139] rounded-lg p-4 flex flex-col justify-between font-sans">
+                          <div>
+                            <span className="text-[#F0B90B] font-bold text-[10px] uppercase tracking-wider block mb-1">Intelligence Summary</span>
+                            <p className="text-slate-350 leading-relaxed text-xs">{activeToken.aiSummary || activeToken.explanation}</p>
+                            {activeToken.aiNarrative && (
+                              <p className="text-[10px] text-slate-500 italic mt-2">Narrative signal: "{activeToken.aiNarrative}"</p>
+                            )}
+                          </div>
+
+                          {/* Component breakdowns */}
+                          <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-[#2B3139]/60 font-mono text-[9.5px]">
+                            <div>
+                              <span className="text-slate-500 block uppercase">Momentum</span>
+                              <span className="text-white font-bold">{activeToken.breakdown?.momentum || 18} / 25</span>
+                            </div>
+                            <div>
+                              <span className="text-slate-500 block uppercase">Liquidity</span>
+                              <span className="text-white font-bold">{activeToken.breakdown?.liquidity || 11} / 15</span>
+                            </div>
+                            <div>
+                              <span className="text-slate-500 block uppercase">Social</span>
+                              <span className="text-white font-bold">{activeToken.breakdown?.social || 15} / 20</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {bottomActiveTab === "SECURITY" && (
+                      <div className="grid grid-cols-1 gap-4 text-xs font-sans">
+                        <div className="bg-[#0B0E11] border border-[#2B3139] p-4 rounded-lg flex items-center justify-between hover:bg-[#2B3139]/10 transition-colors">
+                          <div className="flex items-center gap-3">
+                            <Lock className="w-5 h-5 text-[#0ECB81]" />
+                            <div className="text-left">
+                              <span className="font-bold text-white block">Liquidity Locks</span>
+                              <span className="text-[9px] text-[#8A99AD] font-mono">LP burn & locks check</span>
+                            </div>
+                          </div>
+                          <span className="text-[9px] font-bold bg-[#0ECB81]/15 text-[#0ECB81] px-2 py-0.5 rounded border border-[#0ECB81]/25">100% SECURE</span>
+                        </div>
+
+                        <div className="bg-[#0B0E11] border border-[#2B3139] p-4 rounded-lg flex items-center justify-between hover:bg-[#2B3139]/10 transition-colors">
+                          <div className="flex items-center gap-3">
+                            <FileCheck2 className="w-5 h-5 text-[#0ECB81]" />
+                            <div className="text-left">
+                              <span className="font-bold text-white block">Contract Source</span>
+                              <span className="text-[9px] text-[#8A99AD] font-mono">Renounced ownership</span>
+                            </div>
+                          </div>
+                          <span className="text-[9px] font-bold bg-[#0ECB81]/15 text-[#0ECB81] px-2 py-0.5 rounded border border-[#0ECB81]/25">VERIFIED</span>
+                        </div>
+
+                        <div className="bg-[#0B0E11] border border-[#2B3139] p-4 rounded-lg flex items-center justify-between hover:bg-[#2B3139]/10 transition-colors">
+                          <div className="flex items-center gap-3">
+                            <AlertTriangle className="w-5 h-5 text-[#0ECB81]" />
+                            <div className="text-left">
+                              <span className="font-bold text-white block">Honeypot Exposure</span>
+                              <span className="text-[9px] text-[#8A99AD] font-mono">Tax & buy/sell checks</span>
+                            </div>
+                          </div>
+                          <span className="text-[9px] font-bold bg-[#0ECB81]/15 text-[#0ECB81] px-2 py-0.5 rounded border border-[#0ECB81]/25">CLEAN</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {bottomActiveTab === "ADMIN" && isAdmin && (
+                      <div className="bg-[#0B0E11] border border-[#2B3139] rounded-lg p-4 text-xs font-mono text-left">
+                        <span className="text-[#F0B90B] font-bold text-[10px] uppercase block mb-2 border-b border-[#2B3139] pb-2">Admin Terminal Controller</span>
+                        <AdminTerminal />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* PAIRS VIEW */}
+            {spotSubTab === "PAIRS" && (
+              <aside className="flex-grow bg-[#181A20] flex flex-col overflow-y-auto z-20 pb-16">
+                {/* Feed select tabs */}
+                <div className="p-2 border-b border-[#2B3139] bg-[#181A20] flex items-center justify-between">
+                  <span className="text-[10px] text-[#8A99AD] font-bold uppercase tracking-wider">Token Feeds</span>
+                  <select
+                    value={selectedFeedId}
+                    onChange={(e) => setSelectedFeedId(e.target.value)}
+                    className="bg-[#0B0E11] border border-[#2B3139] text-[10px] font-bold text-white px-2 py-1 rounded cursor-pointer focus:outline-none"
+                  >
+                    {DEX_FEEDS.map(f => (
+                      <option key={f.id} value={f.id}>{f.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Sub-search */}
+                <div className="p-2 border-b border-[#2B3139] bg-[#0B0E11]">
+                  <div className="relative">
+                    <Search className="w-3 h-3 absolute left-2 top-1/2 -translate-y-1/2 text-slate-500" />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search assets..."
+                      className="w-full bg-[#181A20] border border-[#2B3139] rounded pl-7 pr-2 py-1 text-base xl:text-[10px] text-white focus:outline-none placeholder-slate-600 font-sans"
                     />
+                  </div>
+                </div>
+
+                {/* List of Token Pairs */}
+                <div className="flex-grow overflow-y-auto divide-y divide-[#2B3139]/40 max-h-[450px]">
+                  {filteredTokens.length === 0 ? (
+                    <div className="text-center py-6 text-[10px] text-slate-500 font-bold uppercase">No pairs found</div>
                   ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 text-xs font-mono font-bold uppercase tracking-widest gap-2">
-                      <div className="w-6 h-6 border-2 border-[#F0B90B] border-t-transparent rounded-full animate-spin" />
-                      Connecting live feeds...
-                    </div>
+                    filteredTokens.map((token: any) => {
+                      const shortSymbol = token.header ? token.header.split(" ")[0].slice(0, 8) : "UNKNWN";
+                      const changeVal = (Math.random() * 20 - 8);
+                      const tokenChange = token.priceChange || changeVal;
+                      const tokenPrice = token.amount || (Math.random() * 0.05 + 0.001);
+                      const isTokenGreen = tokenChange >= 0;
+
+                      return (
+                        <div
+                          key={token.tokenAddress}
+                          onClick={() => {
+                            setSelectedTokenDetails(token);
+                            setSpotSubTab("CHART");
+                          }}
+                          className={`px-3 py-2 flex items-center justify-between text-left cursor-pointer transition-colors ${
+                            activeToken.address === token.tokenAddress ? "bg-[#2B3139]/60" : "hover:bg-[#2B3139]/20"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className="w-5 h-5 bg-[#0B0E11] rounded flex items-center justify-center text-[10px] text-white border-[#2B3139]">
+                              {shortSymbol[0]}
+                            </div>
+                            <div className="min-w-0">
+                              <span className="text-xs font-bold text-white block truncate leading-none font-sans">{shortSymbol}</span>
+                              <span className="text-[8px] text-slate-500 font-mono tracking-wider">SOL</span>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-xs font-bold text-white block font-mono">${tokenPrice.toFixed(6)}</span>
+                            <span className={`text-[9px] font-bold font-mono leading-none ${isTokenGreen ? "text-[#0ECB81]" : "text-[#F6465D]"}`}>
+                              {isTokenGreen ? "+" : ""}{tokenChange.toFixed(2)}%
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })
                   )}
                 </div>
-              </div>
 
-              {/* Bottom Part: Binance Spot Trade Order Placement Form */}
-              <div className="p-4 bg-[#181A20] grid grid-cols-1 md:grid-cols-2 gap-4 text-left border-b border-[#2B3139] shrink-0">
-                <div>
-                  {/* BUY/SELL Toggle Header */}
-                  <div className="flex bg-[#0B0E11] rounded p-0.5 border border-[#2B3139] mb-3">
-                    <button
-                      onClick={() => setTradeTab("BUY")}
-                      className={`flex-1 py-1.5 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
-                        tradeTab === "BUY" ? "bg-[#0ECB81] text-[#0B0E11]" : "text-slate-400 hover:text-white"
-                      }`}
-                    >
-                      Buy
-                    </button>
-                    <button
-                      onClick={() => setTradeTab("SELL")}
-                      className={`flex-1 py-1.5 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
-                        tradeTab === "SELL" ? "bg-[#F6465D] text-white" : "text-slate-400 hover:text-white"
-                      }`}
-                    >
-                      Sell
-                    </button>
+                {/* Left Column Bottom Metrics */}
+                <div className="p-3 bg-[#0B0E11] border-t border-[#2B3139] text-left text-[10px] space-y-2 mt-auto">
+                  <div className="flex justify-between items-center text-slate-500">
+                    <span>Feed Status:</span>
+                    <span className="text-[#0ECB81] font-bold uppercase">{wsStatus}</span>
+                  </div>
+                  <p className="text-[8.5px] text-slate-500 leading-tight">Click on any asset to load its live chart and run automated AI audits.</p>
+                </div>
+              </aside>
+            )}
+
+            {/* CHAT/TROLLBOX VIEW */}
+            {spotSubTab === "CHAT" && (
+              <aside className="flex-grow bg-[#181A20] flex flex-col overflow-y-auto z-10 pb-16">
+                {/* Market Pulse Updates */}
+                <div className="h-[180px] border-b border-[#2B3139] flex flex-col shrink-0">
+                  <div className="p-2 border-b border-[#2B3139] bg-[#181A20] flex items-center justify-between">
+                    <span className="text-[10px] text-[#8A99AD] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#F0B90B] animate-pulse" /> Market Pulse Updates
+                    </span>
+                  </div>
+                  <div className="flex-grow overflow-y-auto p-2 space-y-1.5 font-mono text-[9px] text-slate-400 scrollbar-none text-left">
+                    {pulseEvents.slice(0, 10).map((evt, idx) => (
+                      <div key={idx} className="flex gap-1.5 items-start py-0.5 border-l-2 border-slate-700 pl-1.5 hover:bg-[#2B3139]/10 rounded-r">
+                        <span className="text-[#8A99AD]">»</span>
+                        <span className="leading-tight text-slate-300 select-text">{evt}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Community Trollbox Chat */}
+                <div className="flex-grow flex flex-col overflow-hidden">
+                  <div className="p-2 border-b border-[#2B3139] bg-[#181A20] flex justify-between items-center select-none shrink-0">
+                    <span className="text-[10px] text-[#8A99AD] font-bold uppercase tracking-wider flex items-center gap-1 font-sans">
+                      <MessageSquare className="w-3.5 h-3.5 text-[#F0B90B]" /> Community Trollbox
+                    </span>
+                    <span className="bg-[#0ECB81]/15 text-[#0ECB81] text-[8px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
+                      <span className="w-1 h-1 rounded-full bg-[#0ECB81] animate-pulse" /> Live Chat
+                    </span>
                   </div>
 
-                  {/* LIMIT/MARKET/SCAN Toggles */}
-                  <div className="flex items-center gap-3 text-[10px] font-bold text-[#8A99AD] uppercase mb-3 px-1">
-                    <button type="button" onClick={() => setTradeType("LIMIT")} className={`pb-1 border-b-2 cursor-pointer ${tradeType === "LIMIT" ? "text-white border-[#F0B90B]" : "border-transparent hover:text-white"}`}>Limit</button>
-                    <button type="button" onClick={() => setTradeType("MARKET")} className={`pb-1 border-b-2 cursor-pointer ${tradeType === "MARKET" ? "text-white border-[#F0B90B]" : "border-transparent hover:text-white"}`}>Market</button>
-                    <button type="button" onClick={() => setTradeType("SCAN")} className={`pb-1 border-b-2 cursor-pointer ${tradeType === "SCAN" ? "text-white border-[#F0B90B]" : "border-transparent hover:text-white"}`}>Scan CA</button>
+                  {/* Chat messages */}
+                  <div className="flex-grow overflow-y-auto p-3 space-y-3 scrollbar-none text-left font-sans h-[320px] max-h-[350px]">
+                    {chatMessages.map((msg) => {
+                      const initial = msg.user ? msg.user[0].toUpperCase() : "U";
+                      const hash = msg.user ? msg.user.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) : 0;
+                      const avatarColors = [
+                        "bg-red-900/40 border-red-500/30 text-red-200",
+                        "bg-green-900/40 border-green-500/30 text-green-200",
+                        "bg-blue-900/40 border-blue-500/30 text-blue-200",
+                        "bg-yellow-900/40 border-yellow-500/30 text-[#F0B90B]",
+                        "bg-purple-900/40 border-purple-500/30 text-purple-200",
+                        "bg-pink-900/40 border-pink-500/30 text-pink-200",
+                        "bg-indigo-900/40 border-indigo-500/30 text-indigo-200"
+                      ];
+                      const avatarColor = avatarColors[hash % avatarColors.length];
+
+                      return (
+                        <div key={msg.id} className="flex gap-2 text-[11px] items-start">
+                          <div className={`w-6 h-6 rounded flex items-center justify-center font-bold border shrink-0 text-[10px] ${avatarColor}`}>
+                            {initial}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between gap-1 mb-0.5">
+                              <span className={`font-bold truncate select-text ${msg.isAdmin ? "text-[#0ECB81]" : "text-slate-200"}`}>{msg.user}</span>
+                              <span className="text-[7.5px] text-slate-500 font-mono shrink-0">{msg.time}</span>
+                            </div>
+                            <p className="text-slate-350 leading-normal select-text break-words font-medium">{msg.message}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                    <div ref={chatBottomRef} />
                   </div>
 
-                  {/* Form inputs */}
-                  <form onSubmit={(e) => handlePlaceSimulatedOrder(e, activeToken)} className="space-y-3">
-                    {tradeType === "SCAN" ? (
-                      <div>
-                        <label className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block mb-1">Contract Address</label>
-                        <div className="relative">
-                          <input
-                            type="text"
-                            value={tradePrice}
-                            onChange={(e) => setTradePrice(e.target.value)}
-                            placeholder="Paste Token Contract Address..."
-                            className="w-full bg-[#0B0E11] border border-[#2B3139] px-3 py-2 rounded text-base xl:text-xs text-white focus:outline-none focus:border-[#F0B90B] font-mono placeholder-slate-650"
-                          />
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        <div>
-                          <div className="flex justify-between text-[10px] font-semibold text-slate-500 mb-1">
-                            <span>Price</span>
-                            <span>USDT</span>
-                          </div>
-                          <input
-                            type="text"
-                            value={tradePrice}
-                            onChange={(e) => setTradePrice(e.target.value)}
-                            disabled={tradeType === "MARKET"}
-                            className="w-full bg-[#0B0E11] border border-[#2B3139] px-3 py-2 rounded text-base xl:text-xs text-white focus:outline-none focus:border-[#F0B90B] font-mono disabled:opacity-50"
-                          />
-                        </div>
-                        <div>
-                          <div className="flex justify-between text-[10px] font-semibold text-slate-500 mb-1">
-                            <span>Amount</span>
-                            <span>{activeToken.symbol}</span>
-                          </div>
-                          <input
-                            type="text"
-                            value={tradeAmount}
-                            onChange={(e) => setTradeAmount(e.target.value)}
-                            placeholder="0.00"
-                            className="w-full bg-[#0B0E11] border border-[#2B3139] px-3 py-2 rounded text-base xl:text-xs text-white focus:outline-none focus:border-[#F0B90B] font-mono placeholder-slate-655"
-                          />
-                        </div>
-                      </>
-                    )}
-
-                    {/* Percentage Slider Dots */}
-                    {tradeType !== "SCAN" && (
-                      <div className="flex justify-between items-center px-1 py-1">
-                        {[0, 25, 50, 75, 100].map(pct => (
-                          <button
-                            key={pct}
-                            type="button"
-                            onClick={() => {
-                              setTradeSlider(pct);
-                              const mockMax = tradeTab === "BUY" ? 10000 : 500000;
-                              setTradeAmount(((mockMax * pct) / 100).toString());
-                            }}
-                            className={`text-[9px] font-bold px-1.5 py-0.5 rounded border transition-all cursor-pointer ${
-                              tradeSlider === pct ? "bg-[#F0B90B] border-[#F0B90B] text-[#0B0E11]" : "bg-[#0B0E11] border-[#2B3139] text-slate-400 hover:text-white"
-                            }`}
-                          >
-                            {pct}%
-                          </button>
-                        ))}
-                      </div>
-                    )}
-
-                    <button
-                      type="submit"
-                      className={`w-full py-2.5 text-xs font-black uppercase tracking-widest rounded transition-all cursor-pointer ${
-                        tradeType === "SCAN"
-                          ? "bg-[#F0B90B] hover:bg-[#FCD535] text-[#0B0E11]"
-                          : tradeTab === "BUY"
-                          ? "bg-[#0ECB81] hover:bg-[#2EBD85] text-white"
-                          : "bg-[#F6465D] hover:bg-[#DF294A] text-white"
-                      }`}
-                    >
-                      {tradeType === "SCAN" ? "Perform Smart Audit Scan" : `${tradeTab} ${activeToken.symbol}`}
+                  {/* Chat Input form */}
+                  <form onSubmit={handleSendChat} className="p-2 border-t border-[#2B3139] bg-[#181A20] flex gap-2 shrink-0">
+                    <input
+                      type="text"
+                      value={chatInput}
+                      onChange={(e) => setChatInput(e.target.value)}
+                      placeholder="Send dChat signal..."
+                      className="flex-grow bg-[#0B0E11] border border-[#2B3139] px-3 py-1.5 rounded text-base xl:text-[11px] text-white focus:outline-none focus:border-[#F0B90B] placeholder-slate-655 font-sans"
+                    />
+                    <button type="submit" className="px-3 bg-[#F0B90B] text-[#0B0E11] hover:bg-[#FCD535] font-bold text-[10px] uppercase rounded transition-colors flex items-center justify-center shrink-0 cursor-pointer">
+                      <Send className="w-3.5 h-3.5" />
                     </button>
                   </form>
                 </div>
+              </aside>
+            )}
 
-                {/* Order Info & Mini Statistics Side of the Form */}
-                <div className="bg-[#0B0E11] border border-[#2B3139] rounded-xl p-3.5 flex flex-col justify-between text-xs space-y-3 font-mono">
-                  <div className="border-b border-[#2B3139] pb-2">
-                    <h4 className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block mb-1">Simulated Balance Desk</h4>
-                    <p className="text-white text-xs font-bold flex justify-between">
-                      <span>Available Cash:</span>
-                      <span className="text-[#0ECB81]">$12,450.80 SOL</span>
-                    </p>
-                  </div>
-
-                  <div className="space-y-1.5 text-[10px]">
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Max Opportunity Score:</span>
-                      <span className="text-white font-bold">{activeToken.score}/100</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Confidence Inflow:</span>
-                      <span className="text-[#0ECB81] font-bold">{activeToken.confidence || 92}%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Contract Slippage:</span>
-                      <span className="text-white font-bold">1.0% Auto</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Honeypot Exposure:</span>
-                      <span className="text-[#0ECB81] font-bold">CLEAN</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-[#181A20] p-2.5 rounded border border-[#2B3139] text-[9.5px] leading-relaxed text-slate-400">
-                    <span className="text-[#F0B90B] font-bold block mb-0.5">★ Intelligence Verdict:</span>
-                    "{activeToken.explanation || 'No report generated yet. Paste CA and run scanner or select an index.'}"
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* RIGHT PANEL: Trollbox Chat & Live Activity Pulse (Binance recent trades) */}
-            <aside className="w-full xl:w-72 bg-[#181A20] flex flex-col shrink-0 overflow-y-auto z-10">
-              {/* Top Part: Recent Market Activity */}
-              <div className="h-[200px] border-b border-[#2B3139] flex flex-col">
-                <div className="p-2 border-b border-[#2B3139] bg-[#181A20] flex items-center justify-between">
-                  <span className="text-[10px] text-[#8A99AD] font-bold uppercase tracking-wider flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#F0B90B] animate-pulse" /> Market Pulse Updates
-                  </span>
-                </div>
-                <div className="flex-grow overflow-y-auto p-2 space-y-1.5 font-mono text-[9px] text-slate-400 scrollbar-none text-left">
-                  {pulseEvents.slice(0, 10).map((evt, idx) => (
-                    <div key={idx} className="flex gap-1.5 items-start py-0.5 border-l-2 border-slate-700 pl-1.5 hover:bg-[#2B3139]/10 rounded-r">
-                      <span className="text-[#8A99AD]">»</span>
-                      <span className="leading-tight text-slate-300 select-text">{evt}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Bottom Part: Community Trollbox Chat */}
-              <div className="flex-grow flex flex-col h-[320px] xl:h-auto overflow-hidden">
-                <div className="p-2 border-b border-[#2B3139] bg-[#181A20] flex justify-between items-center select-none">
-                  <span className="text-[10px] text-[#8A99AD] font-bold uppercase tracking-wider flex items-center gap-1 font-sans">
-                    <MessageSquare className="w-3.5 h-3.5 text-[#F0B90B]" /> Community Trollbox
-                  </span>
-                  <span className="bg-[#0ECB81]/15 text-[#0ECB81] text-[8px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
-                    <span className="w-1 h-1 rounded-full bg-[#0ECB81] animate-pulse" /> Live Chat
-                  </span>
-                </div>
-
-                {/* Chat messages */}
-                <div className="flex-grow overflow-y-auto p-3 space-y-3 scrollbar-none text-left font-sans">
-                  {chatMessages.map((msg) => {
-                    const initial = msg.user ? msg.user[0].toUpperCase() : "A";
-                    const avatarColor = msg.isAdmin
-                      ? "bg-[#0ECB81]/10 border-[#0ECB81]/30 text-[#0ECB81]"
-                      : "bg-[#F0B90B]/10 border-[#F0B90B]/30 text-[#F0B90B]";
-                    
-                    return (
-                      <div key={msg.id} className="flex gap-2 text-[10.5px] items-start p-1.5 rounded hover:bg-[#2B3139]/10 transition-colors">
-                        <div className={`w-6 h-6 rounded flex items-center justify-center font-bold border shrink-0 text-[10px] ${avatarColor}`}>
-                          {initial}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center justify-between gap-1 mb-0.5">
-                            <span className={`font-bold truncate select-text ${msg.isAdmin ? "text-[#0ECB81]" : "text-slate-200"}`}>{msg.user}</span>
-                            <span className="text-[7.5px] text-slate-500 font-mono shrink-0">{msg.time}</span>
-                          </div>
-                          <p className="text-slate-350 leading-normal select-text break-words font-medium">{msg.message}</p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  <div ref={chatBottomRef} />
-                </div>
-
-                {/* Chat Input form */}
-                <form onSubmit={handleSendChat} className="p-2 border-t border-[#2B3139] bg-[#181A20] flex gap-2">
-                  <input
-                    type="text"
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    placeholder="Send dChat signal..."
-                    className="flex-grow bg-[#0B0E11] border border-[#2B3139] px-3 py-1.5 rounded text-base xl:text-[11px] text-white focus:outline-none focus:border-[#F0B90B] placeholder-slate-655 font-sans"
-                  />
-                  <button type="submit" className="px-3 bg-[#F0B90B] text-[#0B0E11] hover:bg-[#FCD535] font-bold text-[10px] uppercase rounded transition-colors flex items-center justify-center shrink-0 cursor-pointer">
-                    <Send className="w-3.5 h-3.5" />
-                  </button>
-                </form>
-              </div>
-            </aside>
-          </div>
-        )}
-
-        {/* VIEW 1 BOTTOM PANEL: simulated positions, watchlist, etc. */}
-        {activeTab === "AISCANNER" && (
-          <div className="w-full bg-[#181A20] border-t border-[#2B3139] select-none text-left shrink-0">
-            <div className="flex bg-[#0B0E11] border-b border-[#2B3139] p-1 text-[10px] font-bold text-[#8A99AD] uppercase flex-wrap">
-              <button
-                onClick={() => setBottomActiveTab("POSITIONS")}
-                className={`px-4 py-2 cursor-pointer transition-all border-b-2 ${
-                  bottomActiveTab === "POSITIONS" ? "text-white border-[#F0B90B]" : "border-transparent hover:text-white"
-                }`}
-              >
-                Simulated Positions ({simulatedPositions.length})
-              </button>
-              <button
-                onClick={() => setBottomActiveTab("WATCHLIST")}
-                className={`px-4 py-2 cursor-pointer transition-all border-b-2 ${
-                  bottomActiveTab === "WATCHLIST" ? "text-white border-[#F0B90B]" : "border-transparent hover:text-white"
-                }`}
-              >
-                Watchlist Favorites ({watchlist.length})
-              </button>
-              <button
-                onClick={() => setBottomActiveTab("AI_REPORT")}
-                className={`px-4 py-2 cursor-pointer transition-all border-b-2 ${
-                  bottomActiveTab === "AI_REPORT" ? "text-white border-[#F0B90B]" : "border-transparent hover:text-white"
-                }`}
-              >
-                AI Research Brief ({activeToken.symbol})
-              </button>
-              <button
-                onClick={() => setBottomActiveTab("SECURITY")}
-                className={`px-4 py-2 cursor-pointer transition-all border-b-2 ${
-                  bottomActiveTab === "SECURITY" ? "text-white border-[#F0B90B]" : "border-transparent hover:text-white"
-                }`}
-              >
-                Security Risk Checklist
-              </button>
-              {isAdmin && (
-                <button
-                  onClick={() => setBottomActiveTab("ADMIN")}
-                  className={`px-4 py-2 cursor-pointer transition-all border-b-2 ${
-                    bottomActiveTab === "ADMIN" ? "text-white border-[#F0B90B]" : "border-transparent hover:text-white"
-                  }`}
-                >
-                  Admin console
-                </button>
-              )}
-            </div>
-
-            <div className="p-4 bg-[#181A20] overflow-y-auto max-h-[220px]">
-              {bottomActiveTab === "POSITIONS" && (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-xs text-left font-mono">
-                    <thead>
-                      <tr className="text-[#8A99AD] border-b border-[#2B3139]/85 pb-2">
-                        <th className="py-2">Asset</th>
-                        <th className="py-2 text-right">Holding Size</th>
-                        <th className="py-2 text-right">Entry Price</th>
-                        <th className="py-2 text-right">Position Value</th>
-                        <th className="py-2 text-right">Estimated PNL</th>
-                        <th className="py-2 text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#2B3139]/30 text-white">
-                      {simulatedPositions.map((pos) => (
-                        <tr key={pos.symbol} className="hover:bg-[#2B3139]/10">
-                          <td className="py-3 font-bold text-white flex items-center gap-1.5">
-                            <span className="text-[10px] font-sans font-bold bg-[#2B3139] text-[#F0B90B] px-1 py-0.2 rounded">SOL</span>
-                            {pos.symbol}
-                          </td>
-                          <td className="py-3 text-right">{pos.size}</td>
-                          <td className="py-3 text-right">{pos.entry}</td>
-                          <td className="py-3 text-right text-slate-300">{pos.value}</td>
-                          <td className={`py-3 text-right font-bold ${pos.isGreen ? "text-[#0ECB81]" : "text-[#F6465D]"}`}>{pos.pnl}</td>
-                          <td className="py-3 text-right">
-                            <button
-                              onClick={() => {
-                                setTradeTab("SELL");
-                                const mockSize = parseFloat(pos.size.replace(/,/g, ''));
-                                setTradeAmount((mockSize * 0.5).toString());
-                                setSelectedTokenDetails(pulseTokens.find(t => t.symbol === pos.symbol) || activeToken);
-                                triggerOrderToast(`Ready to sell 50% of ${pos.symbol}`);
-                              }}
-                              className="px-2 py-1 bg-[#2B3139]/40 hover:bg-[#F6465D] border border-[#2B3139] hover:border-transparent text-slate-400 hover:text-white rounded text-[10px] uppercase font-bold transition-all cursor-pointer mr-1"
-                            >
-                              Sell 50%
-                            </button>
-                            <button
-                              onClick={() => {
-                                setTradeTab("SELL");
-                                setTradeAmount(pos.size.replace(/,/g, ''));
-                                setSelectedTokenDetails(pulseTokens.find(t => t.symbol === pos.symbol) || activeToken);
-                                triggerOrderToast(`Ready to close position on ${pos.symbol}`);
-                              }}
-                              className="px-2 py-1 bg-[#F6465D]/10 hover:bg-[#F6465D] border border-[#F6465D]/20 hover:border-transparent text-[#F6465D] hover:text-white rounded text-[10px] uppercase font-bold transition-all cursor-pointer"
-                            >
-                              Close
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-
-              {bottomActiveTab === "WATCHLIST" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 text-xs font-sans">
-                  {watchlistTokens.length > 0 ? (
-                    watchlistTokens.map((t) => (
-                      <div
-                        key={t.address}
-                        onClick={() => setSelectedTokenDetails(t)}
-                        className="bg-[#0B0E11] hover:bg-[#2B3139]/30 border border-[#2B3139] rounded-lg p-3 cursor-pointer flex justify-between items-center transition-all hover:scale-[1.01]"
-                      >
-                        <div className="min-w-0 text-left">
-                          <span className="font-bold text-white block text-sm">{t.symbol}</span>
-                          <span className="text-[9px] text-[#8A99AD] font-bold uppercase block mt-0.5">Intel: {t.score}/100</span>
-                        </div>
-                        <div className="text-right font-mono">
-                          <span className="font-bold text-white block">${parseFloat(t.priceUsd).toLocaleString(undefined, {minimumFractionDigits: 6})}</span>
-                          <span className={`text-[10px] font-bold ${t.priceChange >= 0 ? "text-[#0ECB81]" : "text-[#F6465D]"}`}>
-                            {t.priceChange >= 0 ? "+" : ""}{t.priceChange.toFixed(2)}%
-                          </span>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="col-span-full py-8 text-center text-slate-500 font-bold uppercase text-[10px] tracking-wider">No assets added to Watchlist</div>
-                  )}
-                </div>
-              )}
-
-              {bottomActiveTab === "AI_REPORT" && (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 text-xs text-left">
-                  {/* Score and stats */}
-                  <div className="bg-[#0B0E11] border border-[#2B3139] rounded-lg p-4 space-y-3 font-mono">
-                    <div className="flex justify-between pb-2 border-b border-[#2B3139]/80">
-                      <span className="text-[#8A99AD] uppercase font-bold text-[9px]">Master AI Score</span>
-                      <span className="text-[#F0B90B] font-black text-sm">{activeToken.score}/100</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">Total Supply:</span>
-                      <span className="text-white font-bold">{activeToken.supply ? parseFloat(activeToken.supply).toLocaleString() : "1,000,000,000"}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">Decimals:</span>
-                      <span className="text-white font-bold">{activeToken.decimals || 9}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">Holders Tracked:</span>
-                      <span className="text-[#0ECB81] font-bold">{activeToken.holderCount ? activeToken.holderCount.toLocaleString() : "2,420"}</span>
-                    </div>
-                  </div>
-
-                  {/* Explanation narratives */}
-                  <div className="lg:col-span-2 bg-[#0B0E11] border border-[#2B3139] rounded-lg p-4 flex flex-col justify-between font-sans">
-                    <div>
-                      <span className="text-[#F0B90B] font-bold text-[10px] uppercase tracking-wider block mb-1">Intelligence Summary</span>
-                      <p className="text-slate-350 leading-relaxed text-xs">{activeToken.aiSummary || activeToken.explanation}</p>
-                      {activeToken.aiNarrative && (
-                        <p className="text-[10px] text-slate-500 italic mt-2">Narrative signal: "{activeToken.aiNarrative}"</p>
-                      )}
-                    </div>
-
-                    {/* Component breakdowns */}
-                    <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-[#2B3139]/60 font-mono text-[9.5px]">
-                      <div>
-                        <span className="text-slate-500 block uppercase">Momentum</span>
-                        <span className="text-white font-bold">{activeToken.breakdown?.momentum || 18} / 25</span>
-                      </div>
-                      <div>
-                        <span className="text-slate-500 block uppercase">Liquidity</span>
-                        <span className="text-white font-bold">{activeToken.breakdown?.liquidity || 11} / 15</span>
-                      </div>
-                      <div>
-                        <span className="text-slate-500 block uppercase">Social</span>
-                        <span className="text-white font-bold">{activeToken.breakdown?.social || 15} / 20</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {bottomActiveTab === "SECURITY" && (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-sans">
-                  <div className="bg-[#0B0E11] border border-[#2B3139] p-4 rounded-lg flex items-center justify-between hover:bg-[#2B3139]/10 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <Lock className="w-5 h-5 text-[#0ECB81]" />
-                      <div className="text-left">
-                        <span className="font-bold text-white block">Liquidity Locks</span>
-                        <span className="text-[9px] text-[#8A99AD] font-mono">LP burn & locks check</span>
-                      </div>
-                    </div>
-                    <span className="text-[9px] font-bold bg-[#0ECB81]/15 text-[#0ECB81] px-2 py-0.5 rounded border border-[#0ECB81]/25">100% SECURE</span>
-                  </div>
-
-                  <div className="bg-[#0B0E11] border border-[#2B3139] p-4 rounded-lg flex items-center justify-between hover:bg-[#2B3139]/10 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <FileCheck2 className="w-5 h-5 text-[#0ECB81]" />
-                      <div className="text-left">
-                        <span className="font-bold text-white block">Contract Source</span>
-                        <span className="text-[9px] text-[#8A99AD] font-mono">Renounced ownership</span>
-                      </div>
-                    </div>
-                    <span className="text-[9px] font-bold bg-[#0ECB81]/15 text-[#0ECB81] px-2 py-0.5 rounded border border-[#0ECB81]/25">VERIFIED</span>
-                  </div>
-
-                  <div className="bg-[#0B0E11] border border-[#2B3139] p-4 rounded-lg flex items-center justify-between hover:bg-[#2B3139]/10 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <AlertTriangle className="w-5 h-5 text-[#0ECB81]" />
-                      <div className="text-left">
-                        <span className="font-bold text-white block">Honeypot Exposure</span>
-                        <span className="text-[9px] text-[#8A99AD] font-mono">Tax & buy/sell checks</span>
-                      </div>
-                    </div>
-                    <span className="text-[9px] font-bold bg-[#0ECB81]/15 text-[#0ECB81] px-2 py-0.5 rounded border border-[#0ECB81]/25">CLEAN</span>
-                  </div>
-                </div>
-              )}
-
-              {bottomActiveTab === "ADMIN" && isAdmin && (
-                <div className="bg-[#0B0E11] border border-[#2B3139] rounded-lg p-4 text-xs font-mono text-left">
-                  <span className="text-[#F0B90B] font-bold text-[10px] uppercase block mb-2 border-b border-[#2B3139] pb-2">Admin Terminal Controller</span>
-                  <AdminTerminal />
-                </div>
-              )}
-            </div>
           </div>
         )}
 
