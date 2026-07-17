@@ -16,108 +16,48 @@ export default function Navbar() {
   const { user, signOut } = useAuth();
 
   return (
-    <div className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 w-full">
-      <header className="backdrop-blur-xl bg-[#0D1117]/85 border border-slate-800 shadow-[0_10px_32px_rgba(0,0,0,0.6)] px-6 py-3.5 rounded-2xl flex items-center justify-between gap-4 max-w-7xl w-full">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#07090E]/90 backdrop-blur-md border-b border-slate-900 px-6 py-3 flex items-center justify-between select-none">
+      <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 shrink-0 group">
-          <div className="w-9 h-9 bg-slate-900 rounded-xl flex items-center justify-center border border-slate-800 transition-transform group-hover:scale-105">
-            <span className="text-lg font-black text-white font-mono leading-none">$</span>
+        <Link href="/" className="flex items-center gap-2 group text-left">
+          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+            <span className="text-sm font-black text-white font-mono leading-none">$</span>
           </div>
           <div>
-            <h1 className="text-lg font-black uppercase text-white tracking-tighter leading-none group-hover:text-blue-400 transition-colors">
-              cashix.fun
+            <h1 className="text-sm font-black uppercase text-white tracking-tighter leading-none">
+              CASHIX<span className="text-blue-500">.FUN</span>
             </h1>
-            <span className="text-[8px] uppercase tracking-widest text-slate-500 font-bold block mt-0.5">Intelligence</span>
           </div>
         </Link>
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-8 font-bold text-xs uppercase tracking-wider">
-          <a href="#workflow" className="text-slate-400 hover:text-white transition-all duration-200">
-            Workflow
-          </a>
-          <a href="#showcase" className="text-slate-400 hover:text-white transition-all duration-200">
-            Showcase
-          </a>
-          <a href="#comparison" className="text-slate-400 hover:text-white transition-all duration-200">
-            Why CASHIX
-          </a>
-          <a href="#faq" className="text-slate-400 hover:text-white transition-all duration-200">
-            FAQ
-          </a>
-        </div>
-
-        {/* CTAs */}
-        <div className="flex items-center gap-3 shrink-0">
-          {user ? (
-            <div className="flex items-center gap-3">
-              <Link
-                href="/dashboard"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 text-xs rounded-xl font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5 shadow-md"
-              >
-                <UserIcon className="w-3.5 h-3.5" />
-                Enter Terminal
-              </Link>
-              <button
-                onClick={() => signOut()}
-                className="p-2 text-slate-400 hover:text-white transition-colors"
-                title="Disconnect"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
-            </div>
-          ) : (
-            <Link 
-              href="/login" 
-              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 text-xs rounded-xl font-bold uppercase tracking-wider transition-colors shadow-md"
-            >
-              Enter Terminal
-            </Link>
-          )}
-
-          {/* Mobile menu button */}
+        {/* Action Button & Menu */}
+        <div className="flex items-center gap-3">
+          <Link
+            href={user ? "/dashboard" : "/login"}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-xs rounded-lg font-bold transition-all shadow cursor-pointer uppercase tracking-wider"
+          >
+            Launch App
+          </Link>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-slate-400 hover:text-white transition-colors"
+            className="p-1.5 text-slate-400 hover:text-white transition-colors cursor-pointer"
           >
-            {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            <Menu className="w-5.5 h-5.5 text-white" />
           </button>
         </div>
+      </div>
 
-        {/* Mobile menu dropdown */}
-        {isOpen && (
-          <div className="absolute top-[calc(100%+12px)] left-0 right-0 bg-[#0D1117]/95 border border-slate-800 backdrop-blur-xl rounded-2xl p-6 flex flex-col gap-4 font-bold md:hidden shadow-2xl">
-            <a 
-              href="#workflow" 
-              onClick={() => setIsOpen(false)}
-              className="text-slate-300 hover:text-white uppercase text-sm tracking-wider"
-            >
-              Workflow
-            </a>
-            <a 
-              href="#showcase" 
-              onClick={() => setIsOpen(false)}
-              className="text-slate-300 hover:text-white uppercase text-sm tracking-wider"
-            >
-              Showcase
-            </a>
-            <a 
-              href="#comparison" 
-              onClick={() => setIsOpen(false)}
-              className="text-slate-300 hover:text-white uppercase text-sm tracking-wider"
-            >
-              Why CASHIX
-            </a>
-            <a 
-              href="#faq" 
-              onClick={() => setIsOpen(false)}
-              className="text-slate-300 hover:text-white uppercase text-sm tracking-wider"
-            >
-              FAQ
-            </a>
-          </div>
-        )}
-      </header>
-    </div>
+      {/* Mobile Menu Dropdown */}
+      {isOpen && (
+        <div className="absolute top-[100%] left-0 right-0 bg-[#07090E]/95 border-b border-slate-900 p-6 flex flex-col gap-4 font-bold shadow-2xl">
+          <a href="#workflow" onClick={() => setIsOpen(false)} className="text-slate-300 hover:text-white uppercase text-xs tracking-wider">Workflow</a>
+          <a href="#showcase" onClick={() => setIsOpen(false)} className="text-slate-300 hover:text-white uppercase text-xs tracking-wider">Showcase</a>
+          <a href="#comparison" onClick={() => setIsOpen(false)} className="text-slate-300 hover:text-white uppercase text-xs tracking-wider">Why CASHIX</a>
+          {user && (
+            <button onClick={() => { signOut(); setIsOpen(false); }} className="text-slate-400 hover:text-white uppercase text-xs tracking-wider text-left">Disconnect</button>
+          )}
+        </div>
+      )}
+    </header>
   );
 }

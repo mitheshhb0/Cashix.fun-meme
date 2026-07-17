@@ -1,176 +1,111 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { 
-  XCircle, 
-  CheckCircle2, 
-  Activity, 
-  Users, 
-  TrendingUp, 
-  ShieldAlert, 
-  TrendingDown,
-  Database
-} from "lucide-react";
+import { CheckCircle2, ChevronRight, Database, Cpu, Users, ShieldAlert, Globe, Zap, BarChart3, Star, Heart, TrendingUp } from "lucide-react";
+import React from "react";
 
 export default function Benefits() {
-  const comparison = [
-    {
-      metric: "Market Analysis",
-      traditional: "Random opinions & unverified hype",
-      cashix: "Deterministic, real-time on-chain data streams",
-      verified: true
-    },
-    {
-      metric: "Information Speed",
-      traditional: "Delayed manual calls & recycled links",
-      cashix: "Sub-second live websocket event triggers",
-      verified: true
-    },
-    {
-      metric: "Opportunity Assessment",
-      traditional: "Biased shills with zero alignment",
-      cashix: "Transparent Market Intelligence Scoring",
-      verified: true
-    },
-    {
-      metric: "Whale Flow Tracking",
-      traditional: "No trace or unsourced claims",
-      cashix: "Automated wallet trace triggers & profit histories",
-      verified: true
-    },
-    {
-      metric: "Contract Audit",
-      traditional: "No safety verification or audit oversight",
-      cashix: "Automated honeypot & LP lock checks",
-      verified: true
-    },
-    {
-      metric: "Explainability",
-      traditional: "No rationale or proof provided",
-      cashix: "AI-generated breakdowns & source references",
-      verified: true
-    }
+  const items = [
+    { title: "Real-time on-chain & off-chain data", desc: "Deterministic, real-time on-chain data streams vs. traditional unverified hype", icon: Database },
+    { title: "AI-powered opportunity scoring", desc: "Transparent scoring methodology vs. traditional biased shills with zero alignment", icon: Cpu },
+    { title: "Whale & smart money tracking", desc: "Automated wallet trace triggers vs. traditional unsourced claims", icon: Users },
+    { title: "Risk analysis & safety checks", desc: "Automated honeypot & LP lock checks vs. traditional no safety verification", icon: ShieldAlert },
+    { title: "Multi-chain support", desc: "Sub-second websocket triggers across multiple chains vs. delayed manual calls", icon: Globe },
+    { title: "Designed for speed & accuracy", desc: "AI-generated breakdowns & references vs. traditional no rationale provided", icon: Zap }
   ];
 
-  const scoreComponents = [
-    {
-      icon: Activity,
-      title: "Market Momentum",
-      desc: "Evaluates current buy/sell ratios, volume spikes, and short-term price velocity thresholds."
-    },
-    {
-      icon: Users,
-      title: "Whale Activity",
-      desc: "Traces real-time smart money accumulation, wallet sizes, and smart wallets holdings."
-    },
-    {
-      icon: Database,
-      title: "Liquidity Depth",
-      desc: "Measures PancakeSwap/Raydium pool depths, locked tokens ratios, and transfer limits."
-    },
-    {
-      icon: TrendingUp,
-      title: "Social Velocity",
-      desc: "Scrapes X mentions, verified KOL posts, and growth curves in Telegram communities."
-    },
-    {
-      icon: ShieldAlert,
-      title: "Risk Parameters",
-      desc: "Processes honeypot safety, top-holder concentration, and revoked mint flags."
-    }
+  const factors = [
+    { label: "Liquidity Health", icon: CheckCircle2 },
+    { label: "Holder Growth", icon: CheckCircle2 },
+    { label: "Whale Activity", icon: CheckCircle2 },
+    { label: "Volume Momentum", icon: CheckCircle2 },
+    { label: "Developer Trust", icon: CheckCircle2 },
+    { label: "Social Sentiment", icon: CheckCircle2 },
+    { label: "Price Action", icon: CheckCircle2 },
+    { label: "Risk Analysis", icon: CheckCircle2 }
   ];
 
   return (
-    <section id="comparison" className="relative py-24 bg-[#07090E] overflow-hidden border-t border-slate-800/60">
-      {/* Background gradients */}
-      <div className="absolute top-1/3 right-0 w-96 h-96 rounded-full bg-blue-500/5 blur-[120px] pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-6 relative z-10 space-y-24">
+    <section id="comparison" className="relative py-20 bg-[#07090E] select-none text-center border-t border-slate-900">
+      <div className="max-w-4xl mx-auto px-6 space-y-20">
         
-        {/* Section 1: Comparison Matrix */}
-        <div className="space-y-16">
-          <div className="text-center space-y-4">
-            <span className="text-xs uppercase tracking-widest text-blue-500 font-bold block">
-              Comparison
-            </span>
-            <h2 className="text-3xl md:text-5xl font-black uppercase text-white tracking-tight">
+        {/* Section 1: Built for Serious Traders */}
+        <div className="space-y-10">
+          <div className="space-y-3">
+            <span className="text-[10px] font-black uppercase tracking-widest text-blue-400">
               Why CASHIX is Different
-            </h2>
-            <p className="text-slate-400 max-w-xl mx-auto text-sm md:text-base font-light">
-              Stop trading on speculation. Compare the difference between common dgen chat channels and professional quantitative intelligence.
-            </p>
-          </div>
-
-          <div className="bg-[#0D1117]/60 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-            {/* Table Header */}
-            <div className="hidden md:grid grid-cols-12 bg-slate-900/60 border-b border-slate-800 px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">
-              <div className="col-span-4">Metric</div>
-              <div className="col-span-4">Traditional Telegram Channels</div>
-              <div className="col-span-4">CASHIX Platform</div>
-            </div>
-
-            {/* Table Rows */}
-            <div className="divide-y divide-slate-800">
-              {comparison.map((row, idx) => (
-                <div key={idx} className="grid grid-cols-1 md:grid-cols-12 px-6 py-5 md:py-6 items-center gap-4 text-left text-xs md:text-sm font-semibold">
-                  {/* Metric column */}
-                  <div className="col-span-1 md:col-span-4 text-slate-300 font-bold uppercase tracking-wider text-[10px] md:text-xs">
-                    {row.metric}
-                  </div>
-
-                  {/* Traditional column */}
-                  <div className="col-span-1 md:col-span-4 flex items-start gap-2.5 text-slate-500 font-normal">
-                    <XCircle className="w-4 h-4 text-rose-500/80 shrink-0 mt-0.5" />
-                    <span>{row.traditional}</span>
-                  </div>
-
-                  {/* CASHIX column */}
-                  <div className="col-span-1 md:col-span-4 flex items-start gap-2.5 text-slate-200">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                    <span className="font-medium">{row.cashix}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Section 2: Intelligence Score Breakdown */}
-        <div className="space-y-16 pt-8">
-          <div className="text-center space-y-4">
-            <span className="text-xs uppercase tracking-widest text-blue-500 font-bold block">
-              Methodology
             </span>
             <h2 className="text-3xl md:text-5xl font-black uppercase text-white tracking-tight">
-              The Market Intelligence Score
+              Built for Serious Traders
             </h2>
-            <p className="text-slate-400 max-w-xl mx-auto text-sm md:text-base font-light">
-              Every score on CASHIX is transparently calculated using verifiable blockchain indices. We trace parameters mathematically so you know exactly why a signal qualifies.
-            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 text-left">
-            {scoreComponents.map((item, idx) => {
-              const Icon = item.icon;
+          {/* List Card Container Stack */}
+          <div className="bg-[#0B0E11]/80 border border-slate-800 rounded-2xl divide-y divide-slate-800/40 text-left shadow-lg">
+            {items.map((row, idx) => {
+              const Icon = row.icon;
               return (
-                <div 
-                  key={idx}
-                  className="bg-[#0D1117]/40 border border-slate-800 p-6 rounded-2xl space-y-4 hover:bg-[#0D1117]/80 hover:border-slate-700/80 transition-colors shadow-md flex flex-col justify-between"
-                >
-                  <div className="p-3 bg-blue-600/10 border border-blue-500/20 text-blue-400 rounded-xl w-fit">
-                    <Icon className="w-5 h-5" />
+                <div key={idx} className="p-4.5 flex items-center justify-between gap-4 group hover:bg-slate-900/20 transition-all">
+                  <div className="flex items-center gap-4 min-w-0">
+                    <div className="w-9 h-9 bg-blue-600/10 border border-blue-500/25 p-2 rounded-xl text-blue-400 shrink-0">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-xs font-black text-white uppercase tracking-wider block leading-none">{row.title}</h4>
+                      <p className="text-[9.5px] text-slate-500 mt-1.5 truncate max-w-[280px] sm:max-w-md md:max-w-xl leading-none">{row.desc}</p>
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <h4 className="font-bold text-xs uppercase tracking-wider text-white">
-                      {item.title}
-                    </h4>
-                    <p className="text-[11px] text-slate-400 leading-relaxed font-light">
-                      {item.desc}
-                    </p>
-                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-white transition-colors shrink-0" />
                 </div>
               );
             })}
+          </div>
+        </div>
+
+        {/* Section 2: Market Intelligence Score */}
+        <div className="space-y-10">
+          <div className="space-y-3">
+            <span className="text-[10px] font-black uppercase tracking-widest text-blue-400">
+              The Market Intelligence Score
+            </span>
+            <h2 className="text-3xl md:text-5xl font-black uppercase text-white tracking-tight">
+              40+ Factors. 1 Powerful Score.
+            </h2>
+          </div>
+
+          {/* Factor tags grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {factors.map((f, idx) => (
+              <div key={idx} className="bg-[#0B0E11]/60 border border-slate-800/60 rounded-xl px-3 py-2 flex items-center gap-2 text-left justify-center shadow">
+                <f.icon className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                <span className="text-[9.5px] font-bold text-slate-350 tracking-wide uppercase leading-none">{f.label}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Intelligence Score gauge showcase card */}
+          <div className="bg-[#0B0E11] border border-slate-800 rounded-2xl p-6 md:p-8 flex flex-col sm:flex-row items-center gap-6 text-left shadow-lg">
+            {/* Circular Gauge Graphic */}
+            <div className="relative w-24 h-24 flex items-center justify-center shrink-0">
+              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="42" stroke="#1F2937" strokeWidth="7" fill="transparent" />
+                <circle cx="50" cy="50" r="42" stroke="#0ECB81" strokeWidth="7" fill="transparent" strokeDasharray="263.8" strokeDashoffset="15.8" strokeLinecap="round" />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center font-mono">
+                <span className="text-2xl font-black text-white leading-none">94</span>
+                <span className="text-[9px] text-slate-500 font-bold uppercase mt-0.5">/100</span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <span className="text-[10px] font-black text-[#0ECB81] uppercase tracking-wider block">HIGH OPPORTUNITY</span>
+              <p className="text-xs text-slate-350 leading-relaxed font-medium">
+                Strong liquidity, active smart money, healthy holder growth and positive market sentiment.
+              </p>
+              <div className="flex items-center gap-1.5 text-[8.5px] text-slate-500 font-mono pt-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0ECB81] animate-pulse inline-block" />
+                <span>Updated 2s ago</span>
+              </div>
+            </div>
           </div>
         </div>
 

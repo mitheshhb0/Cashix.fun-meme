@@ -1,66 +1,33 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Database, ShieldAlert, Cpu, Activity } from "lucide-react";
+import { TrendingUp, Droplet, Activity, Users } from "lucide-react";
 
 export default function TrustStrip() {
-  const integrations = [
-    { name: "DexScreener", label: "Market Feeds" },
-    { name: "Helius", label: "Solana RPC" },
-    { name: "SocialData", label: "Sentiment Index" },
-    { name: "OpenAI", label: "Model Intelligence" }
-  ];
-
-  const metrics = [
-    { icon: Activity, value: "Real-time", label: "Market Intelligence" },
-    { icon: Database, value: "100,000+", label: "Daily Events Audited" },
-    { icon: Cpu, value: "Instant", label: "Deterministic Scoring" }
+  const stats = [
+    { icon: TrendingUp, label: "NEW PAIRS (5M)", value: "24", change: "+20.0%", color: "text-blue-400" },
+    { icon: Droplet, label: "LIQUIDITY", value: "$182K", change: "+28.6%", color: "text-[#00AEFF]" },
+    { icon: Activity, label: "VOLUME 24H", value: "$1.24M", change: "+14.3%", color: "text-[#00AEFF]" },
+    { icon: Users, label: "WALLETS", value: "3.42K", change: "+9.7%", color: "text-purple-400" }
   ];
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 mt-8">
-      <div className="bg-[#0D1117]/40 border border-slate-800/80 rounded-2xl p-6 md:p-8 grid grid-cols-1 md:grid-cols-12 gap-8 items-center backdrop-blur-md">
-        {/* Integrations Column */}
-        <div className="md:col-span-6 space-y-4">
-          <span className="text-[10px] uppercase tracking-widest text-slate-500 font-bold block">
-            Powered By Institutional Data
-          </span>
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
-            {integrations.map((item) => (
-              <div key={item.name} className="flex flex-col text-left">
-                <span className="text-sm font-black text-white tracking-tight uppercase">
-                  {item.name}
-                </span>
-                <span className="text-[9px] text-blue-500 font-bold uppercase tracking-wider">
-                  {item.label}
-                </span>
+    <div className="w-full max-w-7xl mx-auto px-6 mt-8 select-none">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map((s, idx) => {
+          const Icon = s.icon;
+          return (
+            <div key={idx} className="bg-[#0B0E11]/80 border border-slate-800 rounded-2xl p-4.5 text-left flex flex-col justify-between min-h-[90px] shadow-lg">
+              <div className="flex justify-between items-center text-slate-500 mb-2">
+                <span className="text-[9px] font-black uppercase tracking-widest">{s.label}</span>
+                <Icon className="w-3.5 h-3.5 opacity-60 text-slate-400" />
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Separator for desktop */}
-        <div className="hidden md:block md:col-span-1 h-12 w-[1px] bg-slate-800/60 mx-auto" />
-
-        {/* Metrics Column */}
-        <div className="md:col-span-5 grid grid-cols-3 gap-4">
-          {metrics.map((metric) => {
-            const Icon = metric.icon;
-            return (
-              <div key={metric.label} className="text-left space-y-1">
-                <div className="flex items-center gap-1.5 text-blue-400">
-                  <Icon className="w-4 h-4" />
-                  <span className="text-sm font-black text-white tracking-tight">
-                    {metric.value}
-                  </span>
-                </div>
-                <span className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider block leading-tight">
-                  {metric.label}
-                </span>
+              <div className="flex items-baseline gap-2 mt-1">
+                <span className="text-xl font-black text-white font-mono leading-none">{s.value}</span>
+                <span className="text-[9px] font-bold text-[#0ECB81] font-mono">{s.change}</span>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
