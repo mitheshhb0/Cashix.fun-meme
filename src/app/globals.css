@@ -11,6 +11,17 @@
   --color-text-secondary: #8A99AD;
   --color-border-custom: rgba(255, 255, 255, 0.08);
 
+  /* Binance specific theme tokens */
+  --color-binance-black: #0B0E11;
+  --color-binance-dark: #181A20;
+  --color-binance-gray: #1E2329;
+  --color-binance-yellow: #F0B90B;
+  --color-binance-yellow-hover: #FCD535;
+  --color-binance-green: #0ECB81;
+  --color-binance-red: #F6465D;
+  --color-binance-border: #2B3139;
+  --color-binance-hover: #2F363F;
+
   --font-sans: var(--font-outfit), var(--font-geist-sans), sans-serif;
 
   --animate-float: float 6s ease-in-out infinite;
