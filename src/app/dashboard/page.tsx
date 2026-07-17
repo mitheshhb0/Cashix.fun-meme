@@ -979,11 +979,11 @@ export default function Dashboard() {
       )}
 
       {/* Main Content Area */}
-      <main className="flex-grow flex flex-col overflow-hidden pb-16 md:pb-0">
+      <main className="flex-grow flex flex-col overflow-y-auto xl:overflow-hidden pb-24 xl:pb-0">
         
         {/* VIEW 1: SPOT TRADING UNIFIED GRID */}
         {activeTab === "AISCANNER" && (
-          <div className="flex-grow flex flex-col xl:flex-row overflow-hidden relative select-none">
+          <div className="flex-grow flex flex-col xl:flex-row xl:overflow-hidden relative select-none">
             
             {/* LEFT PANEL: Pairs & Token Feeds (Binance Pairs selector) */}
             <aside className="w-full xl:w-72 bg-[#181A20] border-b xl:border-b-0 xl:border-r border-[#2B3139] flex flex-col shrink-0 overflow-y-auto z-20">
@@ -1010,7 +1010,7 @@ export default function Dashboard() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search assets..."
-                    className="w-full bg-[#181A20] border border-[#2B3139] rounded pl-7 pr-2 py-1 text-[10px] text-white focus:outline-none placeholder-slate-600 font-sans"
+                    className="w-full bg-[#181A20] border border-[#2B3139] rounded pl-7 pr-2 py-1 text-base xl:text-[10px] text-white focus:outline-none placeholder-slate-600 font-sans"
                   />
                 </div>
               </div>
@@ -1148,7 +1148,7 @@ export default function Dashboard() {
                             value={tradePrice}
                             onChange={(e) => setTradePrice(e.target.value)}
                             placeholder="Paste Token Contract Address..."
-                            className="w-full bg-[#0B0E11] border border-[#2B3139] px-3 py-2 rounded text-xs text-white focus:outline-none focus:border-[#F0B90B] font-mono placeholder-slate-650"
+                            className="w-full bg-[#0B0E11] border border-[#2B3139] px-3 py-2 rounded text-base xl:text-xs text-white focus:outline-none focus:border-[#F0B90B] font-mono placeholder-slate-650"
                           />
                         </div>
                       </div>
@@ -1164,7 +1164,7 @@ export default function Dashboard() {
                             value={tradePrice}
                             onChange={(e) => setTradePrice(e.target.value)}
                             disabled={tradeType === "MARKET"}
-                            className="w-full bg-[#0B0E11] border border-[#2B3139] px-3 py-2 rounded text-xs text-white focus:outline-none focus:border-[#F0B90B] font-mono disabled:opacity-50"
+                            className="w-full bg-[#0B0E11] border border-[#2B3139] px-3 py-2 rounded text-base xl:text-xs text-white focus:outline-none focus:border-[#F0B90B] font-mono disabled:opacity-50"
                           />
                         </div>
                         <div>
@@ -1177,7 +1177,7 @@ export default function Dashboard() {
                             value={tradeAmount}
                             onChange={(e) => setTradeAmount(e.target.value)}
                             placeholder="0.00"
-                            className="w-full bg-[#0B0E11] border border-[#2B3139] px-3 py-2 rounded text-xs text-white focus:outline-none focus:border-[#F0B90B] font-mono placeholder-slate-655"
+                            className="w-full bg-[#0B0E11] border border-[#2B3139] px-3 py-2 rounded text-base xl:text-xs text-white focus:outline-none focus:border-[#F0B90B] font-mono placeholder-slate-655"
                           />
                         </div>
                       </>
@@ -1320,7 +1320,7 @@ export default function Dashboard() {
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     placeholder="Send dChat signal..."
-                    className="flex-grow bg-[#0B0E11] border border-[#2B3139] px-3 py-1.5 rounded text-[11px] text-white focus:outline-none focus:border-[#F0B90B] placeholder-slate-655 font-sans"
+                    className="flex-grow bg-[#0B0E11] border border-[#2B3139] px-3 py-1.5 rounded text-base xl:text-[11px] text-white focus:outline-none focus:border-[#F0B90B] placeholder-slate-655 font-sans"
                   />
                   <button type="submit" className="px-3 bg-[#F0B90B] text-[#0B0E11] hover:bg-[#FCD535] font-bold text-[10px] uppercase rounded transition-colors flex items-center justify-center shrink-0 cursor-pointer">
                     <Send className="w-3.5 h-3.5" />
@@ -1830,16 +1830,16 @@ export default function Dashboard() {
                 <h4 className="text-xs font-bold uppercase text-white tracking-widest border-b border-[#2B3139] pb-3 flex items-center gap-2"><Upload className="w-4 h-4 text-[#F0B90B]" /> DISPATCH NEW ALPHA MEMO</h4>
                 <form onSubmit={handlePostSignal} className="space-y-4 text-xs font-mono">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-sans">
-                    <input type="text" value={signalToken} onChange={(e) => setSignalToken(e.target.value)} placeholder="ASSET TICKER (e.g. XRPz)" className="bg-[#0B0E11] border border-[#2B3139] p-3 rounded text-xs w-full text-white placeholder-slate-600 focus:outline-none focus:border-slate-700 uppercase font-sans" required />
-                    <select value={signalAction} onChange={(e) => setSignalAction(e.target.value as "BUY" | "SELL")} className="bg-[#0B0E11] border border-[#2B3139] p-3 rounded text-xs w-full text-white focus:outline-none focus:border-slate-700 font-sans"><option value="BUY">BUY</option><option value="SELL">SELL</option></select>
+                    <input type="text" value={signalToken} onChange={(e) => setSignalToken(e.target.value)} placeholder="ASSET TICKER (e.g. XRPz)" className="bg-[#0B0E11] border border-[#2B3139] p-3 rounded text-base xl:text-xs w-full text-white placeholder-slate-600 focus:outline-none focus:border-slate-700 uppercase font-sans" required />
+                    <select value={signalAction} onChange={(e) => setSignalAction(e.target.value as "BUY" | "SELL")} className="bg-[#0B0E11] border border-[#2B3139] p-3 rounded text-base xl:text-xs w-full text-white focus:outline-none focus:border-slate-700 font-sans"><option value="BUY">BUY</option><option value="SELL">SELL</option></select>
                   </div>
-                  <input type="text" value={signalAddress} onChange={(e) => setSignalAddress(e.target.value)} placeholder="CONTRACT CA ADDRESS" className="bg-[#0B0E11] border border-[#2B3139] p-3 rounded text-xs w-full text-white placeholder-slate-600 focus:outline-none focus:border-slate-700" required />
+                  <input type="text" value={signalAddress} onChange={(e) => setSignalAddress(e.target.value)} placeholder="CONTRACT CA ADDRESS" className="bg-[#0B0E11] border border-[#2B3139] p-3 rounded text-base xl:text-xs w-full text-white placeholder-slate-600 focus:outline-none focus:border-slate-700" required />
                   <div className="grid grid-cols-3 gap-3">
-                    <input type="text" value={signalEntry} onChange={(e) => setSignalEntry(e.target.value)} placeholder="ENTRY PRICE" className="bg-[#0B0E11] border border-[#2B3139] p-3 rounded text-xs w-full text-white placeholder-slate-600 focus:outline-none focus:border-slate-700" required />
-                    <input type="text" value={signalTarget} onChange={(e) => setSignalTarget(e.target.value)} placeholder="TARGET TP" className="bg-[#0B0E11] border border-[#2B3139] p-3 rounded text-xs w-full text-white placeholder-slate-600 focus:outline-none focus:border-slate-700" required />
-                    <input type="text" value={signalStop} onChange={(e) => setSignalStop(e.target.value)} placeholder="STOP LOSS SL" className="bg-[#0B0E11] border border-[#2B3139] p-3 rounded text-xs w-full text-white placeholder-slate-600 focus:outline-none focus:border-slate-700" required />
+                    <input type="text" value={signalEntry} onChange={(e) => setSignalEntry(e.target.value)} placeholder="ENTRY PRICE" className="bg-[#0B0E11] border border-[#2B3139] p-3 rounded text-base xl:text-xs w-full text-white placeholder-slate-600 focus:outline-none focus:border-slate-700" required />
+                    <input type="text" value={signalTarget} onChange={(e) => setSignalTarget(e.target.value)} placeholder="TARGET TP" className="bg-[#0B0E11] border border-[#2B3139] p-3 rounded text-base xl:text-xs w-full text-white placeholder-slate-600 focus:outline-none focus:border-slate-700" required />
+                    <input type="text" value={signalStop} onChange={(e) => setSignalStop(e.target.value)} placeholder="STOP LOSS SL" className="bg-[#0B0E11] border border-[#2B3139] p-3 rounded text-base xl:text-xs w-full text-white placeholder-slate-600 focus:outline-none focus:border-slate-700" required />
                   </div>
-                  <textarea value={signalRationale} onChange={(e) => setSignalRationale(e.target.value)} placeholder="DISPATCH RATIONALE THESIS..." className="bg-[#0B0E11] border border-[#2B3139] p-3 rounded text-xs w-full text-white placeholder-slate-600 focus:outline-none focus:border-slate-700 h-24 resize-none font-sans" />
+                  <textarea value={signalRationale} onChange={(e) => setSignalRationale(e.target.value)} placeholder="DISPATCH RATIONALE THESIS..." className="bg-[#0B0E11] border border-[#2B3139] p-3 rounded text-base xl:text-xs w-full text-white placeholder-slate-600 focus:outline-none focus:border-slate-700 h-24 resize-none font-sans" />
                   <button type="submit" className="w-full py-3 bg-[#F0B90B] hover:bg-[#FCD535] text-[#0B0E11] font-bold uppercase text-xs tracking-widest rounded transition-all shadow cursor-pointer font-sans">{uploaded ? "DISPATCHED SUCCESSFULLY" : "DISPATCH SIGNAL"}</button>
                 </form>
               </div>
