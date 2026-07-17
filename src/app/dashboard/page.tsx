@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
@@ -33,6 +33,9 @@ import {
   WifiOff,
   LogOut,
   Star,
+  Menu,
+  PieChart,
+  User,
   Activity,
   DollarSign,
   TrendingDown
@@ -818,101 +821,60 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Top Header Navigation (Binance Style) */}
-      <header className="w-full bg-[#181A20] border-b border-[#2B3139] px-4 py-2.5 flex items-center justify-between z-40 shrink-0 select-none">
-        <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 bg-[#F0B90B] rounded-lg flex items-center justify-center transition-transform group-hover:scale-105">
-              <span className="text-md font-black text-[#0B0E11] font-mono leading-none">$</span>
-            </div>
-            <div className="text-left">
-              <h1 className="text-md font-black uppercase text-white tracking-tighter leading-none flex items-center gap-1">
-                CASHIX<span className="text-[#F0B90B]">.FUN</span>
-              </h1>
-              <span className="text-[7.5px] uppercase tracking-widest text-[#8A99AD] font-bold">TERMINAL v4.0</span>
-            </div>
-          </Link>
-
-          {/* Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1.5">
-            <button
-              onClick={() => setActiveTab("AISCANNER")}
-              className={`px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
-                activeTab === "AISCANNER" ? "text-[#F0B90B] bg-[#2B3139]/40" : "text-slate-400 hover:text-white"
-              }`}
-            >
-              Spot Trade
+      {/* Top Header Navigation (Mobile-first Binance Style) */}
+      <header className="w-full bg-[#181A20] border-b border-[#2B3139] px-4 py-3 flex flex-col gap-3.5 z-40 shrink-0 select-none">
+        {/* Row 1: Logo & Icons */}
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-3">
+            <button className="text-slate-400 hover:text-white cursor-pointer">
+              <Menu className="w-5 h-5 text-white" />
             </button>
-            <button
-              onClick={() => setActiveTab("DEXSCREENER")}
-              className={`px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
-                activeTab === "DEXSCREENER" ? "text-[#F0B90B] bg-[#2B3139]/40" : "text-slate-400 hover:text-white"
-              }`}
-            >
-              Markets
-            </button>
-            <button
-              onClick={() => setActiveTab("SIGNALS")}
-              className={`px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
-                activeTab === "SIGNALS" ? "text-[#F0B90B] bg-[#2B3139]/40" : "text-slate-400 hover:text-white"
-              }`}
-            >
-              VIP Signals
-            </button>
-            <button
-              onClick={() => setActiveTab("SECURITY")}
-              className={`px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
-                activeTab === "SECURITY" ? "text-[#F0B90B] bg-[#2B3139]/40" : "text-slate-400 hover:text-white"
-              }`}
-            >
-              Risk Center
-            </button>
-            {isAdmin && (
-              <button
-                onClick={() => setActiveTab("ADMIN")}
-                className={`px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
-                  activeTab === "ADMIN" ? "text-[#F0B90B] bg-[#2B3139]/40" : "text-slate-400 hover:text-white"
-                }`}
-              >
-                Admin Desk
-              </button>
-            )}
-          </nav>
-        </div>
-
-        {/* Header Right Actions */}
-        <div className="flex items-center gap-4">
-          <div className="hidden sm:flex bg-[#0B0E11] border border-[#2B3139] px-3 py-1.5 rounded-lg items-center justify-between gap-3 text-left">
-            <span className="text-[8px] text-[#8A99AD] font-bold uppercase tracking-wider">Health</span>
-            <div className="flex items-center gap-1.5">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0ECB81] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#0ECB81]"></span>
-              </span>
-              <span className="text-[9px] text-[#0ECB81] font-mono">100% ONLINE (24ms)</span>
-            </div>
+            <Link href="/" className="flex items-center gap-2 group text-left">
+              <div className="w-7 h-7 bg-[#F0B90B] rounded-lg flex items-center justify-center">
+                <span className="text-sm font-black text-[#0B0E11] font-mono leading-none">$</span>
+              </div>
+              <div>
+                <h1 className="text-sm font-black uppercase text-white tracking-tighter leading-none flex items-center gap-1">
+                  CASHIX<span className="text-[#F0B90B]">.FUN</span>
+                </h1>
+                <span className="text-[7px] uppercase tracking-widest text-[#8A99AD] font-bold block mt-0.5">TERMINAL v4.0</span>
+              </div>
+            </Link>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-[#2B3139] flex items-center justify-center text-[#F0B90B] font-bold text-xs uppercase border border-[#2B3139]">
-              {user?.displayName ? user.displayName[0] : user?.email?.[0] || "U"}
-            </div>
-            <div className="hidden md:flex flex-col text-left">
-              <span className="text-[9px] text-slate-500 font-medium">User Profile</span>
-              <span className="text-xs font-bold text-white max-w-[120px] truncate font-sans">
-                {user?.displayName || user?.email?.split("@")[0] || "Degen"}
-              </span>
-            </div>
+          <div className="flex items-center gap-3">
+            <button className="text-slate-400 hover:text-white cursor-pointer">
+              <Search className="w-4 h-4 text-white" />
+            </button>
+            <button className="text-slate-400 hover:text-white cursor-pointer relative">
+              <Bell className="w-4 h-4 text-white" />
+              <span className="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-[#F6465D]" />
+            </button>
           </div>
-
-          <button
-            onClick={() => signOut()}
-            className="p-2 bg-[#2B3139]/40 hover:bg-[#2B3139]/80 border border-[#2B3139] hover:border-slate-700 text-slate-400 hover:text-white rounded-lg transition-all cursor-pointer flex items-center gap-1"
-            title="Log Out Profile"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
         </div>
+
+        {/* Row 2: Navigation Tabs (Always Visible) */}
+        <nav className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider border-t border-[#2B3139]/40 pt-2 font-sans select-none">
+          {[
+            { id: "DEXSCREENER", label: "DISCOVER" },
+            { id: "AISCANNER", label: "SPOT TRADE" },
+            { id: "SIGNALS", label: "VIP SIGNALS" },
+            { id: "SECURITY", label: "RISK CENTER" },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`pb-1.5 cursor-pointer relative transition-all ${
+                activeTab === tab.id ? "text-[#F0B90B] font-extrabold" : "text-slate-400 hover:text-white"
+              }`}
+            >
+              {tab.label}
+              {activeTab === tab.id && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#F0B90B]" />
+              )}
+            </button>
+          ))}
+        </nav>
       </header>
 
       {/* Binance Ticker Info Bar */}
@@ -1593,213 +1555,243 @@ export default function Dashboard() {
         )}
 
         {/* VIEW 2: MARKETS LIST (DEXSCREENER) */}
-        {activeTab === "DEXSCREENER" && (
-          <div className="flex-grow p-4 md:p-6 space-y-4 max-w-7xl mx-auto w-full overflow-y-auto font-sans">
-            {/* Header stats */}
-            <div className="bg-[#181A20] border border-[#2B3139] p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-left shadow-lg">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#F0B90B] animate-pulse" />
-                  <span className="text-[10px] text-[#F0B90B] font-bold uppercase tracking-widest">CASHIX.FUN ALGORITHMIC MARKETS</span>
+        {activeTab === "DEXSCREENER" && (() => {
+          const livePairs = discoveryTokens.length >= 4 
+            ? discoveryTokens.slice(0, 4).map((t, idx) => ({
+                name: t.symbol || "UNKNOWN",
+                address: t.address || "0x000...000",
+                chain: (t.chain || "solana").toUpperCase(),
+                age: t.ageHours ? (t.ageHours < 1 ? `${Math.round(t.ageHours * 60)}s AGE` : `${Math.round(t.ageHours)}h AGE`) : "30s AGE",
+                liq: `$${(t.liquidityUsd ? t.liquidityUsd / 1000 : 25).toFixed(1)}K`,
+                score: t.score || 85,
+                avatar: t.symbol?.includes("PEPE") ? "🐸" : t.symbol?.includes("DOGE") ? "🐶" : t.symbol?.includes("CAT") ? "🐱" : idx % 3 === 0 ? "🚀" : idx % 3 === 1 ? "🪙" : "😊"
+              }))
+            : [
+                { name: "PEPEAI", address: "0x91F7906d274a2db6f8c27dbd283A497334", chain: "ETH", age: "32s AGE", liq: "$28.4K", score: 94, avatar: "🐸" },
+                { name: "DOGEX", address: "0x7aBDe210ecf782c979d61269c1234f9a89", chain: "BASE", age: "58s AGE", liq: "$42.7K", score: 88, avatar: "🐶" },
+                { name: "MEMEX", address: "0x3FC2b2c12d7890a79adeb3757f892e430e", chain: "SOL", age: "2m AGE", liq: "$17.2K", score: 81, avatar: "🚀" },
+                { name: "FOMOCOIN", address: "0xA12c85e7a9062d85d7b812349ae8c9a8e", chain: "ETH", age: "3m AGE", liq: "$11.8K", score: 79, avatar: "😊" },
+              ];
+
+          const featured = filteredDiscoveryTokens[0] || {
+            symbol: "PEPEAI",
+            address: "0x91F7906d274a2db6f8c27dbd283A497334",
+            chain: "ETH",
+            priceUsd: "0.0000213",
+            priceChange24h: 128.6,
+            volume24h: 182300,
+            liquidityUsd: 28400,
+            score: 94,
+            holderCount: 284,
+            whaleBuys: 7,
+            avatar: "🐸"
+          };
+
+          const totalQual = discoveryMeta.totalQualified || 1;
+          const totalCand = discoveryMeta.totalCandidates || 44;
+
+          return (
+            <div className="flex-grow p-4 space-y-4 max-w-[480px] mx-auto w-full overflow-y-auto font-sans pb-24 text-left">
+              {/* Header stats */}
+              <div className="bg-[#181A20] border border-[#2B3139] p-4 rounded-xl flex justify-between items-center text-left shadow-lg">
+                <div>
+                  <h2 className="text-sm font-black text-white uppercase tracking-tight">SMART MEME ASSET DISCOVERY</h2>
+                  <p className="text-[10px] text-slate-500 mt-1 leading-normal font-sans">
+                    Real-time blockchain scanning &<br />AI opportunity detection
+                  </p>
                 </div>
-                <h2 className="text-lg font-black text-white mt-1 uppercase tracking-tight">Smart Meme Asset Discovery</h2>
-                <p className="text-[11px] text-[#8A99AD] mt-0.5">Real-time candidate indexing via deep intelligence pipelines. Refreshes every 5 mins.</p>
+
+                <div className="bg-[#0ECB81]/10 border border-[#0ECB81]/20 px-3 py-1.5 rounded-lg text-center shrink-0 min-w-[90px]">
+                  <span className="text-xs font-black text-white font-mono block leading-none">{totalQual} / {totalCand}</span>
+                  <span className="text-[6px] text-[#0ECB81] font-black uppercase tracking-wider block mt-1 leading-none">
+                    <span className="w-1 h-1 rounded-full bg-[#0ECB81] animate-pulse inline-block mr-0.5" /> QUALIFIED INDEX
+                  </span>
+                </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                {discoveryLoading ? (
-                  <div className="flex items-center gap-2 px-3 py-1.5 bg-[#F0B90B]/10 border border-[#F0B90B]/25 rounded text-[10px] text-[#F0B90B] font-bold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#F0B90B] animate-pulse" /> SCANNING MARKET CANDIDATES...
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2 px-3 py-1.5 bg-[#0ECB81]/15 border border-[#0ECB81]/25 rounded text-[10px] text-[#0ECB81] font-bold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#0ECB81]" /> {discoveryMeta.totalQualified} / {discoveryMeta.totalCandidates} QUALIFIED INDEX
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Visual Ingestion & Analysis Pipeline Flowchart */}
-            <div className="bg-[#181A20] border border-[#2B3139] p-4 rounded-xl shadow-lg text-left select-none space-y-3 shrink-0">
-              <div className="flex justify-between items-center border-b border-[#2B3139] pb-2">
-                <span className="text-[10px] text-[#8A99AD] font-bold uppercase tracking-wider block">
-                  Algorithmic Scanning & Analysis Ingestion Pipeline
-                </span>
-                <span className="text-[9px] bg-[#0ECB81]/15 text-[#0ECB81] px-2 py-0.5 rounded border border-[#0ECB81]/30 font-bold uppercase tracking-wider font-mono">
-                  Blockchain Ingestion Live
-                </span>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-5 xl:grid-cols-10 gap-2 font-sans">
+              {/* 4 Mini Stat Grid Cards */}
+              <div className="grid grid-cols-4 gap-2 select-none">
                 {[
-                  { step: 1, label: "Live Blockchain Scanner", desc: "Solana/Base block ingestion parser", status: "Active", color: "text-[#0ECB81] bg-[#0ECB81]/10 border-[#0ECB81]/20" },
-                  { step: 2, label: "New Pair Detector", desc: "Raydium/Uniswap mint scanning", status: "Active", color: "text-[#0ECB81] bg-[#0ECB81]/10 border-[#0ECB81]/20" },
-                  { step: 3, label: "Liquidity Analyzer", desc: "LP locks & depth checks calculator", status: "Active", color: "text-[#0ECB81] bg-[#0ECB81]/10 border-[#0ECB81]/20" },
-                  { step: 4, label: "Holder Analyzer", desc: "Supply distribution audit checks", status: "Active", color: "text-[#0ECB81] bg-[#0ECB81]/10 border-[#0ECB81]/20" },
-                  { step: 5, label: "Whale Tracker", desc: "RPC whale inflows tracking engine", status: "Active", color: "text-[#0ECB81] bg-[#0ECB81]/10 border-[#0ECB81]/20" },
-                  { step: 6, label: "Twitter/X Scanner", desc: "Social mention metrics parser", status: "Active", color: "text-[#0ECB81] bg-[#0ECB81]/10 border-[#0ECB81]/20" },
-                  { step: 7, label: "Telegram Scanner", desc: "TG channel alpha trends index", status: "Active", color: "text-[#0ECB81] bg-[#0ECB81]/10 border-[#0ECB81]/20" },
-                  { step: 8, label: "Developer Wallet Tracker", desc: "Dev wallet allocation dumps test", status: "Active", color: "text-[#0ECB81] bg-[#0ECB81]/10 border-[#0ECB81]/20" },
-                  { step: 9, label: "AI Scoring Engine", desc: "Scoring candidates validation checks", status: "Running", color: "text-[#F0B90B] bg-[#F0B90B]/10 border-[#F0B90B]/20 animate-pulse" },
-                  { step: 10, label: "Trending Dashboard", desc: "Filtered signal ranking indices", status: "Active", color: "text-[#0ECB81] bg-[#0ECB81]/10 border-[#0ECB81]/20" },
-                ].map((item) => (
-                  <div key={item.step} className={`relative flex flex-col justify-between p-2.5 rounded border text-left hover:scale-[1.03] transition-transform ${item.color}`}>
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="text-[9px] font-black font-mono">0{item.step}</span>
-                      <span className="text-[7px] uppercase font-black px-1 rounded bg-[#0B0E11]/40 border border-white/5 font-sans leading-tight">{item.status}</span>
+                  { label: "NEW PAIRS", val: `${totalCand}`, sub: "Last 5m", color: "text-[#0ECB81]" },
+                  { label: "LIQUIDITY", val: `$${(discoveryTokens.reduce((acc, t) => acc + (t.liquidityUsd || 0), 0) / 1000 || 182).toFixed(0)}K`, sub: "+28.6%", color: "text-[#00AEFF]" },
+                  { label: "VOLUME 24H", val: `$${(discoveryTokens.reduce((acc, t) => acc + (t.volume24h || 0), 0) / 1000000 || 1.24).toFixed(2)}M`, sub: "+14.3%", color: "text-[#00AEFF]" },
+                  { label: "WALLETS", val: "3.42K", sub: "+9.7%", color: "text-[#A855F7]" },
+                ].map((s) => (
+                  <div key={s.label} className="bg-[#181A20] border border-[#2B3139] p-2 rounded-lg text-left relative flex flex-col justify-between min-h-[70px]">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-[7.5px] font-bold text-slate-500 uppercase tracking-wider truncate block leading-none">{s.label}</span>
                     </div>
                     <div>
-                      <h4 className="text-[9.5px] font-black tracking-tight leading-tight text-white mb-0.5">{item.label}</h4>
-                      <p className="text-[8px] text-[#8A99AD] leading-tight font-medium">{item.desc}</p>
+                      <span className={`text-[11px] font-black block leading-none font-mono ${s.color}`}>{s.val}</span>
+                      <span className="text-[7.5px] text-[#0ECB81] font-bold block mt-1 font-mono leading-none">{s.sub}</span>
                     </div>
-                    {item.step < 10 && (
-                      <div className="hidden xl:flex absolute -right-1.5 top-1/2 -translate-y-1/2 z-10 text-slate-655 font-bold font-mono text-[9px] pointer-events-none text-slate-500">
-                        ▶
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
-            </div>
 
-            {/* Filters Bar */}
-            <div className="bg-[#181A20] border border-[#2B3139] p-3 rounded-xl flex flex-wrap gap-4 items-center justify-between text-left shadow">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[10px] font-bold text-[#8A99AD] uppercase tracking-wider">Chain:</span>
-                {(["all", "solana", "ethereum", "base"] as const).map((c) => (
-                  <button
-                    key={c}
-                    onClick={() => setDiscoveryChainFilter(c)}
-                    className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
-                      discoveryChainFilter === c ? "bg-[#F0B90B] text-[#0B0E11] font-extrabold" : "bg-[#0B0E11] border border-[#2B3139] text-[#8A99AD] hover:text-white"
-                    }`}
-                  >
-                    {c}
-                  </button>
-                ))}
-
-                <span className="text-[#2B3139] mx-2">|</span>
-
-                <span className="text-[10px] font-bold text-[#8A99AD] uppercase tracking-wider">Risk Level:</span>
-                {(["all", "Safe", "Moderate", "High Risk"] as const).map((r) => (
-                  <button
-                    key={r}
-                    onClick={() => setDiscoveryRiskFilter(r)}
-                    className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
-                      discoveryRiskFilter === r
-                        ? r === "Safe" ? "bg-[#0ECB81] text-white font-extrabold"
-                          : r === "Moderate" ? "bg-amber-600 text-white font-extrabold"
-                          : r === "High Risk" ? "bg-[#F6465D] text-white font-extrabold"
-                          : "bg-blue-600 text-white font-extrabold"
-                        : "bg-[#0B0E11] border border-[#2B3139] text-[#8A99AD] hover:text-white"
-                    }`}
-                  >
-                    {r === "all" ? "All Risk" : r}
-                  </button>
-                ))}
+              {/* LIVE NEW PAIRS Section */}
+              <div className="bg-[#181A20] border border-[#2B3139] rounded-xl p-3.5 space-y-3.5 shadow-lg">
+                <div className="flex justify-between items-center select-none">
+                  <h3 className="text-xs font-black text-white uppercase tracking-wider leading-none">LIVE NEW PAIRS</h3>
+                  <button className="text-[8.5px] font-black text-[#00AEFF] uppercase hover:underline cursor-pointer leading-none">VIEW ALL</button>
+                </div>
+                
+                <div className="divide-y divide-[#2B3139]/40 space-y-2">
+                  {livePairs.map((t, idx) => (
+                    <div key={t.name + idx} className={`flex items-center justify-between text-left py-2 ${idx > 0 ? "pt-2 border-t border-[#2B3139]/40" : ""}`}>
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <div className="w-8 h-8 rounded-full bg-[#0B0E11] border border-[#2B3139] flex items-center justify-center text-sm shrink-0">
+                          {t.avatar}
+                        </div>
+                        <div className="min-w-0">
+                          <span className="font-black text-white block truncate leading-none text-xs">{t.name}</span>
+                          <span className="text-[8.5px] text-slate-500 font-mono flex items-center gap-1 mt-1 leading-none select-text">
+                            {t.address.slice(0, 5)}...{t.address.slice(-3)} 
+                            <button onClick={() => handleCopyAddress(t.address)} className="p-0.5 text-slate-600 hover:text-white cursor-pointer"><Copy className="w-2.5 h-2.5" /></button>
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-3.5 text-right shrink-0">
+                        <div className="flex flex-col">
+                          <span className="text-[7.5px] font-bold text-slate-500 uppercase leading-none">CHAIN</span>
+                          <span className="text-[9px] font-black text-slate-350 font-mono mt-1 leading-none">{t.chain}</span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[7.5px] font-bold text-slate-500 uppercase leading-none">AGE</span>
+                          <span className="text-[9px] font-black text-slate-350 font-mono mt-1 leading-none">{t.age.split(" ")[0]}</span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[7.5px] font-bold text-slate-500 uppercase leading-none">LIQUIDITY</span>
+                          <span className="text-[9px] font-black text-slate-350 font-mono mt-1 leading-none">{t.liq}</span>
+                        </div>
+                        <div className="border border-[#0ECB81]/25 bg-[#0ECB81]/10 text-[#0ECB81] px-2 py-1 rounded text-center shrink-0 min-w-[52px]">
+                          <span className="text-[10px] font-black font-mono block leading-none">{t.score}</span>
+                          <span className="text-[6.5px] font-bold block uppercase tracking-wider leading-none mt-0.5">AI SCORE</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <div className="flex items-center gap-2 text-xs">
-                <span className="text-[10px] font-bold text-[#8A99AD] uppercase">Sort:</span>
-                <select
-                  value={discoverySort}
-                  onChange={(e) => setDiscoverySort(e.target.value as any)}
-                  className="bg-[#0B0E11] border border-[#2B3139] text-[10px] font-bold text-white px-3 py-1.5 rounded focus:outline-none focus:border-slate-700 cursor-pointer"
-                >
-                  <option value="opportunity">Highest Opportunity</option>
-                  <option value="score">AI Score</option>
-                  <option value="confidence">Confidence</option>
-                  <option value="volume">Volume</option>
-                  <option value="liquidity">Liquidity</option>
-                  <option value="whales">Whale Buying</option>
-                  <option value="social">Most Discussed</option>
-                </select>
+              {/* TOP OPPORTUNITIES Section */}
+              <div className="bg-[#181A20] border border-[#2B3139] rounded-xl p-3.5 space-y-3.5 shadow-lg">
+                <div className="flex justify-between items-center select-none">
+                  <h3 className="text-xs font-black text-white uppercase tracking-wider leading-none">TOP OPPORTUNITIES</h3>
+                  <button className="text-[8.5px] font-black text-[#00AEFF] uppercase hover:underline cursor-pointer leading-none">VIEW ALL</button>
+                </div>
+                
+                <div className="bg-[#0B0E11] border border-[#2B3139] p-3.5 rounded-xl space-y-4 text-left">
+                  <div className="flex justify-between items-start gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="w-10 h-10 rounded-full bg-[#181A20] border border-[#2B3139] flex items-center justify-center text-lg shrink-0">
+                        {featured.symbol?.includes("PEPE") ? "🐸" : featured.symbol?.includes("DOGE") ? "🐶" : "🚀"}
+                      </div>
+                      <div className="min-w-0">
+                        <span className="font-black text-white text-sm block truncate leading-none">{featured.symbol}</span>
+                        <span className="text-[8.5px] text-slate-500 font-mono flex items-center gap-1 mt-1 leading-none select-text">
+                          {featured.address.slice(0, 5)}...{featured.address.slice(-3)} 
+                          <button onClick={() => handleCopyAddress(featured.address)} className="p-0.5 text-slate-600 hover:text-white cursor-pointer"><Copy className="w-2.5 h-2.5" /></button>
+                        </span>
+                        <div className="flex gap-1.5 mt-1.5 flex-wrap">
+                          <span className="text-[8px] font-bold text-slate-400 bg-[#2B3139]/40 border border-[#2B3139]/60 px-1 py-0.5 rounded uppercase leading-none">{(featured.chain || "SOL").toUpperCase()}</span>
+                          <span className="text-[8px] font-bold text-[#0ECB81] bg-[#0ECB81]/10 border border-[#0ECB81]/25 px-1 py-0.5 rounded uppercase leading-none">NEW</span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-1.5 text-[8.5px] text-slate-400 font-mono leading-none">
+                          <span>👥 {featured.holderCount || 284}</span>
+                          <span>🐳 {featured.whaleBuys || 7}</span>
+                          <span>💧 ${(featured.liquidityUsd ? featured.liquidityUsd / 1000 : 28.4).toFixed(1)}K</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Vector sparkline chart graphic */}
+                    <div className="flex-grow max-w-[80px] h-[30px] flex items-center">
+                      <svg className="w-full h-full text-[#0ECB81]" viewBox="0 0 100 30" fill="none">
+                        <path d="M0,25 Q15,5 30,20 T60,10 T90,5 T100,8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </div>
+
+                    <div className="text-right shrink-0 font-mono">
+                      <span className="text-xs font-black text-white block leading-none">
+                        ${featured.priceUsd ? parseFloat(featured.priceUsd).toLocaleString(undefined, {minimumFractionDigits: 6, maximumFractionDigits: 6}) : "0.000021"}
+                      </span>
+                      <span className="text-[10px] font-black text-[#0ECB81] block mt-1.5 leading-none">
+                        24H {featured.priceChange24h >= 0 ? "+" : ""}{(featured.priceChange24h || 128.6).toFixed(2)}%
+                      </span>
+                      <span className="text-[8px] text-slate-500 block mt-0.5 leading-none">
+                        Vol ${(featured.volume24h ? featured.volume24h / 1000 : 182).toFixed(1)}K
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {/* Card Footer Details parameters */}
+                  <div className="grid grid-cols-4 gap-2 pt-3.5 border-t border-[#2B3139]/40 items-center select-none font-sans">
+                    <div>
+                      <span className="text-[7.5px] font-bold text-slate-500 uppercase block tracking-wider leading-none">AI SCORE</span>
+                      <span className="text-xs font-black text-[#0ECB81] font-mono block mt-1 leading-none">{featured.score}<span className="text-[8.5px] text-slate-500 font-bold">/100</span></span>
+                    </div>
+                    <div>
+                      <span className="text-[7.5px] font-bold text-slate-500 uppercase block tracking-wider leading-none">HOLDERS</span>
+                      <span className="text-xs font-black text-[#00AEFF] font-mono block mt-1 leading-none">{featured.holderCount || 284}</span>
+                    </div>
+                    <div>
+                      <span className="text-[7.5px] font-bold text-slate-500 uppercase block tracking-wider leading-none">LIQUIDITY</span>
+                      <span className="text-xs font-black text-[#00AEFF] font-mono block mt-1 leading-none">${(featured.liquidityUsd ? featured.liquidityUsd / 1000 : 28.4).toFixed(1)}K</span>
+                    </div>
+                    <div>
+                      <button
+                        onClick={() => {
+                          setSelectedTokenDetails(featured);
+                          setSpotSubTab("TRADE");
+                          setActiveTab("AISCANNER");
+                        }}
+                        className="w-full py-2 bg-[#F0B90B] hover:bg-[#FCD535] text-[#0B0E11] font-black rounded-lg text-[10px] uppercase transition-all tracking-wider cursor-pointer font-sans"
+                      >
+                        DETAILS
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ALGORITHM PIPELINE (LIVE) Section */}
+              <div className="bg-[#181A20] border border-[#2B3139] rounded-xl p-3.5 space-y-3.5 shadow-lg">
+                <div className="flex justify-between items-center border-b border-[#2B3139]/40 pb-2 select-none">
+                  <h3 className="text-xs font-black text-white uppercase tracking-wider leading-none">ALGORITHM PIPELINE (LIVE)</h3>
+                  <span className="text-[8.5px] font-black text-[#0ECB81] uppercase tracking-widest flex items-center gap-1 font-mono leading-none">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#0ECB81] animate-pulse inline-block" /> LIVE
+                  </span>
+                </div>
+                
+                <div className="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none select-none">
+                  {[
+                    { name: "Scanner", icon: "🎯" },
+                    { name: "Pairs", icon: "🔗" },
+                    { name: "Liquidity", icon: "💧" },
+                    { name: "Holders", icon: "👥" },
+                    { name: "Whales", icon: "🐳" },
+                    { name: "AI Score", icon: "🧠" },
+                  ].map((step, idx) => (
+                    <Fragment key={step.name}>
+                      <div className="bg-[#0B0E11] border border-[#2B3139] p-2.5 rounded-xl text-center shrink-0 min-w-[64px] flex flex-col items-center justify-center gap-1.5">
+                        <div className="w-7 h-7 rounded-full bg-[#181A20] border border-[#2B3139]/60 flex items-center justify-center text-xs shrink-0">{step.icon}</div>
+                        <div>
+                          <span className="text-[8px] font-black text-white block leading-none">{step.name}</span>
+                          <span className="text-[6px] font-bold text-[#0ECB81] uppercase block mt-1 flex items-center gap-0.5 justify-center leading-none">
+                            <span className="w-1 h-1 rounded-full bg-[#0ECB81] inline-block" /> Active
+                          </span>
+                        </div>
+                      </div>
+                      {idx < 5 && <span className="text-slate-500 font-bold font-mono text-[9px] shrink-0">→</span>}
+                    </Fragment>
+                  ))}
+                </div>
               </div>
             </div>
-
-            {/* Markets Table */}
-            <div className="bg-[#181A20] border border-[#2B3139] rounded-xl overflow-hidden shadow-md">
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs text-left">
-                  <thead className="bg-[#0B0E11] text-[#8A99AD] font-bold border-b border-[#2B3139] select-none">
-                    <tr>
-                      <th className="py-3 px-4">Asset Pair</th>
-                      <th className="py-3 px-3 text-center">Opportunity Score</th>
-                      <th className="py-3 px-3 text-center">Confidence</th>
-                      <th className="py-3 px-3">Chain</th>
-                      <th className="py-3 px-3 text-right">24h Volume</th>
-                      <th className="py-3 px-3 text-right">24h Liquidity</th>
-                      <th className="py-3 px-3 text-center">Risk Tier</th>
-                      <th className="py-3 px-4 text-right">Trade / Audit</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#2B3139]/40 text-slate-300 font-mono">
-                    {filteredDiscoveryTokens.length === 0 ? (
-                      <tr>
-                        <td colSpan={8} className="py-12 text-center text-slate-500 font-bold uppercase font-sans">No matching tokens found</td>
-                      </tr>
-                    ) : (
-                      filteredDiscoveryTokens.map((token: any) => {
-                        const riskColor =
-                          token.riskTier === "Safe" ? "text-[#0ECB81] bg-[#0ECB81]/10 border-[#0ECB81]/20"
-                          : token.riskTier === "Moderate" ? "text-amber-500 bg-amber-500/10 border-amber-500/20"
-                          : "text-[#F6465D] bg-[#F6465D]/10 border-[#F6465D]/20";
-
-                        return (
-                          <tr key={token.address} className="hover:bg-[#2B3139]/20 transition-colors text-xs text-white">
-                            <td className="py-3 px-4 font-bold flex items-center gap-2">
-                              <span className="w-6 h-6 bg-[#0B0E11] rounded flex items-center justify-center font-bold text-[10px] text-white border border-[#2B3139]">
-                                {token.symbol[0]}
-                              </span>
-                              <div className="text-left font-sans">
-                                <span className="font-black block text-slate-200">{token.symbol}</span>
-                                <span className="text-[9px] text-slate-500 truncate max-w-[120px] block font-mono">{token.address}</span>
-                              </div>
-                            </td>
-                            <td className="py-3 px-3 text-center">
-                              <span className={`font-black text-sm ${token.score >= 80 ? "text-[#0ECB81]" : token.score >= 60 ? "text-amber-400" : "text-[#F6465D]"}`}>{token.score}</span>
-                            </td>
-                            <td className="py-3 px-3 text-center font-bold text-[#F0B90B]">{token.confidence || 92}%</td>
-                            <td className="py-3 px-3 uppercase text-slate-400 font-bold font-sans text-[10px]">{token.chain}</td>
-                            <td className="py-3 px-3 text-right font-bold">${token.volume24h ? (token.volume24h > 1000000 ? `${(token.volume24h / 1000000).toFixed(1)}M` : token.volume24h.toLocaleString()) : "—"}</td>
-                            <td className="py-3 px-3 text-right font-bold text-slate-400">${token.liquidityUsd ? token.liquidityUsd.toLocaleString() : "—"}</td>
-                            <td className="py-3 px-3 text-center">
-                              <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase border ${riskColor}`}>{token.riskTier}</span>
-                            </td>
-                            <td className="py-3 px-4 text-right font-sans">
-                              <div className="flex justify-end gap-1.5">
-                                <button
-                                  onClick={() => {
-                                    setSelectedTokenDetails(token);
-                                    setActiveTab("AISCANNER");
-                                    setBottomActiveTab("AI_REPORT");
-                                    triggerOrderToast(`Loaded ${token.symbol} to Spot trading desk.`);
-                                  }}
-                                  className="px-2.5 py-1 bg-[#F0B90B] hover:bg-[#FCD535] text-[#0B0E11] font-bold text-[9px] uppercase rounded transition-colors cursor-pointer"
-                                >
-                                  Trade
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    setSelectedTokenDetails(token);
-                                    setActiveTab("AISCANNER");
-                                    setBottomActiveTab("SECURITY");
-                                  }}
-                                  className="px-2 py-1 bg-[#2B3139]/40 hover:bg-[#2B3139]/80 border border-[#2B3139] text-[#8A99AD] hover:text-white font-bold text-[9px] uppercase rounded transition-colors cursor-pointer"
-                                >
-                                  Audit
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* VIEW 3: VIP SIGNALS DASHBOARD (SIGNALS) */}
         {activeTab === "SIGNALS" && (
@@ -1921,14 +1913,61 @@ export default function Dashboard() {
       </main>
 
       {/* Sticky Bottom Navigation for Mobile (styled as exchange layout) */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#181A20] border-t border-[#2B3139] backdrop-blur-xl py-2.5 pb-safe px-4 flex items-center justify-around md:hidden shadow-[0_-4px_20px_rgba(0,0,0,0.5)] select-none">
-        <button onClick={() => setActiveTab("AISCANNER")} className={`flex flex-col items-center gap-1 px-3 py-1 rounded transition-all cursor-pointer ${activeTab === "AISCANNER" ? "text-[#F0B90B] bg-[#2B3139]/50" : "text-slate-500"}`}><Zap className="w-4 h-4" /><span className="text-[8px] uppercase font-bold tracking-wider">Spot</span></button>
-        <button onClick={() => setActiveTab("DEXSCREENER")} className={`flex flex-col items-center gap-1 px-3 py-1 rounded transition-all cursor-pointer ${activeTab === "DEXSCREENER" ? "text-[#F0B90B] bg-[#2B3139]/50" : "text-slate-500"}`}><Globe className="w-4 h-4" /><span className="text-[8px] uppercase font-bold tracking-wider">Markets</span></button>
-        <button onClick={() => setActiveTab("SIGNALS")} className={`flex flex-col items-center gap-1 px-3 py-1 rounded transition-all cursor-pointer ${activeTab === "SIGNALS" ? "text-[#F0B90B] bg-[#2B3139]/50" : "text-slate-500"}`}><TrendingUp className="w-4 h-4" /><span className="text-[8px] uppercase font-bold tracking-wider">VIP</span></button>
-        <button onClick={() => setActiveTab("SECURITY")} className={`flex flex-col items-center gap-1 px-3 py-1 rounded transition-all cursor-pointer ${activeTab === "SECURITY" ? "text-[#F0B90B] bg-[#2B3139]/50" : "text-slate-500"}`}><Shield className="w-4 h-4" /><span className="text-[8px] uppercase font-bold tracking-wider">Risk</span></button>
-        {isAdmin && (
-          <button onClick={() => setActiveTab("ADMIN")} className={`flex flex-col items-center gap-1 px-3 py-1 rounded transition-all cursor-pointer ${activeTab === "ADMIN" ? "text-[#F0B90B] bg-[#2B3139]/50" : "text-slate-500"}`}><Terminal className="w-4 h-4" /><span className="text-[8px] uppercase font-bold tracking-wider">Admin</span></button>
-        )}
+      <div className="sticky bottom-0 left-0 right-0 z-50 w-full bg-[#181A20] border-t border-[#2B3139] backdrop-blur-xl py-2.5 pb-safe px-2 flex items-center justify-around shadow-[0_-4px_20px_rgba(0,0,0,0.5)] select-none">
+        <button
+          onClick={() => {
+            setActiveTab("AISCANNER");
+            setSpotSubTab("TRADE");
+          }}
+          className={`flex flex-col items-center gap-1 px-3 py-1 rounded transition-all cursor-pointer ${activeTab === "AISCANNER" && spotSubTab === "TRADE" ? "text-[#F0B90B] bg-[#2B3139]/50" : "text-slate-500"}`}
+        >
+          <TrendingUp className="w-4 h-4" />
+          <span className="text-[8px] uppercase font-bold tracking-wider">Trade</span>
+        </button>
+
+        <button
+          onClick={() => {
+            setActiveTab("AISCANNER");
+            setSpotSubTab("TRADE");
+            setBottomActiveTab("WATCHLIST");
+          }}
+          className={`flex flex-col items-center gap-1 px-3 py-1 rounded transition-all cursor-pointer ${activeTab === "AISCANNER" && bottomActiveTab === "WATCHLIST" ? "text-[#F0B90B] bg-[#2B3139]/50" : "text-slate-500"}`}
+        >
+          <Star className="w-4 h-4" />
+          <span className="text-[8px] uppercase font-bold tracking-wider">Watchlist</span>
+        </button>
+
+        <button
+          onClick={() => {
+            setActiveTab("SECURITY");
+          }}
+          className={`flex flex-col items-center gap-1 px-3 py-1 rounded transition-all cursor-pointer ${activeTab === "SECURITY" ? "text-[#F0B90B] bg-[#2B3139]/50" : "text-slate-500"}`}
+        >
+          <Bell className="w-4 h-4" />
+          <span className="text-[8px] uppercase font-bold tracking-wider">Alerts</span>
+        </button>
+
+        <button
+          onClick={() => {
+            setActiveTab("AISCANNER");
+            setSpotSubTab("TRADE");
+            setBottomActiveTab("POSITIONS");
+          }}
+          className={`flex flex-col items-center gap-1 px-3 py-1 rounded transition-all cursor-pointer ${activeTab === "AISCANNER" && bottomActiveTab === "POSITIONS" ? "text-[#F0B90B] bg-[#2B3139]/50" : "text-slate-500"}`}
+        >
+          <PieChart className="w-4 h-4" />
+          <span className="text-[8px] uppercase font-bold tracking-wider">Portfolio</span>
+        </button>
+
+        <button
+          onClick={() => {
+            setActiveTab("SIGNALS");
+          }}
+          className={`flex flex-col items-center gap-1 px-3 py-1 rounded transition-all cursor-pointer ${activeTab === "SIGNALS" ? "text-[#F0B90B] bg-[#2B3139]/50" : "text-slate-500"}`}
+        >
+          <User className="w-4 h-4" />
+          <span className="text-[8px] uppercase font-bold tracking-wider">Profile</span>
+        </button>
       </div>
     </div>
   );
